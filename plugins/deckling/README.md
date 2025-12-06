@@ -23,9 +23,11 @@ A Claude Code plugin that generates professional PowerPoint presentations using 
 ```bash
 # Clone the repository
 git clone https://github.com/ooiyeefei/ccc.git
+cd ccc
 
-# Symlink to Claude Code plugins directory
-ln -s $(pwd)/ccc/plugins/deckling ~/.claude/plugins/deckling
+# Add as a local marketplace and install
+/plugin marketplace add .
+/plugin install deckling@ccc
 ```
 
 ### Install Dependencies

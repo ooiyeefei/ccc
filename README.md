@@ -20,18 +20,18 @@ Custom plugins for [Claude Code](https://github.com/anthropics/claude-code).
 ```bash
 # Clone this repository
 git clone https://github.com/ooiyeefei/ccc.git
+cd ccc
 
-# Symlink the plugin to your Claude Code plugins directory
-ln -s $(pwd)/ccc/plugins/deckling ~/.claude/plugins/deckling
+# Add as a local marketplace
+/plugin marketplace add .
+
+# Install the plugin
+/plugin install deckling@ccc
 ```
 
 ### Verify Installation
 
-```bash
-/help
-```
-
-You should see the plugin commands available.
+Run `/help` - you should see `/deckling` in the available commands.
 
 ## Plugin Details
 
