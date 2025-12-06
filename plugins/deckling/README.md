@@ -22,13 +22,10 @@ A Claude Code plugin that generates professional PowerPoint presentations using 
 
 ```bash
 # Clone the repository
-git clone https://github.com/anthropics/deckling.git
+git clone https://github.com/ooiyeefei/ccc.git
 
-# Add to Claude Code plugins directory
-cp -r deckling ~/.claude/plugins/deckling
-
-# Or symlink for development
-ln -s $(pwd)/deckling ~/.claude/plugins/deckling
+# Symlink to Claude Code plugins directory
+ln -s $(pwd)/ccc/plugins/deckling ~/.claude/plugins/deckling
 ```
 
 ### Install Dependencies

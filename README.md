@@ -19,7 +19,7 @@ Custom plugins for [Claude Code](https://github.com/anthropics/claude-code).
 
 ```bash
 # Clone this repository
-git clone https://github.com/anthropics/ccc.git
+git clone https://github.com/ooiyeefei/ccc.git
 
 # Symlink the plugin to your Claude Code plugins directory
 ln -s $(pwd)/ccc/plugins/deckling ~/.claude/plugins/deckling
