@@ -1,0 +1,21 @@
+{
+  "name": "Deckling",
+  "description": "Generate native PPTX files using Anthropic Platform Skills. No ugly python-pptx - uses Anthropic's server-side rendering engine.",
+  "version": "0.1.0",
+  "commands": [
+    {
+      "name": "deckling",
+      "description": "Generate a professional slide deck",
+      "args": {
+        "topic": "Topic of the presentation"
+      },
+      "prompt": "Run the 'deckling-pptx' skill for topic: '{{topic}}'"
+    }
+  ],
+  "skills": [
+    {
+      "id": "deckling-pptx",
+      "file": "skills/deckling-pptx.md"
+    }
+  ]
+}
