@@ -2,96 +2,36 @@
 
 Custom plugins and skills for [Claude Code](https://github.com/anthropics/claude-code).
 
-## What's the Difference?
+## Available
 
-| Type | Format | Use Case |
-|------|--------|----------|
-| **Plugin** | Folder with `plugin.json`, scripts, skills | Complex workflows with `/commands` and tool execution |
-| **Skill** | Single markdown file | Teaching Claude patterns, formats, and knowledge |
-
----
-
-## Available Plugins
-
-| Plugin | Description | Command |
-|--------|-------------|---------|
-| [deckling](./plugins/deckling) | Generate professional PPTX presentations using Anthropic Platform Skills API | `/deckling` |
-
-## Available Skills
-
-| Skill | Description |
-|-------|-------------|
-| [excalidraw-generator](./skills/excalidraw-generator.md) | Generate architecture diagrams as .excalidraw files from codebase analysis |
+| Name | Type | Description | Install Command |
+|------|------|-------------|-----------------|
+| [deckling](./plugins/deckling) | Plugin | Generate PPTX presentations using Anthropic Platform Skills API | `/plugin install deckling@ccc` |
+| [ccc-skills](./skills) | Skills | Collection including Excalidraw diagram generation | `/plugin install ccc-skills@ccc` |
 
 ---
 
 ## Installation
 
-### Prerequisites
-
-- [Claude Code](https://github.com/anthropics/claude-code) installed
-
-### Quick Install (Recommended)
-
 ```bash
-# Add this repo as a marketplace (no git clone needed!)
+# Add this repo as a marketplace
 /plugin marketplace add ooiyeefei/ccc
 
-# Install a plugin
+# Install the deckling plugin (has /deckling command)
 /plugin install deckling@ccc
 
-# Skills are automatically available after marketplace add
-```
-
-### Alternative: Local Install
-
-```bash
-# Clone this repository
-git clone https://github.com/ooiyeefei/ccc.git
-cd ccc
-
-# Add as a local marketplace
-/plugin marketplace add .
-
-# Install a plugin
-/plugin install deckling@ccc
-```
-
-### Using Skills
-
-After adding the marketplace, skills are available. Just ask Claude Code:
-
-```
-"Generate an architecture diagram for this project"
-"Create an excalidraw diagram of the system"
-```
-
-### Manual Skill Install (Alternative)
-
-If you only want skills without the full marketplace:
-
-```bash
-# Create skills directory
-mkdir -p ~/.claude/skills
-
-# Download skill file directly
-curl -o ~/.claude/skills/excalidraw-generator.md \
-  https://raw.githubusercontent.com/ooiyeefei/ccc/main/skills/excalidraw-generator.md
+# Install the skills collection (includes excalidraw)
+/plugin install ccc-skills@ccc
 ```
 
 ---
 
-## Plugin Details
-
-### Deckling
+## Plugin: Deckling
 
 Generate and refine PowerPoint presentations using Anthropic's Platform Skills API.
 
 ```bash
-# Generate new slides
 /deckling "Quarterly Review - 3 slides"
-
-# Refine existing slides
 /deckling "Change title to 'Q4 Results'" --refine quarterly.pptx
 ```
 
@@ -99,13 +39,11 @@ See [plugins/deckling/README.md](./plugins/deckling/README.md) for full document
 
 ---
 
-## Skill Details
-
-### Excalidraw Generator
+## Skill: Excalidraw Generator
 
 Generate architecture diagrams from any codebase as `.excalidraw` files.
 
-**Usage** (just ask Claude Code):
+**After installing ccc-skills, just ask Claude Code:**
 ```
 "Generate an architecture diagram for this project"
 "Create an excalidraw diagram of the system"
@@ -119,7 +57,7 @@ Generate architecture diagrams from any codebase as `.excalidraw` files.
 - Color-coded components by type (database, API, storage, etc.)
 - Dynamic IDs and labels based on discovered components
 
-See [skills/excalidraw-generator.md](./skills/excalidraw-generator.md) for full documentation.
+See [skills/excalidraw/SKILL.md](./skills/excalidraw/SKILL.md) for full documentation.
 
 ---
 

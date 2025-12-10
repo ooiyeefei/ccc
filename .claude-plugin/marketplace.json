@@ -4,22 +4,23 @@
     "name": "ooiyeefei",
     "email": "ooiyeefei@users.noreply.github.com"
   },
+  "metadata": {
+    "description": "Custom Claude Code plugins and skills",
+    "version": "1.0.0"
+  },
   "plugins": [
     {
       "name": "deckling",
-      "source": "./plugins/deckling",
       "description": "Generate professional PPTX presentations using Anthropic Platform Skills API",
-      "version": "0.1.0",
-      "author": {
-        "name": "ooiyeefei"
-      }
-    }
-  ],
-  "skills": [
+      "source": "./plugins/deckling"
+    },
     {
-      "name": "excalidraw-generator",
-      "source": "./skills/excalidraw-generator.md",
-      "description": "Generate architecture diagrams as .excalidraw files from codebase analysis"
+      "name": "ccc-skills",
+      "description": "Collection of skills including Excalidraw diagram generation",
+      "source": "./",
+      "skills": [
+        "./skills/excalidraw"
+      ]
     }
   ]
 }
