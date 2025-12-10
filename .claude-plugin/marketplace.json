@@ -1,0 +1,25 @@
+{
+  "name": "ccc",
+  "owner": {
+    "name": "ooiyeefei",
+    "email": "ooiyeefei@users.noreply.github.com"
+  },
+  "plugins": [
+    {
+      "name": "deckling",
+      "source": "./plugins/deckling",
+      "description": "Generate professional PPTX presentations using Anthropic Platform Skills API",
+      "version": "0.1.0",
+      "author": {
+        "name": "ooiyeefei"
+      }
+    }
+  ],
+  "skills": [
+    {
+      "name": "excalidraw-generator",
+      "source": "./skills/excalidraw-generator.md",
+      "description": "Generate architecture diagrams as .excalidraw files from codebase analysis"
+    }
+  ]
+}

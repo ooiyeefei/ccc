@@ -57,9 +57,18 @@ cd ccc
 /plugin install deckling@ccc
 ```
 
-### Install a Skill Manually
+### Using Skills
 
-If you only want skills (without plugins):
+After adding the marketplace, skills are available. Just ask Claude Code:
+
+```
+"Generate an architecture diagram for this project"
+"Create an excalidraw diagram of the system"
+```
+
+### Manual Skill Install (Alternative)
+
+If you only want skills without the full marketplace:
 
 ```bash
 # Create skills directory
