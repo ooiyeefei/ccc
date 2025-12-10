@@ -17,9 +17,9 @@
     {
       "name": "ccc-skills",
       "description": "Collection of skills including Excalidraw diagram generation",
-      "source": "./",
+      "source": "./skills",
       "skills": [
-        "./skills/excalidraw"
+        "./excalidraw"
       ]
     }
   ]
