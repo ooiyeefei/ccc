@@ -607,7 +607,9 @@ When multiple arrows leave from the same source:
 2. **Use different horizontal offsets**: First segment lengths should vary
 3. **Color code by destination type**: Helps visual distinction
 
-### Full Elbow Arrow Element Example
+### Full Elbow Arrow Element Example (with Bindings)
+
+**RECOMMENDED: Use `startBinding` and `endBinding` for better visual attachment:**
 
 ```json
 {
@@ -638,18 +640,62 @@ When multiple arrows leave from the same source:
   "locked": false,
   "points": [[0, 0], [-325, 0], [-325, 125]],
   "lastCommittedPoint": null,
-  "startBinding": null,
-  "endBinding": null,
+  "startBinding": {
+    "elementId": "cloud-workflows",
+    "focus": 0,
+    "gap": 1,
+    "fixedPoint": [0.5, 1]
+  },
+  "endBinding": {
+    "elementId": "convert-pdf-service",
+    "focus": 0,
+    "gap": 1,
+    "fixedPoint": [0.5, 0]
+  },
   "startArrowhead": null,
   "endArrowhead": "arrow",
   "elbowed": true
 }
 ```
 
+**Also update the source shape's `boundElements` to include the arrow:**
+```json
+{
+  "id": "cloud-workflows",
+  "type": "rectangle",
+  ...
+  "boundElements": [
+    { "type": "text", "id": "cloud-workflows-text" },
+    { "type": "arrow", "id": "arrow-workflow-convert" }
+  ]
+}
+```
+
+### Arrow Binding Properties
+
+| Property | Description |
+|----------|-------------|
+| `elementId` | ID of the shape the arrow connects to |
+| `focus` | Position along the edge (-1 to 1, where 0 = center) |
+| `gap` | Pixel gap between arrow endpoint and shape edge |
+| `fixedPoint` | `[x, y]` normalized position on shape (0-1 range) |
+
+**fixedPoint values for common edges:**
+- Top center: `[0.5, 0]`
+- Bottom center: `[0.5, 1]`
+- Left center: `[0, 0.5]`
+- Right center: `[1, 0.5]`
+
 **Key elbow arrow properties (all three required for 90-degree corners):**
 - `"roughness": 0` - Clean lines
 - `"roundness": null` - Sharp corners (not curved)
 - `"elbowed": true` - Enables true elbow arrow mode
+
+### Why Use Bindings?
+
+**Without bindings**: Arrows use absolute `x,y` coordinates. Even if mathematically correct, Excalidraw's rendering may show visual gaps at connection points.
+
+**With bindings**: Excalidraw dynamically calculates and renders the connection, ensuring arrows visually attach to shape edges correctly.
 
 ### Bidirectional Arrows
 
@@ -1458,6 +1504,8 @@ FUNCTION findShapeNear(elements, x, y, tolerance=15):
 - [ ] Shape has `boundElements: [{ "type": "text", "id": "{shape-id}-text" }]`
 - [ ] Text has `containerId: "{shape-id}"`
 - [ ] All multi-point arrows have `"elbowed": true`, `"roundness": null`, `"roughness": 0`
+- [ ] Arrows have `startBinding` and `endBinding` with correct `elementId` and `fixedPoint`
+- [ ] Shapes connected by arrows include arrow IDs in their `boundElements` array
 - [ ] Used Universal Arrow Routing Algorithm for all connections
 - [ ] Applied Universal Staggering Formula for multiple arrows from same source
 - [ ] No diamond shapes used (only rectangles and ellipses)
