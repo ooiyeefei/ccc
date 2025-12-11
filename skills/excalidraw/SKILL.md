@@ -600,48 +600,12 @@ All coordinates in `points` are **relative** to the arrow's `x,y` position.
 | S-shape | `[[0,0], [0,h1], [w,h1], [w,h2]]` | Navigate around obstacles |
 | U-turn | `[[0,0], [w,0], [w,-h], [0,-h]]` | Callback/return arrows |
 
-### Avoiding Arrow Overlaps and Collisions
+### Avoiding Arrow Overlaps
 
-**Rule 1: Arrows must NEVER pass through shapes**
-
-Before finalizing any arrow path, verify it doesn't intersect other shapes. If it does, add intermediate points to route around:
-
-```
-BAD:  Arrow passes through "Service B" to reach "Service C"
-      [[0, 0], [0, 300]]  // Direct line intersects Service B
-
-GOOD: Arrow routes around "Service B"
-      [[0, 0], [-50, 0], [-50, 300], [0, 300]]  // Goes left, down, then right
-```
-
-**Rule 2: Choose connection edges that minimize crossings**
-
-| Source Position | Target Position | Best Route |
-|-----------------|-----------------|------------|
-| Above target | Directly below | Bottom → Top (straight down) |
-| Above target | Offset horizontally | Bottom → Top with L-shape |
-| Same row | To the right | Right → Left (straight across) |
-| Inside group | Outside group | Exit via nearest edge, then route |
-
-**Rule 3: For nested/layered architectures (VPCs, clusters, groups)**
-
-When shapes are inside group boxes:
-- Route arrows along the **outside edges** of group boxes
-- Use the group boundary as a routing guide
-- Add clearance (20-40px) from group borders
-
-```
-For arrow from shape inside Group A to shape inside Group B:
-1. Exit Group A via appropriate edge
-2. Route along the gap between groups
-3. Enter Group B via appropriate edge
-```
-
-**Rule 4: Multiple arrows from same source**
-
-1. **Stagger start positions**: Use Universal Staggering Formula (20%-80% across edge)
-2. **Vary first segment lengths**: Prevents parallel overlapping lines
-3. **Color code by destination type**: Visual distinction helps readability
+When multiple arrows leave from the same source:
+1. **Stagger Y positions**: Start arrows at slightly different Y offsets (e.g., y: 420, y: 450, y: 455)
+2. **Use different horizontal offsets**: First segment lengths should vary
+3. **Color code by destination type**: Helps visual distinction
 
 ### Full Elbow Arrow Element Example
 
@@ -1440,41 +1404,7 @@ FUNCTION validateDiagram(elements):
     IF arrow.width < maxX OR arrow.height < maxY:
       errors.append("Arrow {arrow.id} bounding box too small for points")
 
-  // 5. Validate arrows don't pass through shapes (CRITICAL)
-  FOR each arrow IN elements WHERE arrow.type == "arrow":
-    segments = getArrowSegments(arrow)  // Convert points to line segments
-    FOR each shape IN elements WHERE shape.type IN ["rectangle", "ellipse"]:
-      // Skip source and target shapes
-      IF shape == sourceShape OR shape == targetShape:
-        CONTINUE
-      FOR each segment IN segments:
-        IF segmentIntersectsShape(segment, shape):
-          errors.append("Arrow {arrow.id} passes through shape {shape.id} - needs rerouting")
-
   RETURN errors
-
-FUNCTION getArrowSegments(arrow):
-  segments = []
-  FOR i FROM 0 TO arrow.points.length - 2:
-    p1 = (arrow.x + arrow.points[i][0], arrow.y + arrow.points[i][1])
-    p2 = (arrow.x + arrow.points[i+1][0], arrow.y + arrow.points[i+1][1])
-    segments.append((p1, p2))
-  RETURN segments
-
-FUNCTION segmentIntersectsShape(segment, shape):
-  // Check if line segment passes through shape's bounding box
-  // (simplified - treats all shapes as rectangles for collision)
-  p1, p2 = segment
-  rect = (shape.x, shape.y, shape.x + shape.width, shape.y + shape.height)
-
-  // If segment is entirely above, below, left, or right of shape, no intersection
-  IF max(p1.x, p2.x) < rect.left OR min(p1.x, p2.x) > rect.right:
-    RETURN false
-  IF max(p1.y, p2.y) < rect.top OR min(p1.y, p2.y) > rect.bottom:
-    RETURN false
-
-  // More detailed intersection check for diagonal segments
-  RETURN lineIntersectsRect(p1, p2, rect)
 
 FUNCTION findShapeNear(elements, x, y, tolerance=15):
   FOR each shape IN elements WHERE shape.type IN ["rectangle", "ellipse"]:
@@ -1538,14 +1468,12 @@ FUNCTION findShapeNear(elements, x, y, tolerance=15):
 - [ ] Arrow `width` = `max(abs(point[0]) for all points)`
 - [ ] Arrow `height` = `max(abs(point[1]) for all points)`
 - [ ] U-turn arrows have 40-60px clearance
-- [ ] Arrow path does NOT pass through any other shapes (reroute if needed)
 
 ### After Generation (Run Pre-Flight Validation)
 - [ ] All `boundElements` IDs reference valid text elements
 - [ ] All `containerId` values reference valid shape elements
 - [ ] All arrows start within 15px of a shape edge
 - [ ] All arrows end within 15px of a shape edge
-- [ ] No arrows pass through shapes (collision check)
 - [ ] No duplicate IDs
 - [ ] Arrow bounding boxes match points array
 - [ ] File is valid JSON (parseable)
@@ -1601,22 +1529,3 @@ Points = [[0, 0], [clearance, 0], [clearance, -vertical_dist], [final_x_offset, 
 
 // clearance = 40-60px typically (enough to visually clear the shapes)
 ```
-
-### Bug: Arrow passes through other shapes
-
-**Cause**: Direct path calculated without checking for obstructions.
-
-**Fix**: Add intermediate routing points to go around obstacles:
-```
-// Instead of direct: [[0, 0], [0, 300]]  // Passes through Shape B
-
-// Route around: go left first, then down, then right
-offset_x = -50  // Go left to clear Shape B
-Points = [[0, 0], [offset_x, 0], [offset_x, 300], [0, 300]]
-
-// Or route the other way if shapes are on the left
-offset_x = 50  // Go right to clear Shape B
-Points = [[0, 0], [offset_x, 0], [offset_x, 300], [0, 300]]
-```
-
-**Prevention**: Before finalizing, trace each arrow segment and verify it doesn't intersect any shape's bounding box (except source and target).
