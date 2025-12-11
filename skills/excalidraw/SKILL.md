@@ -46,24 +46,72 @@ Use this skill when the user asks to:
 
 **Before creating any arrow, calculate the edge points:**
 
-| Shape Type | Edge | Formula |
-|------------|------|---------|
-| Rectangle | Top | `(x + width/2, y)` |
-| Rectangle | Bottom | `(x + width/2, y + height)` |
-| Rectangle | Left | `(x, y + height/2)` |
-| Rectangle | Right | `(x + width, y + height/2)` |
-| Diamond | Top vertex | `(x + width/2, y)` |
-| Diamond | Bottom vertex | `(x + width/2, y + height)` |
-| Diamond | Left vertex | `(x, y + height/2)` |
-| Diamond | Right vertex | `(x + width, y + height/2)` |
-| Ellipse | Top | `(x + width/2, y)` |
-| Ellipse | Bottom | `(x + width/2, y + height)` |
+| Shape Type | Edge | Formula | Reliability |
+|------------|------|---------|-------------|
+| Rectangle | Top | `(x + width/2, y)` | ✅ |
+| Rectangle | Bottom | `(x + width/2, y + height)` | ✅ |
+| Rectangle | Left | `(x, y + height/2)` | ✅ |
+| Rectangle | Right | `(x + width, y + height/2)` | ✅ |
+| Ellipse | Top | `(x + width/2, y)` | ✅ |
+| Ellipse | Bottom | `(x + width/2, y + height)` | ✅ |
+
+**🚫 NEVER USE DIAMOND SHAPES.** Diamond arrow connections are **unsolvable** in raw Excalidraw JSON due to how roundness rendering offsets the visual vertices from mathematical edge points. Use styled rectangles instead (coral color, thick borders).
 
 **Arrow creation steps:**
 1. Get source shape's edge point → this becomes arrow's `x, y`
 2. Get target shape's edge point
 3. Calculate relative offset: `target_edge - source_edge`
 4. Build `points` array with elbow routing to reach the offset
+
+### Universal Arrow Routing Algorithm
+
+Use this algorithm for ANY arrow connection:
+
+```
+FUNCTION createArrow(source, target, sourceEdge, targetEdge):
+  // Step 1: Get source edge point
+  sourcePoint = getEdgePoint(source, sourceEdge)
+
+  // Step 2: Get target edge point
+  targetPoint = getEdgePoint(target, targetEdge)
+
+  // Step 3: Calculate offsets
+  dx = targetPoint.x - sourcePoint.x
+  dy = targetPoint.y - sourcePoint.y
+
+  // Step 4: Determine routing pattern
+  IF sourceEdge == "bottom" AND targetEdge == "top":
+    IF abs(dx) < 10:  // Nearly aligned vertically
+      points = [[0, 0], [0, dy]]
+    ELSE:  // Need L-shape
+      points = [[0, 0], [dx, 0], [dx, dy]]
+
+  ELSE IF sourceEdge == "right" AND targetEdge == "left":
+    IF abs(dy) < 10:  // Nearly aligned horizontally
+      points = [[0, 0], [dx, 0]]
+    ELSE:  // Need L-shape
+      points = [[0, 0], [0, dy], [dx, dy]]
+
+  ELSE IF sourceEdge == targetEdge:  // U-turn (callback)
+    clearance = 50
+    IF sourceEdge == "right":
+      points = [[0, 0], [clearance, 0], [clearance, dy], [dx, dy]]
+    ELSE IF sourceEdge == "bottom":
+      points = [[0, 0], [0, clearance], [dx, clearance], [dx, dy]]
+
+  // Step 5: Calculate bounding box
+  width = max(abs(p[0]) for p in points)
+  height = max(abs(p[1]) for p in points)
+
+  RETURN {x: sourcePoint.x, y: sourcePoint.y, points, width, height}
+
+FUNCTION getEdgePoint(shape, edge):
+  SWITCH edge:
+    "top":    RETURN (shape.x + shape.width/2, shape.y)
+    "bottom": RETURN (shape.x + shape.width/2, shape.y + shape.height)
+    "left":   RETURN (shape.x, shape.y + shape.height/2)
+    "right":  RETURN (shape.x + shape.width, shape.y + shape.height/2)
+```
 
 ---
 
@@ -152,14 +200,49 @@ Excalidraw has THREE arrow types:
 
 ### Element Types
 
-| Type | Use For |
-|------|---------|
-| `rectangle` | Services, components, databases, containers |
-| `ellipse` | Users, external systems, start/end points |
-| `diamond` | Decision points, orchestrators, conditionals |
-| `text` | Labels inside shapes, titles, annotations |
-| `arrow` | Data flow, connections, dependencies |
-| `line` | Grouping boundaries, separators |
+| Type | Use For | Arrow Reliability |
+|------|---------|-------------------|
+| `rectangle` | Services, components, databases, containers, orchestrators, decision points | ✅ Excellent |
+| `ellipse` | Users, external systems, start/end points | ✅ Good |
+| `text` | Labels inside shapes, titles, annotations | N/A |
+| `arrow` | Data flow, connections, dependencies | N/A |
+| `line` | Grouping boundaries, separators | N/A |
+
+### 🚫 BANNED: Diamond Shapes
+
+**NEVER use `type: "diamond"` in generated diagrams.**
+
+Diamond arrow connections are **fundamentally broken** in raw Excalidraw JSON:
+- Excalidraw applies `roundness` to diamond vertices during rendering
+- The visual edges appear **offset** from the mathematical edge points
+- No offset formula reliably compensates (varies by size, zoom, roundness settings)
+- Arrows appear disconnected/floating even with "correct" calculations
+
+**This is an Excalidraw rendering limitation, not a calculation error we can fix.**
+
+### Visual Distinction Without Diamonds
+
+Use styled rectangles to convey the same semantic meaning:
+
+| Semantic Meaning | Rectangle Style |
+|------------------|-----------------|
+| **Orchestrator / Hub** | Coral color (`#ffa8a8` / `#c92a2a`) + thick border (strokeWidth: 3) |
+| **Decision Point** | Orange color (`#ffd8a8` / `#e8590c`) + dashed stroke |
+| **Central Router** | Distinctive size (larger) + bold color |
+| **Conditional Logic** | Yellow background (`#ffec99`) + icon in label |
+
+**Standard orchestrator/hub pattern:**
+```json
+{
+  "type": "rectangle",
+  "strokeColor": "#c92a2a",      // Coral/red to stand out
+  "backgroundColor": "#ffa8a8",
+  "strokeWidth": 3,              // Thicker border for emphasis
+  "roundness": { "type": 3 }     // Standard rounded corners
+}
+```
+
+This provides visual distinction with **100% reliable arrow connections**.
 
 ### Required Element Properties
 
@@ -207,7 +290,7 @@ Every element MUST have these properties:
 // TEMPLATE - Replace {component-id} and colors based on discovered components
 {
   "id": "{component-id}",           // e.g., "api-gateway", "postgres-db", "auth-service"
-  "type": "rectangle",              // or "ellipse", "diamond" based on component type
+  "type": "rectangle",              // or "ellipse" for users/external systems
   "x": 500,                         // Calculate based on grid position
   "y": 200,
   "width": 200,
@@ -327,14 +410,6 @@ Left center:   (x, y + height/2)
 Right center:  (x + width, y + height/2)
 ```
 
-**Diamond Edge Points (vertices):**
-```
-Top vertex:    (x + width/2, y)
-Bottom vertex: (x + width/2, y + height)
-Left vertex:   (x, y + height/2)
-Right vertex:  (x + width, y + height/2)
-```
-
 **Ellipse Edge Points (approximate):**
 ```
 Top:    (x + width/2, y)
@@ -369,15 +444,18 @@ Step 3: Calculate arrow
   Points = [[0, 0], [0, 110]]
 ```
 
-#### Worked Example: Diamond to Rectangle (Fan-out)
+#### Worked Example: Orchestrator/Hub to Multiple Services (Fan-out)
+
+**Use styled rectangle for orchestrators** (coral color + thick border for visual distinction)
 
 ```
-Diamond (orchestrator): x=570, y=400, width=140, height=80
+Orchestrator rectangle: x=570, y=400, width=140, height=80
+  Style: backgroundColor=#ffa8a8, strokeColor=#c92a2a, strokeWidth=3
 Target rectangle: x=120, y=550, width=160, height=80
-Connection: Bottom of diamond → Top of rectangle
+Connection: Bottom of orchestrator → Top of target
 
-Step 1: Calculate diamond bottom vertex
-  diamond_bottom = (570 + 140/2, 400 + 80) = (640, 480)
+Step 1: Calculate orchestrator bottom edge
+  orchestrator_bottom = (570 + 140/2, 400 + 80) = (640, 480)
 
 Step 2: Calculate target top center
   target_top = (120 + 160/2, 550) = (200, 550)
@@ -396,40 +474,52 @@ Step 3: Calculate elbow arrow path
 #### Worked Example: Callback/Return Arrow (U-turn)
 
 ```
-Source shape: x=570, y=400, width=140, height=80 (diamond)
+Source shape: x=570, y=400, width=140, height=80 (orchestrator rectangle)
 Target shape: x=550, y=270, width=180, height=90 (rectangle above)
-Connection: Right of diamond → Right of rectangle (callback loop)
+Connection: Right of source → Right of target (callback loop)
 
-Step 1: Calculate diamond right vertex
-  diamond_right = (570 + 140, 400 + 80/2) = (710, 440)
+Step 1: Calculate source right edge
+  source_right = (570 + 140, 400 + 80/2) = (710, 440)
 
-Step 2: Calculate rectangle right edge
-  rect_right = (550 + 180, 270 + 90/2) = (730, 315)
+Step 2: Calculate target right edge
+  target_right = (550 + 180, 270 + 90/2) = (730, 315)
 
 Step 3: Calculate U-turn path
   Arrow x = 710, y = 440
   Need to go: right (to clear shapes), up, then left to target
 
+  Vertical distance = 315 - 440 = -125 (going up)
+  Final x offset = 730 - 710 = 20 (target is slightly to the right)
+
   Points = [[0, 0], [50, 0], [50, -125], [20, -125]]
-  // Right 50px, up 125px, left 30px to reach target
+  // Right 50px (clearance), up 125px, left 30px to reach target edge
 ```
+
+**Key principle for U-turns:**
+- First segment: move AWAY from shapes (clearance of 40-60px)
+- Second segment: travel the vertical/horizontal distance
+- Third segment: approach the target edge
 
 #### Multiple Arrows from Same Source - Staggering
 
 When multiple arrows leave from the same shape edge, **stagger the start points** to prevent overlap:
 
 ```
-Diamond at x=570, y=400, width=140, height=80
-Bottom vertex = (640, 480)
+Orchestrator rectangle at x=570, y=400, width=140, height=80
+Bottom edge center = (640, 480)
 
-Arrow 1 (leftmost target):  x=635, y=480  // Slightly left of center
-Arrow 2 (left target):      x=638, y=480
-Arrow 3 (center target):    x=640, y=480  // True center
-Arrow 4 (right target):     x=642, y=480
-Arrow 5 (rightmost target): x=645, y=480  // Slightly right of center
+For 5 arrows fanning out to different targets:
+Arrow 1 (leftmost target):  x=598, y=480  // 20% across width
+Arrow 2 (left target):      x=619, y=480  // 35% across width
+Arrow 3 (center target):    x=640, y=480  // 50% (center)
+Arrow 4 (right target):     x=661, y=480  // 65% across width
+Arrow 5 (rightmost target): x=682, y=480  // 80% across width
+
+Formula: arrow_x = shape.x + shape.width * percentage
+  where percentage = 0.2, 0.35, 0.5, 0.65, 0.8 for 5 arrows
 ```
 
-This creates a visual "fan" effect from the source shape.
+This creates a visual "fan" effect from the source shape, with arrows spreading naturally to their targets.
 
 #### Arrow Width/Height Calculation
 
@@ -561,23 +651,140 @@ When multiple arrows leave from the same source:
 - `"roundness": null` - Sharp corners (not curved)
 - `"elbowed": true` - Enables true elbow arrow mode
 
+### Bidirectional Arrows
+
+For two-way data flows (e.g., request/response, sync connections):
+
+```json
+{
+  "type": "arrow",
+  "startArrowhead": "arrow",    // ✅ Arrow on START end
+  "endArrowhead": "arrow"       // ✅ Arrow on END end
+}
+```
+
+**Arrowhead options:**
+| Value | Description |
+|-------|-------------|
+| `null` | No arrowhead |
+| `"arrow"` | Standard arrow (triangle) |
+| `"bar"` | Vertical bar |
+| `"dot"` | Circle/dot |
+| `"triangle"` | Filled triangle |
+
+### Arrow Labels (Annotations on Arrows)
+
+To add text labels on arrows (e.g., "HTTP", "gRPC", "async"):
+
+**Method: Use standalone text positioned near the arrow**
+
+```json
+// Arrow element
+{
+  "id": "arrow-api-db",
+  "type": "arrow",
+  "x": 300,
+  "y": 200,
+  "points": [[0, 0], [0, 100]],
+  ...
+},
+// Label positioned at arrow midpoint
+{
+  "id": "arrow-api-db-label",
+  "type": "text",
+  "x": 305,                        // Arrow x + small offset
+  "y": 245,                        // Arrow y + half of vertical distance
+  "text": "SQL",
+  "fontSize": 12,
+  "containerId": null,             // NOT bound to arrow
+  "backgroundColor": "#ffffff",    // White background for readability
+  ...
+}
+```
+
+**Label positioning formula:**
+```
+For vertical arrow (down):
+  label.x = arrow.x + 5
+  label.y = arrow.y + (total_height / 2) - (label.height / 2)
+
+For horizontal arrow (right):
+  label.x = arrow.x + (total_width / 2) - (label.width / 2)
+  label.y = arrow.y - label.height - 5
+
+For L-shaped arrow:
+  Position label at the corner or midpoint of longest segment
+```
+
 ---
 
-## Color Palette (GCP-inspired)
+## Color Palettes
+
+### Default Palette (Platform-Agnostic)
 
 | Component Type | Background | Stroke | Example |
 |----------------|------------|--------|---------|
 | Frontend/UI | `#a5d8ff` (blue) | `#1971c2` | Next.js, React apps |
 | Backend/API | `#d0bfff` (purple) | `#7048e8` | API servers, processors |
-| Database | `#b2f2bb` (green) | `#2f9e44` | PostgreSQL, Cloud SQL |
-| Storage | `#ffec99` (yellow) | `#f08c00` | GCS, S3 buckets |
-| AI/ML Services | `#e599f7` (magenta) | `#9c36b5` | Extractors, classifiers |
-| External APIs | `#ffc9c9` (red) | `#e03131` | Gemini, OpenAI |
+| Database | `#b2f2bb` (green) | `#2f9e44` | PostgreSQL, MySQL, MongoDB |
+| Storage | `#ffec99` (yellow) | `#f08c00` | Object storage, file systems |
+| AI/ML Services | `#e599f7` (magenta) | `#9c36b5` | ML models, AI APIs |
+| External APIs | `#ffc9c9` (red) | `#e03131` | Third-party services |
 | Orchestration | `#ffa8a8` (coral) | `#c92a2a` | Workflows, schedulers |
 | Validation | `#ffd8a8` (orange) | `#e8590c` | Validators, checkers |
-| Network/Security | `#dee2e6` (gray) | `#495057` | VPC, IAM |
-| Classification | `#99e9f2` (cyan) | `#0c8599` | Classifiers, routers |
+| Network/Security | `#dee2e6` (gray) | `#495057` | VPC, IAM, firewalls |
+| Classification | `#99e9f2` (cyan) | `#0c8599` | Routers, classifiers |
 | Users/Actors | `#e7f5ff` (light blue) | `#1971c2` | User ellipses |
+| Message Queue | `#fff3bf` (light yellow) | `#fab005` | Kafka, RabbitMQ, SQS |
+| Cache | `#ffe8cc` (peach) | `#fd7e14` | Redis, Memcached |
+| Monitoring | `#d3f9d8` (mint) | `#40c057` | Prometheus, Grafana |
+
+### AWS Palette
+
+| Service Category | Background | Stroke |
+|-----------------|------------|--------|
+| Compute (EC2, Lambda, ECS) | `#ff9900` bg | `#cc7a00` |
+| Storage (S3, EBS) | `#3f8624` bg | `#2d6119` |
+| Database (RDS, DynamoDB) | `#3b48cc` bg | `#2d3899` |
+| Networking (VPC, Route53) | `#8c4fff` bg | `#6b3dcc` |
+| Security (IAM, KMS) | `#dd344c` bg | `#b12a3d` |
+| Analytics (Kinesis, Athena) | `#8c4fff` bg | `#6b3dcc` |
+| ML (SageMaker, Bedrock) | `#01a88d` bg | `#017d69` |
+
+### Azure Palette
+
+| Service Category | Background | Stroke |
+|-----------------|------------|--------|
+| Compute | `#0078d4` bg | `#005a9e` |
+| Storage | `#50e6ff` bg | `#3cb5cc` |
+| Database | `#0078d4` bg | `#005a9e` |
+| Networking | `#773adc` bg | `#5a2ca8` |
+| Security | `#ff8c00` bg | `#cc7000` |
+| AI/ML | `#50e6ff` bg | `#3cb5cc` |
+
+### Kubernetes Palette
+
+| Component | Background | Stroke |
+|-----------|------------|--------|
+| Pod | `#326ce5` bg | `#2756b8` |
+| Service | `#326ce5` bg | `#2756b8` |
+| Deployment | `#326ce5` bg | `#2756b8` |
+| ConfigMap/Secret | `#7f8c8d` bg | `#626d6e` |
+| Ingress | `#00d4aa` bg | `#00a888` |
+| Node | `#303030` bg | `#1a1a1a` |
+| Namespace | `#f0f0f0` bg | `#c0c0c0` (dashed) |
+
+### Diagram Type Suggestions
+
+| Diagram Type | Recommended Layout | Key Elements |
+|--------------|-------------------|--------------|
+| **Microservices** | Vertical flow | Services, databases, message queues, API gateway |
+| **Data Pipeline** | Horizontal flow | Sources, transformers, sinks, storage |
+| **Event-Driven** | Hub-and-spoke | Event bus center, producers/consumers around |
+| **Kubernetes** | Layered groups | Namespace boxes, pods inside deployments |
+| **CI/CD** | Horizontal flow | Source → Build → Test → Deploy → Monitor |
+| **Network** | Hierarchical | Internet → LB → VPC → Subnets → Instances |
+| **User Flow** | Swimlanes | User actions, system responses, external calls |
 
 ---
 
@@ -637,12 +844,102 @@ Architecture diagrams typically flow:
 - **Top-to-bottom**: Users → Frontend → Backend → Database
 - **Left-to-right**: Input → Processing → Output
 
-Grid positioning (recommended):
+#### Layout Pattern: Vertical Flow (Most Common)
+
+```
+Grid positioning:
 - Column width: 200-250px
 - Row height: 130-150px
 - Element width: 160-200px
 - Element height: 80-90px
 - Spacing: 40-50px between elements
+
+Row positions (y):
+  Row 0: 20   (title)
+  Row 1: 100  (users/entry points)
+  Row 2: 230  (frontend/gateway)
+  Row 3: 380  (orchestration/middleware)
+  Row 4: 530  (services)
+  Row 5: 680  (data layer)
+  Row 6: 830  (external services)
+
+Column positions (x):
+  Col 0: 100
+  Col 1: 300
+  Col 2: 500
+  Col 3: 700
+  Col 4: 900
+```
+
+#### Layout Pattern: Horizontal Flow (Pipelines)
+
+```
+For data pipelines, ETL, CI/CD flows:
+
+Stage positions (x):
+  Stage 0: 100  (input/source)
+  Stage 1: 350  (transform 1)
+  Stage 2: 600  (transform 2)
+  Stage 3: 850  (transform 3)
+  Stage 4: 1100 (output/sink)
+
+All stages at same y: 200 (or center of canvas)
+Arrows flow left-to-right using "right" → "left" connections
+```
+
+#### Layout Pattern: Hub-and-Spoke (Central Orchestrator)
+
+```
+For event-driven, message bus, or orchestrator architectures:
+
+Center hub: x=500, y=350
+Surrounding services in a circle:
+  Top:    x=500, y=150
+  Right:  x=750, y=350
+  Bottom: x=500, y=550
+  Left:   x=250, y=350
+
+For more services, use 8 positions (45° increments):
+  N:  (cx, cy - r)
+  NE: (cx + r*0.7, cy - r*0.7)
+  E:  (cx + r, cy)
+  SE: (cx + r*0.7, cy + r*0.7)
+  S:  (cx, cy + r)
+  SW: (cx - r*0.7, cy + r*0.7)
+  W:  (cx - r, cy)
+  NW: (cx - r*0.7, cy - r*0.7)
+
+Where cx=500, cy=350, r=200 (radius)
+```
+
+#### Universal Staggering Formula
+
+When N arrows leave from the same shape edge:
+
+```
+FUNCTION getStaggeredPositions(shape, edge, numArrows):
+  positions = []
+
+  FOR i FROM 0 TO numArrows-1:
+    // Spread evenly between 20% and 80% of edge length
+    percentage = 0.2 + (0.6 * i / (numArrows - 1))
+
+    IF edge == "bottom" OR edge == "top":
+      x = shape.x + shape.width * percentage
+      y = (edge == "bottom") ? shape.y + shape.height : shape.y
+    ELSE:  // left or right
+      x = (edge == "right") ? shape.x + shape.width : shape.x
+      y = shape.y + shape.height * percentage
+
+    positions.append({x, y})
+
+  RETURN positions
+
+// Examples:
+// 2 arrows: positions at 20%, 80%
+// 3 arrows: positions at 20%, 50%, 80%
+// 5 arrows: positions at 20%, 35%, 50%, 65%, 80%
+```
 
 ### Step 3: Generate Elements
 
@@ -1055,39 +1352,131 @@ Note: Group labels are standalone text elements (no containerId) positioned at t
 
 ---
 
+## Pre-Flight Validation Algorithm
+
+**Run this validation BEFORE writing the file:**
+
+```
+FUNCTION validateDiagram(elements):
+  errors = []
+
+  // 1. Validate shape-text bindings
+  FOR each shape IN elements WHERE shape.boundElements != null:
+    FOR each binding IN shape.boundElements:
+      textElement = findById(elements, binding.id)
+      IF textElement == null:
+        errors.append("Shape {shape.id} references missing text {binding.id}")
+      ELSE IF textElement.containerId != shape.id:
+        errors.append("Text {textElement.id} containerId doesn't match shape {shape.id}")
+
+  // 2. Validate arrow connections
+  FOR each arrow IN elements WHERE arrow.type == "arrow":
+    // Check arrow starts from valid edge position
+    sourceShape = findShapeNear(elements, arrow.x, arrow.y)
+    IF sourceShape == null:
+      errors.append("Arrow {arrow.id} doesn't start from any shape edge")
+
+    // Check arrow ends at valid position
+    finalPoint = arrow.points[arrow.points.length - 1]
+    endX = arrow.x + finalPoint[0]
+    endY = arrow.y + finalPoint[1]
+    targetShape = findShapeNear(elements, endX, endY)
+    IF targetShape == null:
+      errors.append("Arrow {arrow.id} doesn't end at any shape edge")
+
+    // Check elbow properties
+    IF arrow.points.length > 2:
+      IF arrow.elbowed != true:
+        errors.append("Arrow {arrow.id} has multiple points but missing elbowed:true")
+      IF arrow.roundness != null:
+        errors.append("Arrow {arrow.id} should have roundness:null for sharp corners")
+
+  // 3. Validate unique IDs
+  ids = [el.id for el in elements]
+  duplicates = findDuplicates(ids)
+  IF duplicates.length > 0:
+    errors.append("Duplicate IDs found: {duplicates}")
+
+  // 4. Validate bounding boxes
+  FOR each arrow IN elements WHERE arrow.type == "arrow":
+    maxX = max(abs(p[0]) for p in arrow.points)
+    maxY = max(abs(p[1]) for p in arrow.points)
+    IF arrow.width < maxX OR arrow.height < maxY:
+      errors.append("Arrow {arrow.id} bounding box too small for points")
+
+  RETURN errors
+
+FUNCTION findShapeNear(elements, x, y, tolerance=15):
+  FOR each shape IN elements WHERE shape.type IN ["rectangle", "ellipse"]:
+    edges = [
+      (shape.x + shape.width/2, shape.y),              // top
+      (shape.x + shape.width/2, shape.y + shape.height), // bottom
+      (shape.x, shape.y + shape.height/2),             // left
+      (shape.x + shape.width, shape.y + shape.height/2)  // right
+    ]
+    FOR each edge IN edges:
+      IF abs(edge.x - x) < tolerance AND abs(edge.y - y) < tolerance:
+        RETURN shape
+  RETURN null
+```
+
+---
+
+## Diagram Complexity Guidelines
+
+| Complexity | Max Elements | Max Arrows | Recommended Approach |
+|------------|-------------|------------|---------------------|
+| **Simple** | 5-10 shapes | 5-10 arrows | Single file, no groups |
+| **Medium** | 10-25 shapes | 15-30 arrows | Use grouping rectangles |
+| **Complex** | 25-50 shapes | 30-60 arrows | Split into multiple diagrams OR use layers |
+| **Very Complex** | 50+ shapes | 60+ arrows | Split into multiple focused diagrams |
+
+**When to split diagrams:**
+- More than 50 elements makes the diagram hard to read
+- Create separate diagrams for: high-level overview, detailed subsystems, data flows
+- Name them: `architecture-overview.excalidraw`, `architecture-data-layer.excalidraw`, etc.
+
+**When to use groups:**
+- 3+ related services that belong together (e.g., "AI Pipeline", "Data Layer")
+- Services in the same deployment unit (e.g., Kubernetes namespace)
+- Logical boundaries (e.g., "VPC", "Security Zone")
+
+---
+
 ## Checklist
 
-Before generating:
-- [ ] Identified all components/services
+### Before Generating
+- [ ] Identified all components/services from codebase analysis
 - [ ] Mapped all connections/data flows
-- [ ] Chose appropriate colors for component types
-- [ ] Planned grid layout with row/column positions
-- [ ] Created unique IDs for all elements
+- [ ] Chose appropriate layout pattern (vertical, horizontal, hub-and-spoke)
+- [ ] Selected color palette (default, AWS, Azure, K8s, or custom)
+- [ ] Planned grid positions using row/column system
+- [ ] Created unique ID naming scheme (e.g., `{type}-{name}`, `{service}-{component}`)
 
-During generation:
+### During Generation
 - [ ] Every shape with a label has BOTH shape element AND text element
 - [ ] Shape has `boundElements: [{ "type": "text", "id": "{shape-id}-text" }]`
 - [ ] Text has `containerId: "{shape-id}"`
-- [ ] All arrows use multi-point `points` arrays (no diagonal lines)
-- [ ] **All arrows have `"elbowed": true`, `"roundness": null`, `"roughness": 0`** for 90-degree corners
-- [ ] Arrows from same source use staggered start positions
+- [ ] All multi-point arrows have `"elbowed": true`, `"roundness": null`, `"roughness": 0`
+- [ ] Used Universal Arrow Routing Algorithm for all connections
+- [ ] Applied Universal Staggering Formula for multiple arrows from same source
+- [ ] No diamond shapes used (only rectangles and ellipses)
 
-**Arrow Connection Validation (CRITICAL):**
-- [ ] Arrow `x,y` position calculated from source shape's **edge** (not center)
-- [ ] For rectangles: used `(x + width/2, y + height)` for bottom edge, etc.
-- [ ] For diamonds: used vertex formulas `(x + width/2, y + height)` for bottom vertex, etc.
-- [ ] Final point in `points` array reaches target shape's edge
-- [ ] Arrow `width` and `height` = bounding box of path (absolute values of max x/y offsets)
-- [ ] Callback/return arrows use U-turn pattern with proper clearance
+### Arrow Validation (Apply for EVERY arrow)
+- [ ] Arrow `x,y` calculated using `getEdgePoint(sourceShape, edge)` formula
+- [ ] Final point offset calculated as `targetEdge - sourceEdge`
+- [ ] Arrow `width` = `max(abs(point[0]) for all points)`
+- [ ] Arrow `height` = `max(abs(point[1]) for all points)`
+- [ ] U-turn arrows have 40-60px clearance
 
-After generating:
+### After Generation (Run Pre-Flight Validation)
 - [ ] All `boundElements` IDs reference valid text elements
 - [ ] All `containerId` values reference valid shape elements
-- [ ] Labels are visible (test in Excalidraw!)
-- [ ] Arrows render with 90-degree corners (not curved)
-- [ ] **Arrows visually connect to shape edges** (not floating/disconnected)
-- [ ] No overlapping arrows
-- [ ] File is valid JSON
+- [ ] All arrows start within 15px of a shape edge
+- [ ] All arrows end within 15px of a shape edge
+- [ ] No duplicate IDs
+- [ ] Arrow bounding boxes match points array
+- [ ] File is valid JSON (parseable)
 
 ---
 
@@ -1100,7 +1489,7 @@ After generating:
 **Fix**: Use edge formulas:
 ```
 Rectangle bottom: arrow_x = shape.x + shape.width/2, arrow_y = shape.y + shape.height
-Diamond bottom:   arrow_x = shape.x + shape.width/2, arrow_y = shape.y + shape.height
+Ellipse bottom:   arrow_x = shape.x + shape.width/2, arrow_y = shape.y + shape.height
 ```
 
 ### Bug: Arrow endpoint doesn't reach target
