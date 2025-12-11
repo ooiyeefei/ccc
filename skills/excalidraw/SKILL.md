@@ -42,6 +42,31 @@ Use this skill when the user asks to:
 
 ## Critical Rules (Read First!)
 
+### Quick Reference: Arrow Edge Calculations
+
+**Before creating any arrow, calculate the edge points:**
+
+| Shape Type | Edge | Formula |
+|------------|------|---------|
+| Rectangle | Top | `(x + width/2, y)` |
+| Rectangle | Bottom | `(x + width/2, y + height)` |
+| Rectangle | Left | `(x, y + height/2)` |
+| Rectangle | Right | `(x + width, y + height/2)` |
+| Diamond | Top vertex | `(x + width/2, y)` |
+| Diamond | Bottom vertex | `(x + width/2, y + height)` |
+| Diamond | Left vertex | `(x, y + height/2)` |
+| Diamond | Right vertex | `(x + width, y + height/2)` |
+| Ellipse | Top | `(x + width/2, y)` |
+| Ellipse | Bottom | `(x + width/2, y + height)` |
+
+**Arrow creation steps:**
+1. Get source shape's edge point → this becomes arrow's `x, y`
+2. Get target shape's edge point
+3. Calculate relative offset: `target_edge - source_edge`
+4. Build `points` array with elbow routing to reach the offset
+
+---
+
 ### DO NOT use the `label` property!
 
 The `label` property shown in some Excalidraw documentation is for the **JavaScript API** (`convertToExcalidrawElements`), NOT for raw `.excalidraw` JSON files!
@@ -285,6 +310,140 @@ Always use pattern: `{shape-id}-text` for text element IDs.
 ### Why Elbow Arrows?
 
 Diagonal arrows create visual clutter when multiple arrows cross. Use orthogonal (elbow) routing for clean, professional diagrams.
+
+### Arrow Connection Points - MUST Calculate from Shape Edges
+
+**CRITICAL**: Arrows must start and end at shape **edges**, not centers. Floating/disconnected arrows are the #1 visual bug in generated diagrams.
+
+#### Shape Edge Calculation Formulas
+
+For any shape at position `(x, y)` with dimensions `(width, height)`:
+
+**Rectangle Edge Points:**
+```
+Top center:    (x + width/2, y)
+Bottom center: (x + width/2, y + height)
+Left center:   (x, y + height/2)
+Right center:  (x + width, y + height/2)
+```
+
+**Diamond Edge Points (vertices):**
+```
+Top vertex:    (x + width/2, y)
+Bottom vertex: (x + width/2, y + height)
+Left vertex:   (x, y + height/2)
+Right vertex:  (x + width, y + height/2)
+```
+
+**Ellipse Edge Points (approximate):**
+```
+Top:    (x + width/2, y)
+Bottom: (x + width/2, y + height)
+Left:   (x, y + height/2)
+Right:  (x + width, y + height/2)
+```
+
+#### Arrow Positioning Rules
+
+1. **Arrow `x,y` = source shape's edge point** (where arrow starts)
+2. **Final point in `points` array = offset to target shape's edge**
+3. **`width` and `height`** = bounding box of the arrow path (absolute values of max offsets)
+
+#### Worked Example: Rectangle to Rectangle (Vertical)
+
+```
+Source rectangle: x=500, y=200, width=180, height=90
+Target rectangle: x=500, y=400, width=180, height=90
+Connection: Bottom of source → Top of target
+
+Step 1: Calculate source bottom edge
+  source_bottom = (500 + 180/2, 200 + 90) = (590, 290)
+
+Step 2: Calculate target top edge
+  target_top = (500 + 180/2, 400) = (590, 400)
+
+Step 3: Calculate arrow
+  Arrow x = 590 (source edge x)
+  Arrow y = 290 (source edge y)
+  Distance to target = 400 - 290 = 110
+  Points = [[0, 0], [0, 110]]
+```
+
+#### Worked Example: Diamond to Rectangle (Fan-out)
+
+```
+Diamond (orchestrator): x=570, y=400, width=140, height=80
+Target rectangle: x=120, y=550, width=160, height=80
+Connection: Bottom of diamond → Top of rectangle
+
+Step 1: Calculate diamond bottom vertex
+  diamond_bottom = (570 + 140/2, 400 + 80) = (640, 480)
+
+Step 2: Calculate target top center
+  target_top = (120 + 160/2, 550) = (200, 550)
+
+Step 3: Calculate elbow arrow path
+  Arrow x = 640, y = 480
+  Horizontal offset to target x = 200 - 640 = -440
+  Vertical offset to target y = 550 - 480 = 70
+
+  For L-shape (down then left, or left then down):
+  Points = [[0, 0], [-440, 0], [-440, 70]]  // Left first, then down
+  OR
+  Points = [[0, 0], [0, 70], [-440, 70]]    // Down first, then left
+```
+
+#### Worked Example: Callback/Return Arrow (U-turn)
+
+```
+Source shape: x=570, y=400, width=140, height=80 (diamond)
+Target shape: x=550, y=270, width=180, height=90 (rectangle above)
+Connection: Right of diamond → Right of rectangle (callback loop)
+
+Step 1: Calculate diamond right vertex
+  diamond_right = (570 + 140, 400 + 80/2) = (710, 440)
+
+Step 2: Calculate rectangle right edge
+  rect_right = (550 + 180, 270 + 90/2) = (730, 315)
+
+Step 3: Calculate U-turn path
+  Arrow x = 710, y = 440
+  Need to go: right (to clear shapes), up, then left to target
+
+  Points = [[0, 0], [50, 0], [50, -125], [20, -125]]
+  // Right 50px, up 125px, left 30px to reach target
+```
+
+#### Multiple Arrows from Same Source - Staggering
+
+When multiple arrows leave from the same shape edge, **stagger the start points** to prevent overlap:
+
+```
+Diamond at x=570, y=400, width=140, height=80
+Bottom vertex = (640, 480)
+
+Arrow 1 (leftmost target):  x=635, y=480  // Slightly left of center
+Arrow 2 (left target):      x=638, y=480
+Arrow 3 (center target):    x=640, y=480  // True center
+Arrow 4 (right target):     x=642, y=480
+Arrow 5 (rightmost target): x=645, y=480  // Slightly right of center
+```
+
+This creates a visual "fan" effect from the source shape.
+
+#### Arrow Width/Height Calculation
+
+The `width` and `height` properties of an arrow element represent the **bounding box** of the arrow path:
+
+```
+For points = [[0, 0], [-440, 0], [-440, 70]]:
+  width = abs(-440) = 440
+  height = abs(70) = 70
+
+For points = [[0, 0], [50, 0], [50, -125], [20, -125]]:
+  width = max(abs(50), abs(20)) = 50
+  height = abs(-125) = 125
+```
 
 ### Arrow Points Array
 
@@ -911,12 +1070,73 @@ During generation:
 - [ ] Text has `containerId: "{shape-id}"`
 - [ ] All arrows use multi-point `points` arrays (no diagonal lines)
 - [ ] **All arrows have `"elbowed": true`, `"roundness": null`, `"roughness": 0`** for 90-degree corners
-- [ ] Arrows from same source use staggered Y positions
+- [ ] Arrows from same source use staggered start positions
+
+**Arrow Connection Validation (CRITICAL):**
+- [ ] Arrow `x,y` position calculated from source shape's **edge** (not center)
+- [ ] For rectangles: used `(x + width/2, y + height)` for bottom edge, etc.
+- [ ] For diamonds: used vertex formulas `(x + width/2, y + height)` for bottom vertex, etc.
+- [ ] Final point in `points` array reaches target shape's edge
+- [ ] Arrow `width` and `height` = bounding box of path (absolute values of max x/y offsets)
+- [ ] Callback/return arrows use U-turn pattern with proper clearance
 
 After generating:
 - [ ] All `boundElements` IDs reference valid text elements
 - [ ] All `containerId` values reference valid shape elements
 - [ ] Labels are visible (test in Excalidraw!)
 - [ ] Arrows render with 90-degree corners (not curved)
+- [ ] **Arrows visually connect to shape edges** (not floating/disconnected)
 - [ ] No overlapping arrows
 - [ ] File is valid JSON
+
+---
+
+## Common Arrow Bugs and Fixes
+
+### Bug: Arrow appears disconnected/floating
+
+**Cause**: Arrow `x,y` not calculated from shape edge.
+
+**Fix**: Use edge formulas:
+```
+Rectangle bottom: arrow_x = shape.x + shape.width/2, arrow_y = shape.y + shape.height
+Diamond bottom:   arrow_x = shape.x + shape.width/2, arrow_y = shape.y + shape.height
+```
+
+### Bug: Arrow endpoint doesn't reach target
+
+**Cause**: Final point offset calculated incorrectly.
+
+**Fix**: Calculate target edge, then compute relative offset:
+```
+target_edge = (target.x + target.width/2, target.y)  // top of target
+offset_x = target_edge.x - arrow.x
+offset_y = target_edge.y - arrow.y
+Final point = [offset_x, offset_y] or intermediate elbow points leading there
+```
+
+### Bug: Multiple arrows from same source overlap
+
+**Cause**: All arrows start from identical `x,y` position.
+
+**Fix**: Stagger start positions along the edge:
+```
+For 5 arrows from bottom edge, spread across width:
+  arrow1.x = shape.x + shape.width * 0.2
+  arrow2.x = shape.x + shape.width * 0.35
+  arrow3.x = shape.x + shape.width * 0.5  // center
+  arrow4.x = shape.x + shape.width * 0.65
+  arrow5.x = shape.x + shape.width * 0.8
+```
+
+### Bug: Callback arrow doesn't loop back correctly
+
+**Cause**: U-turn path doesn't have enough clearance or wrong direction.
+
+**Fix**: Use 4-point path with clearance:
+```
+// From right edge going back to shape above
+Points = [[0, 0], [clearance, 0], [clearance, -vertical_dist], [final_x_offset, -vertical_dist]]
+
+// clearance = 40-60px typically (enough to visually clear the shapes)
+```
