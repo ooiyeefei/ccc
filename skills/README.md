@@ -7,6 +7,7 @@ Skills are markdown files that teach Claude Code how to perform specific tasks.
 | Skill | Description |
 |-------|-------------|
 | [excalidraw](./excalidraw/SKILL.md) | Generate architecture diagrams as .excalidraw files from codebase analysis |
+| [streak](./streak/SKILL.md) | Universal challenge tracker with flexible cadence, intelligent insights, and cross-challenge learning detection |
 
 ## Installation
 

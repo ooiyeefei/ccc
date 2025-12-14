@@ -20,7 +20,8 @@
       "source": "./",
       "strict": false,
       "skills": [
-        "./skills/excalidraw"
+        "./skills/excalidraw",
+        "./skills/streak"
       ]
     }
   ]
