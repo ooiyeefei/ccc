@@ -2,6 +2,8 @@
 
 Track any personal challenge with flexible cadence, intelligent insights, and cross-challenge learning detection.
 
+**Works for any challenge type:** Learning, Building, Fitness, Creative, Habit, or Custom.
+
 ## Installation
 
 ```bash
@@ -40,105 +42,160 @@ Track any personal challenge with flexible cadence, intelligent insights, and cr
 
 ## Challenge Types
 
-### Built-in Types
-- **Learning** - Master a skill, complete a course, read books
-- **Building** - Ship projects, code daily, create products
-- **Habit** - Form routines, track consistency, build discipline
-- **Creative** - Art, writing, music, content creation
-- **Custom** - Define your own structure and questions
+| Type | Best For | Example |
+|------|----------|---------|
+| **Learning** | Courses, skills, books | "Learn Rust", "Read 12 Books" |
+| **Building** | Projects, shipping, coding | "30 Days of AI/ML", "Ship Daily" |
+| **Fitness** | Workouts, health goals | "Morning Workout", "Run 5K" |
+| **Creative** | Art, writing, music | "Daily Sketching", "Write 500 Words" |
+| **Habit** | Routines, consistency | "Morning Meditation", "No Sugar" |
+| **Custom** | Anything else | Define your own structure |
+
+## Features
+
+### Universal Files, Type-Adaptive Content
+
+Each challenge gets these files, with content tailored to your challenge type:
+
+| File | Purpose |
+|------|---------|
+| `challenge-config.md` | Metadata, goal, progress tracking |
+| `challenge-log.md` | Progress log with summary table |
+| `today.md` | Today's session context (energy, focus, constraints) |
+| `backlog.md` | Ideas and things to try |
+| `preferences.md` | Your setup - **pre-filled based on type!** |
+| `context.md` | Linked resources, tools, people |
+| `insights.md` | Auto-generated insights |
+| `sessions/` | Folder for detailed session notes |
+
+### Type-Adaptive Preferences
+
+When you create a challenge, `/streak new` asks type-specific questions and pre-fills your `preferences.md`:
+
+**Learning:** Topics, resources, learning style
+**Building:** Stack, tools, deployment targets
+**Fitness:** Equipment, workout types, location
+**Creative:** Medium, style, sharing platform
+**Habit:** Trigger, duration, rewards
 
 ### Flexible Cadence
+
 Set your check-in frequency per challenge:
 - Daily
 - Every 2-3 days
 - Weekly
 - Custom interval
 
-## Features
-
 ### Auto-Insights
-At each check-in, Streak analyzes your progress and generates insights:
-- Pattern detection (best days, common themes)
-- Streak analysis (current vs longest)
+
+At each check-in, Streak analyzes your progress:
+- Pattern detection (best days, themes)
+- Streak analysis
+- Cross-challenge connections
 - Personalized suggestions
 
 ### Cross-Challenge Connections
+
 Streak detects when skills from one challenge help another:
 ```
-Your "Learn Rust" challenge (Day 12) directly enabled
-your "Build CLI Tools" challenge (Day 3) where you
+Your "Learn Rust" challenge (Session 12) directly enabled
+your "Build CLI Tools" challenge (Session 3) where you
 shipped a concurrent file processor.
 ```
 
 ### Achievements
+
 Earn badges as you progress:
-- 🔥 **First Flame** - 3-day streak
-- 🔥🔥 **On Fire** - 7-day streak
-- 🔥🔥🔥 **Unstoppable** - 30-day streak
-- 💎 **Diamond Streak** - 100-day streak
-- 🎯 **First Step** - First check-in
-- 📚 **Dedicated** - 10 check-ins
-- 🔗 **Connected** - First cross-challenge insight
+- :fire: **First Flame** - 3-day streak
+- :fire::fire: **On Fire** - 7-day streak
+- :fire::fire::fire: **Unstoppable** - 30-day streak
+- :gem: **Diamond Streak** - 100-day streak
+- :footprints: **First Step** - First check-in
+- :star: **Dedicated** - 10 sessions
+- :link: **Connected** - First cross-challenge insight
+- :muscle: **Comeback** - Resume after 7+ days
 
 ### Calendar Export (Optional)
-Generate .ics files to import into any calendar:
+
+Generate .ics files for calendar reminders:
 ```bash
 /streak export-calendar
 ```
-Works with Google Calendar, Apple Calendar, Outlook, etc.
+Works with Google Calendar, Apple Calendar, Outlook.
 
 ## Data Storage
 
-All data is stored locally in `.streak/` folder:
+All data stored locally in `.streak/` folder:
 ```
 .streak/
-├── config.json           # Global settings
-├── active.json           # Current challenge pointer
+├── config.md                     # Global settings
+├── active.md                     # Current challenge pointer
 └── challenges/
     └── [challenge-id]/
-        ├── challenge.json  # Metadata
-        ├── log.md          # Human-readable log
-        └── entries/        # Check-in data
+        ├── challenge-config.md   # Metadata
+        ├── challenge-log.md      # Progress log
+        ├── today.md              # Session context
+        ├── backlog.md            # Ideas to try
+        ├── preferences.md        # Your setup
+        ├── context.md            # Linked resources
+        ├── insights.md           # Auto-generated
+        └── sessions/
+            └── session-XXX/
+                └── notes.md      # Session notes
 ```
 
 No external dependencies. No cloud sync required.
 
 ## Example Challenges
 
-### 30 Days of Coding
+### 30 Days of AI/ML (Building)
 ```
 Type: Building
-Goal: Ship one micro-app per day
+Goal: Ship one AI-powered micro-app per day
 Cadence: Daily
+Stack: Python, TypeScript, Claude Code
 ```
 
-### Read 12 Books This Year
+### Learn Rust (Learning)
 ```
 Type: Learning
-Goal: Finish 12 books this year
-Cadence: Weekly
+Goal: Complete Rustlings and build a CLI tool
+Cadence: Every 2 days
+Resources: Rustlings, The Rust Book
 ```
 
-### Morning Meditation
+### Morning Workout (Fitness)
 ```
-Type: Habit
-Goal: Meditate 10 minutes every morning
-Cadence: Daily
+Type: Fitness
+Goal: Build consistent strength training habit
+Cadence: Daily (with rest days)
+Equipment: Home gym - dumbbells, pull-up bar
 ```
 
-### Daily Sketching
+### Daily Sketching (Creative)
 ```
 Type: Creative
 Goal: Draw one sketch per day for 100 days
 Cadence: Daily
+Medium: Digital art (Procreate)
+```
+
+### Morning Meditation (Habit)
+```
+Type: Habit
+Goal: Meditate 10 minutes every morning
+Cadence: Daily
+Trigger: After coffee, before email
 ```
 
 ## Tips
 
-1. **Start small** - Every 2-3 days is more sustainable than daily
-2. **Be specific** - "Learn Rust basics" > "Learn programming"
-3. **Check insights** - Review weekly to see patterns
-4. **Don't break streaks** - But if you do, reset guilt-free
+1. **Start sustainable** - Every 2-3 days is more realistic than daily
+2. **Be specific** - "Complete Rustlings" > "Learn Rust"
+3. **Use today.md** - Set context before sessions
+4. **Keep backlog fresh** - Ideas for low-energy days
+5. **Check insights weekly** - See your patterns
+6. **Reset guilt-free** - Archiving is progress
 
 ## License
 
