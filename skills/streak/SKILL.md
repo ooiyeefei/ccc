@@ -619,6 +619,14 @@ Ready for your first check-in? (yes/no)
 
 ### Flow 2: `/streak` - Regular Check-in
 
+The check-in flow has two modes:
+- **Pre-session mode**: Planning what to do (ideation, suggestions)
+- **Post-session mode**: Logging what was done (wrap-up)
+
+Detect mode by asking or by user saying "done", "finished", "back", "completed".
+
+---
+
 **Step 1: Load active challenge**
 
 ```
@@ -626,8 +634,9 @@ Ready for your first check-in? (yes/no)
 2. Read challenge-config.md for metadata
 3. Read today.md for session context (if filled)
 4. Read preferences.md for context
-5. Calculate days since last check-in
-6. Determine if on track, due, or overdue
+5. Read backlog.md for pending ideas
+6. Calculate days since last check-in
+7. Determine if on track, due, or overdue
 ```
 
 **Step 2: Display status greeting**
@@ -637,7 +646,7 @@ Hey! Time for your "[Challenge Name]" check-in.
 
 Session [X] | Streak: [Y] days | Last: [Z] days ago | [Status]
 
-[If today.md has content: "I see you set today's context - [summary]"]
+Yesterday/Last session: [Brief summary from last entry, or "Fresh start!" if Session 1]
 ```
 
 Status indicators:
@@ -651,15 +660,202 @@ Status indicators:
 Quick check before we start:
 
 1. **Energy/time today?** (low ~30min / normal ~1hr / high 2hr+)
-2. **Any constraints?** (limitations, mood, equipment - or "none")
+2. **Anything specific in mind?** (idea, topic, or "surprise me" / "feeling lucky")
+3. **Any constraints?** (limitations, mood, equipment - or "none")
 ```
 
 Update `today.md` with answers.
 
-**Step 4: Ask check-in questions**
+**If user says "surprise me" or "feeling lucky"** → Go to Step 4 (Ideation)
+**If user has specific idea** → Go to Step 5 (Prepare Session)
+**If user says "done", "finished", "back"** → Go to Step 7 (Post-Session Wrap-up)
+
+---
+
+**Step 3.5: Research (Optional - Building/Learning types)**
+
+For BUILDING and LEARNING challenges, offer optional research:
+
+```
+Want me to scan for relevant news/updates, or skip to suggestions?
+```
+
+**If yes (Building type):**
+- Search for recent updates in the tech stack mentioned in preferences
+- Look for new tools, libraries, or patterns relevant to backlog items
+- Summarize 2-3 interesting findings
+
+**If yes (Learning type):**
+- Check for new resources on the topic
+- Find recent articles, tutorials, or discussions
+- Summarize relevant updates
+
+**If skip:** Move directly to Step 4 (Ideation)
+
+---
+
+**Step 4: Ideation (Type-Adaptive Suggestions)**
+
+Based on user's energy level, backlog, and challenge type, suggest 2-3 options.
+
+**For BUILDING type:**
+```
+Based on your energy ([level]) and backlog, here are some options:
+
+**Option 1: [Name]** 🟢 [matches energy]
+- What: [Description from backlog or generated]
+- Why today: [Alignment with energy/constraints]
+
+**Option 2: [Name]** 🟡 [stretch goal]
+- What: [Description]
+- Why today: [Quick win or exploration]
+
+**From your backlog:** [Relevant pending item]
+
+Which one resonates? Or describe something else.
+```
+
+**For LEARNING type:**
+```
+Based on your energy and progress, here's what I suggest:
+
+**Option 1: Continue [current topic]** 🟢
+- Pick up from: [last session summary]
+- Estimated time: [matches energy]
+
+**Option 2: Try something new** 🟡
+- From backlog: [pending topic/resource]
+- Why: [variety or prerequisite complete]
+
+**Option 3: Review & consolidate** 🔵
+- Revisit: [recent learnings]
+- Good for: low energy days
+
+What sounds good?
+```
+
+**For FITNESS type:**
+```
+Based on your energy ([level]) and body state:
+
+**Option 1: [Workout type]** 🟢 [matches energy]
+- Focus: [muscle group or cardio type]
+- Duration: ~[time]
+- Equipment: [what's needed]
+
+**Option 2: [Alternative]** 🟡
+- Focus: [different approach]
+- Good for: [reason - recovery, variety, etc.]
+
+**Rest day option:** If your body needs it, rest is progress too.
+
+[If constraints mentioned: "Noted: [constraint] - suggestions adjusted accordingly"]
+
+Which workout today?
+```
+
+**For CREATIVE type:**
+```
+Here's some inspiration for today:
+
+**Prompt 1:** [Creative prompt based on backlog/themes]
+**Prompt 2:** [Different angle or technique to try]
+**Continue:** [Pick up from last session's work]
+
+Or tell me a theme/mood and I'll suggest something specific.
+```
+
+**For HABIT type:**
+```
+Ready for your [habit name]?
+
+**Standard:** Do it as planned ([trigger] → [habit] → [reward])
+**Variation:** Try [slight modification from backlog]
+**Stack it:** Combine with [another habit or activity]
+
+Or if today's different, tell me what's up.
+```
+
+**For CUSTOM type:**
+Use user-defined ideation questions from challenge setup.
+
+---
+
+**Step 5: Prepare Session**
+
+Once user picks an idea or states their focus:
+
+1. **Auto-create session folder:**
+   ```
+   mkdir -p sessions/session-XXX
+   ```
+
+2. **Update `today.md`** with selected focus:
+   ```markdown
+   ## Today's Focus
+   [Selected idea/topic]
+
+   ## Plan
+   [Brief plan from ideation]
+   ```
+
+3. **Create `sessions/session-XXX/notes.md`** with starter template:
+   ```markdown
+   # Session [X] Notes
+
+   **Date:** [YYYY-MM-DD]
+   **Challenge:** [Challenge Name]
+   **Focus:** [Selected idea]
+
+   ---
+
+   ## Plan
+   [From ideation]
+
+   ## Progress
+   <!-- Update as you work -->
+
+   ## Decisions Made
+   <!-- Key decisions during this session -->
+
+   ## Issues & Blockers
+   <!-- Any problems encountered -->
+   ```
+
+4. **Announce:**
+   ```
+   Session [X] folder created. Go [build/learn/workout/create]!
+
+   When you're done, come back and say "done" or run `/streak` again.
+   ```
+
+---
+
+**Step 6: Flexible Commands (During Flow)**
+
+User can shortcut at any point:
+
+| Say This | What Happens |
+|----------|--------------|
+| "Just research" | Only research step, save findings to notes |
+| "Skip to suggestions" | Skip research, go to Ideation |
+| "I know what I'm doing: [idea]" | Skip ideation, go to Prepare Session |
+| "Done" / "Finished" / "Back" | Jump to Post-Session Wrap-up |
+| "Continue from last session" | Load previous session context, continue |
+| "Quick check-in" | Minimal logging, skip ideation |
+
+---
+
+**Step 7: Post-Session Wrap-up**
+
+Triggered when user says "done", "finished", "back", "completed", or explicitly asks for wrap-up.
+
+**Ask wrap-up questions:**
 
 Base questions (all types):
 ```
+Welcome back! Let's log Session [X].
+
 1. **What did you work on?** (brief summary)
 2. **How did it go?** (wins, struggles, observations)
 3. **What's next?** (for next session)
@@ -702,9 +898,11 @@ Type-specific additions:
 - **Trigger work well?** (optional)
 ```
 
-**Step 5: Save session**
+---
 
-1. Create `sessions/session-XXX/notes.md` with all answers
+**Step 8: Save session**
+
+1. Update `sessions/session-XXX/notes.md` with wrap-up answers
 2. Update `challenge-config.md`:
    - Increment check-in count
    - Update last check-in date
@@ -715,7 +913,7 @@ Type-specific additions:
 4. Check for backlog items to mark complete
 5. Update `backlog.md` if items mentioned as done
 
-**Step 6: Generate insights**
+**Step 9: Generate insights**
 
 After every check-in, analyze:
 
@@ -742,7 +940,7 @@ After every check-in, analyze:
 
 Update `insights.md` with findings.
 
-**Step 7: Display completion message**
+**Step 10: Display completion message**
 
 ```
 Session [X] logged!
