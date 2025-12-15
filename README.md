@@ -21,7 +21,7 @@ Custom plugins and skills for [Claude Code](https://github.com/anthropics/claude
 # Install the deckling plugin (has /deckling command)
 /plugin install deckling@ccc
 
-# Install the skills collection (includes excalidraw)
+# Install the skills collection (includes excalidraw and streak)
 /plugin install ccc-skills@ccc
 ```
 
