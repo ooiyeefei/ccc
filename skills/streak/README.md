@@ -16,29 +16,31 @@ Track any personal challenge with flexible cadence, intelligent insights, and cr
 
 ## Quick Start
 
-```bash
-# Create your first challenge
-/streak new
+After installing, just ask Claude Code naturally:
 
-# Check in to your active challenge
-/streak
-
-# View all your challenges
-/streak list
+```
+"Start a new streak challenge"
+"Check in to my challenge"
+"Show my challenges"
+"Show my streak stats"
 ```
 
-## Commands
+Claude will automatically invoke the `ccc-skills:streak` skill when it detects you want to track challenges.
 
-| Command | Description |
-|---------|-------------|
-| `/streak` | Check-in to active challenge |
-| `/streak new` | Create a new challenge (guided) |
-| `/streak list` | List all challenges |
-| `/streak switch [name]` | Switch active challenge |
-| `/streak stats` | View progress and achievements |
-| `/streak insights` | Cross-challenge insights |
-| `/streak export-calendar` | Export .ics reminders (optional) |
-| `/streak reset` | Archive and restart challenge |
+## Available Flows
+
+The skill supports these flows (trigger with natural language):
+
+| Flow | Example Phrases |
+|------|-----------------|
+| **Create challenge** | "new challenge", "start a streak", "track a new goal" |
+| **Check-in** | "check in", "log progress", "update my streak" |
+| **List challenges** | "list challenges", "show all my challenges" |
+| **Switch challenge** | "switch to [name]", "change active challenge" |
+| **View stats** | "show stats", "my progress", "streak statistics" |
+| **Get insights** | "show insights", "cross-challenge connections" |
+| **Export calendar** | "export calendar", "create .ics reminders" |
+| **Reset challenge** | "reset challenge", "start fresh", "archive and restart" |
 
 ## Challenge Types
 
@@ -70,7 +72,7 @@ Each challenge gets these files, with content tailored to your challenge type:
 
 ### Type-Adaptive Preferences
 
-When you create a challenge, `/streak new` asks type-specific questions and pre-fills your `preferences.md`:
+When you create a challenge, the skill asks type-specific questions and pre-fills your `preferences.md`:
 
 **Learning:** Topics, resources, learning style
 **Building:** Stack, tools, deployment targets
@@ -117,9 +119,10 @@ Earn badges as you progress:
 
 ### Calendar Export (Optional)
 
-Generate .ics files for calendar reminders:
-```bash
-/streak export-calendar
+Generate .ics files for calendar reminders by asking:
+```
+"Export calendar reminders for my challenge"
+"Create an .ics file for my streak"
 ```
 Works with Google Calendar, Apple Calendar, Outlook.
 

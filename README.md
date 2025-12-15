@@ -66,19 +66,33 @@ See [skills/excalidraw/SKILL.md](./skills/excalidraw/SKILL.md) for full document
 
 Universal challenge tracker with flexible cadence, intelligent insights, and cross-challenge learning detection.
 
-**After installing ccc-skills, use these commands:**
-```
-/streak new              # Create a new challenge
-/streak                  # Check-in to active challenge
-/streak list             # List all challenges
-/streak switch [name]    # Switch active challenge
-/streak stats            # View progress and achievements
-/streak insights         # Cross-challenge insights
-/streak export-calendar  # Export .ics reminders (optional)
-```
+**After installing ccc-skills, trigger the skill by:**
+
+1. **Natural language** - Just ask Claude Code:
+   ```
+   "Start a new streak challenge"
+   "Check in to my challenge"
+   "Show my streak stats"
+   "List my challenges"
+   ```
+
+2. **Skill invocation** - Claude will automatically use `ccc-skills:streak` when relevant
+
+**Within the skill, these flows are available:**
+
+| Flow | Trigger Phrase |
+|------|----------------|
+| Create challenge | "new challenge", "start tracking" |
+| Check-in | "check in", "log progress" |
+| List challenges | "list challenges", "show all" |
+| Switch challenge | "switch to [name]" |
+| View stats | "show stats", "my progress" |
+| Get insights | "show insights", "cross-challenge" |
+| Export calendar | "export calendar", "create reminders" |
+| Reset challenge | "reset", "start fresh" |
 
 **Features:**
-- **Universal**: Works for any challenge type (learning, habits, building, creative, custom)
+- **Universal**: Works for any challenge type (learning, habits, building, fitness, creative, custom)
 - **Flexible Cadence**: Daily, weekly, or custom N-day intervals per challenge
 - **AI-Powered Insights**: Auto-detects compound learning and semantic connections
 - **Achievements**: Streak badges and milestone rewards

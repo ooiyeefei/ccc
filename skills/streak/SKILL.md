@@ -13,17 +13,22 @@ A universal, flexible challenge tracking system for Claude Code. Track any perso
 
 ## Quick Start
 
-**Commands:**
-| Command | Description |
-|---------|-------------|
-| `/streak` | Check-in to active challenge |
-| `/streak new` | Create a new challenge (guided) |
-| `/streak list` | List all challenges |
-| `/streak switch [name]` | Switch active challenge |
-| `/streak stats` | View progress and achievements |
-| `/streak insights` | Cross-challenge insights |
-| `/streak export-calendar` | Export .ics reminders (optional) |
-| `/streak reset` | Archive and restart challenge |
+**How to use this skill:**
+
+Users trigger this skill through natural language. Claude will invoke `ccc-skills:streak` when it detects challenge tracking intent.
+
+**Trigger phrases → Flows:**
+
+| User Says | Flow to Execute |
+|-----------|-----------------|
+| "new challenge", "start a streak", "track a goal" | Flow 1: New Challenge Creation |
+| "check in", "log progress", "update my streak" | Flow 2: Regular Check-in |
+| "list challenges", "show all challenges" | Flow 3: List Challenges |
+| "switch to [name]", "change challenge" | Flow 4: Switch Challenge |
+| "show stats", "my progress" | Flow 5: Progress Statistics |
+| "show insights", "cross-challenge" | Flow 6: Cross-Challenge Insights |
+| "export calendar", "create reminders" | Flow 7: Calendar Export |
+| "reset challenge", "start fresh" | Flow 8: Reset Challenge |
 
 ---
 
@@ -54,7 +59,7 @@ All data stored in `.streak/` folder in user's current working directory.
 
 ## File Definitions
 
-Each file has a specific purpose. Claude generates these based on challenge type during `/streak new`.
+Each file has a specific purpose. Claude generates these based on challenge type during the "New Challenge Creation" flow.
 
 ### config.md (Global)
 
@@ -95,10 +100,10 @@ Points to the currently active challenge.
 
 ---
 
-## Quick Commands
-- `/streak` - Check in now
-- `/streak switch [name]` - Switch challenge
-- `/streak list` - See all challenges
+## Quick Actions
+- "Check in" - Log progress now
+- "Switch to [name]" - Change active challenge
+- "List challenges" - See all challenges
 ```
 
 ---
@@ -487,7 +492,7 @@ _Personalized suggestions based on your progress._
 
 ## Command Flows
 
-### Flow 1: `/streak new` - Create New Challenge
+### Flow 1: Create New Challenge
 
 **Step 1: Initialize .streak folder if needed**
 
@@ -617,7 +622,7 @@ Ready for your first check-in? (yes/no)
 
 ---
 
-### Flow 2: `/streak` - Regular Check-in
+### Flow 2: Regular Check-in
 
 The check-in flow has two modes:
 - **Pre-session mode**: Planning what to do (ideation, suggestions)
@@ -826,7 +831,7 @@ Once user picks an idea or states their focus:
    ```
    Session [X] folder created. Go [build/learn/workout/create]!
 
-   When you're done, come back and say "done" or run `/streak` again.
+   When you're done, come back and say "done" or "check in" again.
    ```
 
 ---
@@ -955,7 +960,7 @@ See you [in X days / tomorrow]!
 
 ---
 
-### Flow 3: `/streak list` - List Challenges
+### Flow 3: List Challenges
 
 ```
 Your Challenges:
@@ -969,14 +974,14 @@ Your Challenges:
 * = Active challenge
 
 Commands:
-- /streak switch [name] - Switch active challenge
-- /streak - Check in to active challenge
-- /streak new - Create new challenge
+- "Switch to [name]" - Switch active challenge
+- "Check in" - Check in to active challenge
+- "New challenge" - Create new challenge
 ```
 
 ---
 
-### Flow 4: `/streak switch [name]` - Switch Challenge
+### Flow 4: Switch Challenge
 
 ```
 1. Validate challenge exists in .streak/challenges/
@@ -989,7 +994,7 @@ Commands:
 
 ---
 
-### Flow 5: `/streak stats` - Progress Statistics
+### Flow 5: Progress Statistics
 
 ```
 [Challenge Name] Statistics
@@ -1025,7 +1030,7 @@ Backlog Status
 
 ---
 
-### Flow 6: `/streak insights` - Cross-Challenge Insights
+### Flow 6: Cross-Challenge Insights
 
 Analyze ALL challenges and entries to find:
 
@@ -1084,7 +1089,7 @@ Based on your progress:
 
 ---
 
-### Flow 7: `/streak export-calendar` - Calendar Export (Optional)
+### Flow 7: Calendar Export (Optional)
 
 ```
 Calendar Export
@@ -1111,7 +1116,7 @@ UID:[generated-uuid]
 DTSTART:[next-due-date]T090000
 DTEND:[next-due-date]T093000
 SUMMARY:Streak: [Challenge Name]
-DESCRIPTION:Time for your [type] challenge check-in!\n\nGoal: [goal]\nCurrent streak: [X] days\n\nRun: /streak
+DESCRIPTION:Time for your [type] challenge check-in!\n\nGoal: [goal]\nCurrent streak: [X] days\n\nSay: "Check in to my streak"
 RRULE:FREQ=DAILY;INTERVAL=[cadence];COUNT=[30/cadence]
 BEGIN:VALARM
 ACTION:DISPLAY
@@ -1135,7 +1140,7 @@ Reminders set for next 30 days.
 
 ---
 
-### Flow 8: `/streak reset` - Reset Challenge
+### Flow 8: Reset Challenge
 
 ```
 You're about to reset "[Challenge Name]".
@@ -1222,7 +1227,7 @@ At each check-in, after saving:
 
 ## Overdue Detection
 
-Calculate at each `/streak` command:
+Calculate at each check-in:
 
 ```
 daysSinceLast = today - lastCheckIn
@@ -1242,7 +1247,7 @@ if overdueBy > 0:
 ```
 No challenges found. Let's create your first one!
 
-Run: /streak new
+Say: "Start a new challenge"
 ```
 
 ### No active challenge
@@ -1252,8 +1257,8 @@ No active challenge set.
 Your challenges:
 [list challenges if any exist]
 
-Switch with: /streak switch [name]
-Or create new: /streak new
+Say: "Switch to [name]"
+Or: "Start a new challenge"
 ```
 
 ### Challenge not found
