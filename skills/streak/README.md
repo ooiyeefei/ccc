@@ -16,7 +16,22 @@ Track any personal challenge with flexible cadence, intelligent insights, and cr
 
 ## Quick Start
 
-After installing, just ask Claude Code naturally:
+### Option 1: Slash Commands (Recommended)
+
+Use slash commands for **reliable, deterministic** triggering:
+
+```bash
+/streak              # Check in to active challenge
+/streak-new          # Create a new challenge (guided)
+/streak-list         # List all challenges
+/streak-switch NAME  # Switch active challenge
+/streak-stats        # View progress and achievements
+/streak-insights     # Cross-challenge insights
+```
+
+### Option 2: Natural Language (Alternative)
+
+You can also ask Claude Code naturally - it will invoke the skill when relevant:
 
 ```
 "Start a new streak challenge"
@@ -25,22 +40,16 @@ After installing, just ask Claude Code naturally:
 "Show my streak stats"
 ```
 
-Claude will automatically invoke the `ccc-skills:streak` skill when it detects you want to track challenges.
+## Commands Reference
 
-## Available Flows
-
-The skill supports these flows (trigger with natural language):
-
-| Flow | Example Phrases |
-|------|-----------------|
-| **Create challenge** | "new challenge", "start a streak", "track a new goal" |
-| **Check-in** | "check in", "log progress", "update my streak" |
-| **List challenges** | "list challenges", "show all my challenges" |
-| **Switch challenge** | "switch to [name]", "change active challenge" |
-| **View stats** | "show stats", "my progress", "streak statistics" |
-| **Get insights** | "show insights", "cross-challenge connections" |
-| **Export calendar** | "export calendar", "create .ics reminders" |
-| **Reset challenge** | "reset challenge", "start fresh", "archive and restart" |
+| Command | What It Does |
+|---------|--------------|
+| `/streak` | Check in to active challenge - log progress, get insights |
+| `/streak-new` | Create a new challenge with guided setup |
+| `/streak-list` | List all challenges with status and streak |
+| `/streak-switch NAME` | Switch to a different active challenge |
+| `/streak-stats` | View progress, streaks, patterns, achievements |
+| `/streak-insights` | Cross-challenge connections and compound learning |
 
 ## Challenge Types
 

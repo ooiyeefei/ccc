@@ -8,7 +8,7 @@ Custom plugins and skills for [Claude Code](https://github.com/anthropics/claude
 |------|------|-------------|-----------------|
 | [deckling](./plugins/deckling) | Plugin | Generate PPTX presentations using Anthropic Platform Skills API | `/plugin install deckling@ccc` |
 | [excalidraw](./skills/excalidraw) | Skill | Generate architecture diagrams as `.excalidraw` files | `/plugin install ccc-skills@ccc` |
-| [streak](./skills/streak) | Skill | Universal challenge tracker with ideation, insights & achievements | `/plugin install ccc-skills@ccc` |
+| [streak](./skills/streak) | **Skill + Commands** | Universal challenge tracker with `/streak`, `/streak-new`, etc. | `/plugin install ccc-skills@ccc` |
 
 ---
 
@@ -62,36 +62,34 @@ See [skills/excalidraw/SKILL.md](./skills/excalidraw/SKILL.md) for full document
 
 ---
 
-## Skill: Streak
+## Streak - Challenge Tracker
 
 Universal challenge tracker with flexible cadence, intelligent insights, and cross-challenge learning detection.
 
-**After installing ccc-skills, trigger the skill by:**
+### Slash Commands (Recommended)
 
-1. **Natural language** - Just ask Claude Code:
-   ```
-   "Start a new streak challenge"
-   "Check in to my challenge"
-   "Show my streak stats"
-   "List my challenges"
-   ```
+After installing ccc-skills, use these commands for **reliable, deterministic** triggering:
 
-2. **Skill invocation** - Claude will automatically use `ccc-skills:streak` when relevant
+```bash
+/streak              # Check in to active challenge
+/streak-new          # Create a new challenge (guided)
+/streak-list         # List all challenges
+/streak-switch NAME  # Switch active challenge
+/streak-stats        # View progress and achievements
+/streak-insights     # Cross-challenge insights
+```
 
-**Within the skill, these flows are available:**
+### Natural Language (Alternative)
 
-| Flow | Trigger Phrase |
-|------|----------------|
-| Create challenge | "new challenge", "start tracking" |
-| Check-in | "check in", "log progress" |
-| List challenges | "list challenges", "show all" |
-| Switch challenge | "switch to [name]" |
-| View stats | "show stats", "my progress" |
-| Get insights | "show insights", "cross-challenge" |
-| Export calendar | "export calendar", "create reminders" |
-| Reset challenge | "reset", "start fresh" |
+You can also ask Claude Code naturally - it will invoke the skill when relevant:
+```
+"Check in to my challenge"
+"Start a new streak"
+"Show my stats"
+```
 
-**Features:**
+### Features
+
 - **Universal**: Works for any challenge type (learning, habits, building, fitness, creative, custom)
 - **Flexible Cadence**: Daily, weekly, or custom N-day intervals per challenge
 - **AI-Powered Insights**: Auto-detects compound learning and semantic connections
@@ -99,7 +97,8 @@ Universal challenge tracker with flexible cadence, intelligent insights, and cro
 - **Calendar Export**: Optional .ics file for calendar reminders
 - **Zero Config**: Works locally with no external dependencies
 
-**Example Challenges:**
+### Example Challenges
+
 - 30 Days of Coding
 - Read 12 Books This Year
 - Morning Meditation Habit

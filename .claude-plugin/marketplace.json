@@ -6,7 +6,7 @@
   },
   "metadata": {
     "description": "Custom Claude Code plugins and skills",
-    "version": "1.0.0"
+    "version": "1.1.0"
   },
   "plugins": [
     {
@@ -16,12 +16,20 @@
     },
     {
       "name": "ccc-skills",
-      "description": "Collection of skills including Excalidraw diagram generation",
+      "description": "Collection of skills and commands including Excalidraw diagrams and Streak challenge tracker",
       "source": "./",
       "strict": false,
       "skills": [
         "./skills/excalidraw",
         "./skills/streak"
+      ],
+      "commands": [
+        "./commands/streak.md",
+        "./commands/streak-new.md",
+        "./commands/streak-list.md",
+        "./commands/streak-switch.md",
+        "./commands/streak-stats.md",
+        "./commands/streak-insights.md"
       ]
     }
   ]
