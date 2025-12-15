@@ -7,7 +7,8 @@ Custom plugins and skills for [Claude Code](https://github.com/anthropics/claude
 | Name | Type | Description | Install Command |
 |------|------|-------------|-----------------|
 | [deckling](./plugins/deckling) | Plugin | Generate PPTX presentations using Anthropic Platform Skills API | `/plugin install deckling@ccc` |
-| [ccc-skills](./skills) | Skills | Collection including Excalidraw diagrams & Challenge Streak tracker | `/plugin install ccc-skills@ccc` |
+| [excalidraw](./skills/excalidraw) | Skill | Generate architecture diagrams as `.excalidraw` files | `/plugin install ccc-skills@ccc` |
+| [streak](./skills/streak) | Skill | Universal challenge tracker with ideation, insights & achievements | `/plugin install ccc-skills@ccc` |
 
 ---
 
