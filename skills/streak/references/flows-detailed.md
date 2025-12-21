@@ -243,21 +243,47 @@ See you [in X days / tomorrow]!
 
 ## Flow 3: List Challenges
 
-```
-Your Challenges:
+**Default:** Show active + paused challenges (hide archived)
+**With `--all` flag:** Show all including archived
 
-| Status | Name | Type | Streak | Last Check-in | Progress |
-|--------|------|------|--------|---------------|----------|
-| * | learn-rust | Learning | 5 days | 1 day ago | 12 sessions |
-|   | morning-workout | Fitness | 0 days | 8 days ago | 24 sessions |
-|   | daily-writing | Creative | 12 days | Today | 45 sessions |
+### Sorting Order (within each status group)
+
+1. **Priority** (higher number first, default 0)
+2. **Last check-in** (most recent first)
+
+### Display Format
+
+```
+## Active Challenges
+| | Name | Type | Pri | Streak | Last Check-in | Sessions |
+|---|------|------|-----|--------|---------------|----------|
+| * | python-courses | Learning | 10 | 5 days | 1 day ago | 3 |
+|   | home-fitness | Fitness | 5 | 2 days | 2 days ago | 8 |
+|   | daily-writing | Creative | 0 | 12 days | Today | 45 |
+
+## Paused Challenges
+|   | stories-to-novels | Writing | 0 | - | 10 days ago | 5 |
+
+(2 archived challenges hidden - use --all to show)
 
 * = Active challenge
+Pri = Priority (edit in challenge-config.md to reorder)
 
 Commands:
-- "Switch to [name]" - Switch active challenge
-- "Check in" - Check in to active challenge
-- "New challenge" - Create new challenge
+- "/streak-switch [name]" - Switch active challenge
+- "/streak" - Check in to active challenge
+- "/streak-pause [name]" - Pause a challenge
+- "/streak-resume [name]" - Resume paused/archived challenge
+```
+
+### With `--all` Flag
+
+Also shows archived section:
+
+```
+## Archived Challenges
+|   | old-project | Building | 0 | - | 2 months ago | 20 |
+|   | completed-course | Learning | 0 | - | 3 months ago | 30 |
 ```
 
 ---
@@ -392,6 +418,152 @@ If yes:
 5. Reset counters in `challenge-config.md`
 6. Keep `preferences.md`, `context.md`, `backlog.md` intact
 7. Confirm: "Challenge reset! Ready for Session 1?"
+
+---
+
+## Flow 9: Pause Challenge
+
+Temporarily pause a challenge to focus on other priorities.
+
+### Step 1: Validate
+
+```
+1. Check challenge exists in .streak/challenges/
+2. Check current status is 'active' (not already paused/archived)
+3. If not found: "Challenge '[name]' not found. Use /streak-list to see available challenges."
+4. If already paused: "Challenge '[name]' is already paused."
+```
+
+### Step 2: Update Status
+
+```
+1. Open challenge-config.md
+2. Change **Status:** active → paused
+3. Save file
+```
+
+### Step 3: Handle Active Challenge
+
+```
+IF pausing the currently active challenge (from active.md):
+  - List other active challenges
+  - Prompt: "Challenge '[name]' paused. Switch to another challenge?"
+  - Show available active challenges
+  - If user selects one: Run Flow 4 (Switch)
+  - If no other active challenges: "No other active challenges. Create a new one with /streak-new"
+```
+
+### Step 4: Confirm
+
+```
+Challenge "[name]" paused.
+
+It will appear in the "Paused" section of /streak-list.
+To resume: /streak-resume [name]
+```
+
+---
+
+## Flow 10: Archive Challenge
+
+Move challenge to long-term storage (historical record, completed goals).
+
+### Step 1: Validate
+
+```
+1. Check challenge exists in .streak/challenges/
+2. Check current status is not already 'archived'
+3. If not found: "Challenge '[name]' not found."
+4. If already archived: "Challenge '[name]' is already archived."
+```
+
+### Step 2: Update Status
+
+```
+1. Open challenge-config.md
+2. Change **Status:** [active|paused] → archived
+3. Save file
+```
+
+### Step 3: Handle Active Challenge
+
+```
+IF archiving the currently active challenge (from active.md):
+  - List other active challenges
+  - Prompt: "Challenge '[name]' archived. Switch to another challenge?"
+  - Show available active challenges
+  - If user selects one: Run Flow 4 (Switch)
+  - If no other active challenges: "No other active challenges. Create a new one with /streak-new"
+```
+
+### Step 4: Confirm
+
+```
+Challenge "[name]" archived.
+
+Archived challenges are hidden from /streak-list by default.
+To see all: /streak-list --all
+To restore: /streak-resume [name]
+```
+
+---
+
+## Flow 11: Resume Challenge
+
+Bring a paused or archived challenge back to active status.
+
+### Step 1: Validate
+
+```
+1. Check challenge exists in .streak/challenges/
+2. Check current status is 'paused' or 'archived'
+3. If not found: "Challenge '[name]' not found."
+4. If already active: "Challenge '[name]' is already active."
+```
+
+### Step 2: Update Status
+
+```
+1. Open challenge-config.md
+2. Change **Status:** [paused|archived] → active
+3. Save file
+```
+
+### Step 3: Calculate Time Away
+
+```
+1. Read last check-in date from challenge-config.md
+2. Calculate days since last check-in
+3. Store for step 4
+```
+
+### Step 4: Check for Comeback Achievement
+
+```
+IF days_since_last_checkin >= 7:
+  - Award :muscle: **Comeback** badge
+  - Add to achievements in challenge-config.md
+  - Note: "Welcome back! You earned the Comeback badge."
+```
+
+### Step 5: Offer to Set Active
+
+```
+Prompt: "Make '[name]' your active challenge?"
+- If yes: Update active.md to point to this challenge
+- If no: Keep current active challenge
+```
+
+### Step 6: Confirm
+
+```
+Challenge "[name]" is now active!
+
+[If comeback badge]: :muscle: Comeback badge earned!
+
+Status: [X] sessions | Last check-in: [Y] days ago
+Ready to check in? (/streak)
+```
 
 ---
 

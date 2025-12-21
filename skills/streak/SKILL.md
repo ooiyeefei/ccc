@@ -25,6 +25,9 @@ A universal, flexible challenge tracking system for Claude Code. Track any perso
 | "show insights", "cross-challenge" | Flow 6: Insights |
 | "export calendar", "create reminders" | Flow 7: Calendar |
 | "reset challenge", "start fresh" | Flow 8: Reset |
+| "pause [name]", "put on hold" | Flow 9: Pause |
+| "archive [name]", "shelve challenge" | Flow 10: Archive |
+| "resume [name]", "reactivate" | Flow 11: Resume |
 
 ---
 
@@ -120,15 +123,38 @@ Two modes: **Pre-session** (planning) and **Post-session** (wrap-up)
 
 ## Flow 3: List Challenges
 
-Display all challenges with status:
+Display challenges grouped by status, sorted by priority then recency.
+
+**Default:** Show active + paused challenges
+**With `--all` flag:** Include archived challenges
+
+**Sorting order (within each group):**
+1. Priority (higher number first, default 0)
+2. Last check-in (most recent first)
+
+**Display format:**
 
 ```
-| Status | Name | Type | Streak | Last Check-in | Sessions |
-|--------|------|------|--------|---------------|----------|
-| * | learn-rust | Learning | 5 days | 1 day ago | 12 |
-|   | morning-workout | Fitness | 0 days | 8 days ago | 24 |
+## Active Challenges
+| | Name | Type | Pri | Streak | Last Check-in | Sessions |
+|---|------|------|-----|--------|---------------|----------|
+| * | python-courses | Learning | 10 | 5 days | 1 day ago | 3 |
+|   | home-fitness | Fitness | 5 | 2 days | 2 days ago | 8 |
 
-* = Active
+## Paused Challenges
+|   | stories-to-novels | Writing | 0 | - | 10 days ago | 5 |
+
+(2 archived challenges hidden - use --all to show)
+
+* = Active challenge
+Pri = Priority (edit in challenge-config.md)
+```
+
+**With `--all` flag, also show:**
+
+```
+## Archived Challenges
+|   | old-project | Building | 0 | - | 2 months ago | 20 |
 ```
 
 ---
@@ -185,6 +211,54 @@ Archives current progress and starts fresh:
 - Archives sessions folder
 - Resets streak counters
 - Keeps preferences, context, backlog intact
+
+---
+
+## Flow 9: Pause Challenge
+
+Temporarily pause a challenge (plan to resume later):
+
+1. Validate challenge exists and is active
+2. Update `challenge-config.md`: set `**Status:** paused`
+3. If pausing the **active** challenge:
+   - List other active challenges
+   - Prompt: "Paused [name]. Switch to another challenge?"
+   - If yes, run Flow 4 (Switch)
+4. Confirm: "Challenge [name] paused. Use `/streak-resume [name]` to reactivate."
+
+**Use cases:** Seasonal challenges, focusing on other priorities, taking a break
+
+---
+
+## Flow 10: Archive Challenge
+
+Move challenge to long-term storage (out of daily view):
+
+1. Validate challenge exists and is not already archived
+2. Update `challenge-config.md`: set `**Status:** archived`
+3. If archiving the **active** challenge:
+   - List other active challenges
+   - Prompt: "Archived [name]. Switch to another challenge?"
+   - If yes, run Flow 4 (Switch)
+4. Confirm: "Challenge [name] archived. Use `/streak-list --all` to see archived challenges."
+
+**Use cases:** Completed goals, abandoned challenges, historical record
+
+---
+
+## Flow 11: Resume Challenge
+
+Bring a paused or archived challenge back to active:
+
+1. Validate challenge exists and is paused or archived
+2. Update `challenge-config.md`: set `**Status:** active`
+3. Ask: "Make [name] your active challenge?"
+   - If yes, update `active.md`
+4. Check days since last check-in:
+   - If 7+ days: Award :muscle: **Comeback** badge
+5. Confirm: "Challenge [name] is now active. Ready to check in?"
+
+**Note:** Resuming does NOT reset streak - it continues from where you left off.
 
 ---
 

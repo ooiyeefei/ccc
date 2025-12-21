@@ -71,6 +71,7 @@ Metadata for this challenge.
 **Goal:** [One sentence goal]
 **Cadence:** Every [X] [days/weeks]
 **Started:** [YYYY-MM-DD]
+**Priority:** [0-100, higher = shown first in list, default 0]
 
 ---
 
@@ -79,7 +80,7 @@ Metadata for this challenge.
 **Check-ins:** [X]
 **Current Streak:** [X] days
 **Longest Streak:** [X] days
-**Status:** [active|paused|completed]
+**Status:** [active|paused|archived|completed]
 
 ---
 

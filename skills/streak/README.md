@@ -23,10 +23,14 @@ Use slash commands for **reliable, deterministic** triggering:
 ```bash
 /streak              # Check in to active challenge
 /streak-new          # Create a new challenge (guided)
-/streak-list         # List all challenges
+/streak-list         # List all challenges (active + paused)
+/streak-list --all   # List all including archived
 /streak-switch NAME  # Switch active challenge
 /streak-stats        # View progress and achievements
 /streak-insights     # Cross-challenge insights
+/streak-pause NAME   # Pause a challenge
+/streak-archive NAME # Archive a challenge
+/streak-resume NAME  # Resume paused/archived challenge
 ```
 
 ### Option 2: Natural Language (Alternative)
@@ -46,10 +50,14 @@ You can also ask Claude Code naturally - it will invoke the skill when relevant:
 |---------|--------------|
 | `/streak` | Check in to active challenge - log progress, get insights |
 | `/streak-new` | Create a new challenge with guided setup |
-| `/streak-list` | List all challenges with status and streak |
+| `/streak-list` | List challenges (active + paused), sorted by priority |
+| `/streak-list --all` | Include archived challenges in the list |
 | `/streak-switch NAME` | Switch to a different active challenge |
 | `/streak-stats` | View progress, streaks, patterns, achievements |
 | `/streak-insights` | Cross-challenge connections and compound learning |
+| `/streak-pause NAME` | Temporarily pause a challenge |
+| `/streak-archive NAME` | Move challenge to long-term storage |
+| `/streak-resume NAME` | Bring paused/archived challenge back to active |
 
 ## Challenge Types
 
@@ -96,6 +104,22 @@ Set your check-in frequency per challenge:
 - Every 2-3 days
 - Weekly
 - Custom interval
+
+### Priority Ordering
+
+Control the display order of your challenges in `/streak-list`:
+- Set `**Priority:**` in `challenge-config.md` (0-100, default 0)
+- Higher priority = shown first in each status group
+- Within same priority, sorted by most recent check-in
+
+### Challenge Lifecycle
+
+Manage challenge status to keep your list organized:
+- **Active** - Current challenges you're working on
+- **Paused** - Temporarily on hold, plan to resume later
+- **Archived** - Long-term storage, hidden by default
+
+Commands: `/streak-pause`, `/streak-archive`, `/streak-resume`
 
 ### Auto-Insights
 
