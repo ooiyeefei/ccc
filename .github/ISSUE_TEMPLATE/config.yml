@@ -1,0 +1,8 @@
+blank_issues_enabled: true
+contact_links:
+  - name: Documentation
+    url: https://github.com/ooiyeefei/ccc#readme
+    about: Check the README for installation and usage instructions
+  - name: Claude Code Documentation
+    url: https://docs.anthropic.com/en/docs/claude-code
+    about: Official Claude Code documentation

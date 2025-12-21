@@ -109,6 +109,39 @@ See [skills/streak/SKILL.md](./skills/streak/SKILL.md) for full documentation.
 
 ---
 
+## Contributing
+
+We welcome contributions! CCC follows a **hybrid contribution model**:
+
+| Contribution Type | Process |
+|-------------------|---------|
+| Bug fixes | PRs welcome directly |
+| Documentation | PRs welcome directly |
+| New features | Open issue first for discussion |
+| New skills/plugins | Open issue first for discussion |
+
+**Quick start:**
+1. Fork the repo
+2. Create a branch
+3. Make changes and test with Claude Code
+4. Submit a PR
+
+See [CONTRIBUTING.md](./CONTRIBUTING.md) for detailed guidelines.
+
+### Good First Issues
+
+Look for issues labeled `good first issue` - they're great for getting started!
+
+---
+
+## Support
+
+If you find CCC useful, consider supporting its development:
+
+<a href="https://buymeacoffee.com/afYkK7e"><img src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png" alt="Buy Me A Coffee" width="130"></a>
+
+---
+
 ## License
 
 MIT
