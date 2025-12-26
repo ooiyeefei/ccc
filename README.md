@@ -9,6 +9,7 @@ Custom plugins and skills for [Claude Code](https://github.com/anthropics/claude
 | [deckling](./plugins/deckling) | Plugin | Generate PPTX presentations using Anthropic Platform Skills API | `/plugin install deckling@ccc` |
 | [excalidraw](./skills/excalidraw) | Skill | Generate architecture diagrams as `.excalidraw` files | `/plugin install ccc-skills@ccc` |
 | [streak](./skills/streak) | **Skill + Commands** | Universal challenge tracker with `/streak`, `/streak-new`, etc. | `/plugin install ccc-skills@ccc` |
+| [product-management](./skills/product-management) | Skill | AI-native PM: competitor research, gap analysis, WINNING prioritization | `/plugin install ccc-skills@ccc` |
 
 ---
 
@@ -106,6 +107,50 @@ You can also ask Claude Code naturally - it will invoke the skill when relevant:
 
 See [skills/streak/README.md](./skills/streak/README.md) for quick start guide.
 See [skills/streak/SKILL.md](./skills/streak/SKILL.md) for full documentation.
+
+---
+
+## Skill: Product Management
+
+AI-native product management for startups. Process signals, not features.
+
+**After installing ccc-skills, just ask Claude Code:**
+```
+"Analyze my product"
+"Research competitors"
+"Find feature gaps we should build"
+"What should we build next?"
+```
+
+### Key Commands
+
+```bash
+/pm analyze     # Deep product understanding
+/pm landscape   # Market overview + competitors
+/pm gaps        # Batch gap analysis with WINNING scores
+/pm file        # Create GitHub Issues for top priorities
+/pm roadmap     # Organize into Now/Next/Later
+```
+
+### WINNING Filter
+
+Prioritize with objective scoring: `WINNING = Pain × Timing × Execution`
+
+- **40-60**: FILE (high conviction)
+- **25-39**: WAIT (monitor)
+- **0-24**: SKIP (not worth it)
+
+### spec-kit Integration
+
+This skill handles **WHAT to build** (product discovery). For **HOW to build**, use [spec-kit](https://github.com/github/spec-kit):
+
+```
+/pm file → GitHub Issue → /speckit.specify → /speckit.plan → /speckit.implement
+```
+
+The GitHub Issue IS the handoff—no extra command needed.
+
+See [skills/product-management/README.md](./skills/product-management/README.md) for full documentation.
 
 ---
 
