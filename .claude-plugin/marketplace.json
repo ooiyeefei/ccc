@@ -6,13 +6,18 @@
   },
   "metadata": {
     "description": "Custom Claude Code plugins and skills",
-    "version": "1.1.0"
+    "version": "1.2.0"
   },
   "plugins": [
     {
       "name": "deckling",
       "description": "Generate professional PPTX presentations using Anthropic Platform Skills API",
       "source": "./plugins/deckling"
+    },
+    {
+      "name": "product-management",
+      "description": "AI-native product management for startups with WINNING filter, gap analysis, competitor research, and GitHub Issues integration",
+      "source": "./plugins/product-management"
     },
     {
       "name": "ccc-skills",
