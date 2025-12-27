@@ -36,3 +36,7 @@ After installing, just ask Claude Code:
 Each skill folder contains:
 - `SKILL.md` - Main skill file with YAML frontmatter (name, description)
 - Optional reference files for additional context
+
+## See Also
+
+For more complex functionality with agents, commands, and hooks, see [plugins](../plugins/).

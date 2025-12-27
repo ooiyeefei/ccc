@@ -1,0 +1,17 @@
+{
+  "description": "Product Management plugin hooks for staleness detection and GitHub sync prompts",
+  "hooks": {
+    "SessionStart": [
+      {
+        "matcher": "*",
+        "hooks": [
+          {
+            "type": "prompt",
+            "prompt": "Check if this project has PM data that needs attention:\n\n1. Check if `.pm/` directory exists\n2. If exists, read `.pm/cache/last-updated.json`\n3. Check staleness:\n   - If `github_sync` >24 hours ago: Suggest running `/pm:sync`\n   - If `competitors` >30 days old: Warn about stale competitor data\n   - If `gaps` >14 days old: Note gap analysis may be outdated\n\nIf `.pm/` doesn't exist, skip silently (user hasn't started PM workflow).\n\nOnly report issues if found. Be concise.",
+            "timeout": 10
+          }
+        ]
+      }
+    ]
+  }
+}
