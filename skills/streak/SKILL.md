@@ -28,6 +28,8 @@ A universal, flexible challenge tracking system for Claude Code. Track any perso
 | "pause [name]", "put on hold" | Flow 9: Pause |
 | "archive [name]", "shelve challenge" | Flow 10: Archive |
 | "resume [name]", "reactivate" | Flow 11: Resume |
+| "setup notifications", "telegram reminders" | Flow 12: Notifications |
+| "setup telegram bot", "deploy telegram", "streak-telegram" | Flow 13: Telegram Bot Deploy |
 
 ---
 
@@ -262,6 +264,152 @@ Bring a paused or archived challenge back to active:
 
 ---
 
+## Flow 12: Notifications Setup
+
+Set up push notifications for due/overdue check-ins via Telegram.
+
+### Step 1: Create Telegram Bot
+
+1. Open Telegram and message [@BotFather](https://t.me/BotFather)
+2. Send `/newbot` and follow prompts
+3. Copy the **bot token** (looks like `123456789:ABCdefGHI...`)
+
+### Step 2: Get Chat ID
+
+1. Message [@userinfobot](https://t.me/userinfobot) on Telegram
+2. Copy your **chat ID** (a number like `123456789`)
+
+### Step 3: Configure
+
+Add to `.streak/config.md`:
+
+```markdown
+## Notifications (Optional)
+
+- **Notifications:** enabled
+- **Telegram Bot Token:** 123456789:ABCdefGHI...
+- **Telegram Chat ID:** 123456789
+```
+
+### Step 4: Schedule Notifications
+
+**Option A: Cron (Linux/Mac)**
+```bash
+# Run daily at 9am
+0 9 * * * cd /path/to/project && python .streak/../tools/streak-notify.py
+```
+
+**Option B: GitHub Actions**
+```yaml
+# .github/workflows/streak-notify.yml
+name: Streak Reminder
+on:
+  schedule:
+    - cron: '0 9 * * *'  # 9am UTC daily
+jobs:
+  notify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - run: python tools/streak-notify.py .streak
+```
+
+### Step 5: Test
+
+```bash
+python tools/streak-notify.py /path/to/.streak
+```
+
+**Detailed steps:** See `tools/streak-notify.py` header comments.
+
+---
+
+## Flow 13: Telegram Bot Deploy
+
+One-command deployment of the interactive Telegram bot with Docker.
+
+### Prerequisites (User Must Complete First)
+
+1. **Create Telegram Bot:** Message @BotFather → `/newbot` → save token
+2. **Get Chat ID:** Message @userinfobot → save Id number
+3. **Message your bot:** Send `/start` to your bot (required before it can message you)
+4. **Create `.env` file** in your project root:
+   ```bash
+   cat > .env << EOF
+   TELEGRAM_BOT_TOKEN=your-bot-token
+   ALLOWED_USERS=your-chat-id
+   EOF
+   ```
+5. **Docker must be installed and running**
+
+### Flow Steps
+
+1. **Verify prerequisites:**
+   - Check `.env` file exists in project root
+   - Check `TELEGRAM_BOT_TOKEN` is set (not empty/placeholder)
+   - Check Docker is available (`docker --version`)
+   - If any missing, show specific instructions and stop
+
+2. **Locate skill tools directory:**
+   ```bash
+   # Plugin location (typical paths)
+   ~/.claude-code/plugins/ccc-skills@ccc/streak/tools/
+   # Or within the ccc repo if running locally
+   ```
+
+3. **Copy bot files to project root:**
+   ```bash
+   cp [tools-dir]/streak-bot.py ./streak-bot.py
+   cp [tools-dir]/Dockerfile ./Dockerfile
+   cp [tools-dir]/docker-compose.yml ./docker-compose.yml
+   ```
+
+4. **Ensure .gitignore protects secrets:**
+   ```bash
+   # Add if not present
+   echo ".env" >> .gitignore
+   ```
+
+5. **Start the bot:**
+   ```bash
+   docker-compose up -d --build
+   ```
+
+6. **Verify bot is running:**
+   ```bash
+   docker-compose ps
+   docker-compose logs --tail=20
+   ```
+
+7. **Confirm to user:**
+   ```
+   ✅ Telegram bot deployed!
+
+   Bot is running in Docker and will auto-restart on reboot.
+
+   Commands:
+   - docker-compose logs -f    # View logs
+   - docker-compose restart    # Restart bot
+   - docker-compose down       # Stop bot
+
+   Open Telegram and send /start to your bot to test!
+   ```
+
+### Error Handling
+
+| Issue | Response |
+|-------|----------|
+| No .env file | Show: "Create .env first with TELEGRAM_BOT_TOKEN and ALLOWED_USERS" |
+| Empty token | Show: "TELEGRAM_BOT_TOKEN in .env is empty - add your bot token from @BotFather" |
+| Docker not found | Show: "Docker not installed. Install from https://docker.com" |
+| Docker not running | Show: "Docker daemon not running. Start Docker Desktop or run: sudo systemctl start docker" |
+| Port conflict | Show: "Another service using the port. Stop other bots first: docker-compose down" |
+
+---
+
 ## Achievements
 
 ### Streak Badges
@@ -300,16 +448,45 @@ Bring a paused or archived challenge back to active:
 
 ---
 
+## Design Philosophy
+
+> **Your challenges are interconnected.** Your fitness affects your work. Your learning enables your building. Your habits shape your creativity.
+
+Streak detects **cross-challenge connections** - patterns you might miss:
+- "Morning workouts correlate with productive coding days"
+- "Skills from 'Learn Rust' enabled progress in 'Build CLI Tools'"
+
+**This is the unique value** - not just tracking, but understanding how challenges interact.
+
+### One Place, All Challenges
+
+Put ALL challenges in ONE `.streak/` folder, regardless of life area:
+
+```
+.streak/challenges/
+├── work-project      # Work
+├── morning-fitness   # Health
+├── learn-rust        # Learning
+└── daily-meditation  # Habit
+```
+
+Use `/streak-switch` to navigate. Use `/streak-insights` to discover connections.
+
+**Don't create separate `.streak/` folders for different challenges.** That defeats the purpose.
+
+---
+
 ## Best Practices
 
-1. **Be specific** in goals - "Complete Rustlings" > "Learn Rust"
-2. **Start sustainable** - Every 2-3 days is easier than daily
-3. **Use today.md** - Set context before sessions
-4. **Maintain backlog** - Ideas for low-energy days
-5. **Review insights** - Check weekly to see patterns
-6. **Celebrate streaks** - Achievements are real motivation
-7. **Reset guilt-free** - Archiving is progress, not failure
-8. **Cross-pollinate** - Run multiple challenges to find connections
+1. **Keep challenges together** - One `.streak/` folder for ALL challenges (work, health, learning, etc.)
+2. **Be specific** in goals - "Complete Rustlings" > "Learn Rust"
+3. **Start sustainable** - Every 2-3 days is easier than daily
+4. **Use today.md** - Set context before sessions
+5. **Maintain backlog** - Ideas for low-energy days
+6. **Review insights** - Check weekly to see patterns
+7. **Celebrate streaks** - Achievements are real motivation
+8. **Reset guilt-free** - Archiving is progress, not failure
+9. **Cross-pollinate** - Run multiple challenges to find connections
 
 ---
 

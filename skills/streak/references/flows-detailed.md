@@ -596,3 +596,124 @@ Available challenges:
 
 Did you mean: [closest match]?
 ```
+
+---
+
+## Flow 12: Notifications Setup
+
+Configure push notifications for due/overdue check-ins.
+
+### Step 1: Check Prerequisites
+
+```
+1. Verify .streak/ folder exists
+2. Check if config.md has notification section
+3. If not, guide user through setup
+```
+
+### Step 2: Guide Telegram Setup
+
+```
+Let's set up Telegram notifications for your streaks!
+
+**Step 1: Create a Bot**
+1. Open Telegram and message @BotFather
+2. Send: /newbot
+3. Choose a name (e.g., "My Streak Bot")
+4. Choose a username (e.g., "mystreak_bot")
+5. Copy the token you receive
+
+What's your bot token?
+```
+
+### Step 3: Get Chat ID
+
+```
+**Step 2: Get Your Chat ID**
+1. Message @userinfobot on Telegram
+2. It will reply with your user info
+3. Copy the "Id" number
+
+What's your chat ID?
+```
+
+### Step 4: Save Configuration
+
+```
+1. Update .streak/config.md with notification settings:
+   - **Notifications:** enabled
+   - **Telegram Bot Token:** [provided token]
+   - **Telegram Chat ID:** [provided chat id]
+2. Save file
+```
+
+### Step 5: Test Notification
+
+```
+Let me test the notification...
+
+[Run: python tools/streak-notify.py]
+
+If successful:
+"Test notification sent! Check your Telegram."
+
+If failed:
+"Couldn't send notification. Please verify:
+- Bot token is correct
+- Chat ID is correct
+- You've started a chat with your bot first"
+```
+
+### Step 6: Schedule Options
+
+```
+Notifications configured! Now let's schedule them.
+
+**How do you want to receive reminders?**
+
+1. **GitHub Actions** (recommended for repos)
+   - Runs in cloud, no local setup
+   - I'll create the workflow file
+
+2. **Cron job** (for local machines)
+   - Runs on your computer
+   - Needs to be always on
+
+3. **Manual only**
+   - Run script yourself when needed
+
+Which option? (1-3)
+```
+
+### Step 7: Create Scheduler (if option 1 or 2)
+
+**For GitHub Actions:**
+```
+1. Create .github/workflows/streak-notify.yml
+2. Add workflow with scheduled trigger
+3. Commit and push
+4. Confirm: "GitHub Action created! It will run daily at 9am UTC."
+```
+
+**For Cron:**
+```
+Add this to your crontab (crontab -e):
+
+0 9 * * * cd [project-path] && python tools/streak-notify.py
+
+Reminder will run daily at 9am local time.
+```
+
+### Completion
+
+```
+Notifications setup complete!
+
+- Bot: @[bot_username]
+- Schedule: [Daily at 9am / Manual]
+- Channels: Telegram
+
+You'll receive a message when check-ins are due or overdue.
+
+To disable: Set **Notifications:** disabled in .streak/config.md
+```

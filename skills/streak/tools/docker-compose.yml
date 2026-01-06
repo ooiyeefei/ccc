@@ -1,0 +1,68 @@
+# Streak Bot Docker Compose
+#
+# Quick start:
+#   1. Copy this file to your project root (alongside .streak/)
+#   2. Create .env file with TELEGRAM_BOT_TOKEN=your-token
+#   3. Run: docker-compose up -d
+#
+# Commands:
+#   docker-compose up -d      # Start in background
+#   docker-compose logs -f    # View logs
+#   docker-compose down       # Stop
+#   docker-compose restart    # Restart
+
+version: '3.8'
+
+services:
+  streak-bot:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: streak-bot
+    restart: unless-stopped
+
+    environment:
+      # Required: Your Telegram bot token from @BotFather
+      - TELEGRAM_BOT_TOKEN=${TELEGRAM_BOT_TOKEN}
+
+      # Path to .streak directory inside container
+      - STREAK_PATH=/app/.streak
+
+      # Enable git pull/push for sync (requires git credentials)
+      - GIT_AUTO_SYNC=${GIT_AUTO_SYNC:-true}
+
+      # Required for notifications: Your Telegram chat ID
+      # Get it from @userinfobot on Telegram
+      - ALLOWED_USERS=${ALLOWED_USERS:-}
+
+      # Push notification settings
+      - NOTIFICATION_ENABLED=${NOTIFICATION_ENABLED:-true}
+      - NOTIFICATION_HOUR=${NOTIFICATION_HOUR:-9}
+      - NOTIFICATION_MINUTE=${NOTIFICATION_MINUTE:-0}
+      - TIMEZONE=${TIMEZONE:-UTC}
+
+    volumes:
+      # Mount your .streak directory
+      - ./.streak:/app/.streak
+
+      # Mount .git for sync (optional, remove if not using git sync)
+      - ./.git:/app/.git:ro
+
+      # Mount git credentials (optional, for push)
+      - ~/.gitconfig:/root/.gitconfig:ro
+      - ~/.ssh:/root/.ssh:ro
+
+    # Optional: Use host network for easier git SSH access
+    # network_mode: host
+
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+# Alternative: Use pre-built image (when published)
+# services:
+#   streak-bot:
+#     image: ghcr.io/your-org/streak-bot:latest
+#     ...
