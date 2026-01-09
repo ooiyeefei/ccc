@@ -7,9 +7,10 @@ Custom plugins and skills for [Claude Code](https://github.com/anthropics/claude
 | Name | Type | Description | Install Command |
 |------|------|-------------|-----------------|
 | [deckling](./plugins/deckling) | Plugin | Generate PPTX presentations using Anthropic Platform Skills API | `/plugin install deckling@ccc` |
+| [mvp-launch](./plugins/mvp-launch) | Plugin | MVP launch readiness checker with `/launch-check` command | `/plugin install mvp-launch@ccc` |
+| [product-management](./plugins/product-management) | Plugin | AI-native PM: competitor research, gap analysis, WINNING prioritization | `/plugin install product-management@ccc` |
 | [excalidraw](./skills/excalidraw) | Skill | Generate architecture diagrams as `.excalidraw` files | `/plugin install ccc-skills@ccc` |
 | [streak](./skills/streak) | **Skill + Commands** | Universal challenge tracker with `/streak`, `/streak-new`, etc. | `/plugin install ccc-skills@ccc` |
-| [product-management](./skills/product-management) | Skill | AI-native PM: competitor research, gap analysis, WINNING prioritization | `/plugin install ccc-skills@ccc` |
 
 ---
 
@@ -38,6 +39,32 @@ Generate and refine PowerPoint presentations using Anthropic's Platform Skills A
 ```
 
 See [plugins/deckling/README.md](./plugins/deckling/README.md) for full documentation.
+
+---
+
+## Plugin: MVP Launch
+
+Analyze web app codebases against a battle-tested 10-point MVP launch checklist. Based on "Realistic MVP Launch Checklist (from building 30+ apps)".
+
+```bash
+/launch-check
+```
+
+**The 10-Point Checklist:**
+1. Stripe Setup (webhooks, trials, failed payments)
+2. Mobile-First Design (real device testing)
+3. Smooth Onboarding (minimal steps, fast first win)
+4. AI & Automation Stability (retries, error handling)
+5. Critical Emails (welcome, trial-ending, failed payment)
+6. Error Logging (catch bugs before users)
+7. User Feedback Loop (simple form or tool)
+8. Auth & Roles (secure pages, basic roles)
+9. Custom Domain with SSL (no dev URLs)
+10. Real Database & Backups (automated backups)
+
+**Philosophy:** "Don't overbuild. Just make it stable, usable, and something people can trust."
+
+See [plugins/mvp-launch/README.md](./plugins/mvp-launch/README.md) for full documentation.
 
 ---
 
@@ -110,7 +137,7 @@ See [skills/streak/SKILL.md](./skills/streak/SKILL.md) for full documentation.
 
 ---
 
-## Skill: Product Management
+## Plugin: Product Management
 
 AI-native product management for startups. Process signals, not features.
 
@@ -150,7 +177,7 @@ This skill handles **WHAT to build** (product discovery). For **HOW to build**, 
 
 The GitHub Issue IS the handoff—no extra command needed.
 
-See [skills/product-management/README.md](./skills/product-management/README.md) for full documentation.
+See [plugins/product-management/README.md](./plugins/product-management/README.md) for full documentation.
 
 ---
 

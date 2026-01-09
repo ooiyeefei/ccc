@@ -1,0 +1,9 @@
+{
+  "name": "mvp-launch",
+  "version": "1.0.0",
+  "description": "Web app MVP launch readiness checker. Analyzes existing codebases against a battle-tested 10-point checklist (Stripe, mobile, onboarding, AI stability, emails, logging, feedback, auth, domain, database). Identifies gaps, confirms understanding with user, and produces prioritized action items. Philosophy: Don't overbuild.",
+  "author": {
+    "name": "ooiyeefei"
+  },
+  "keywords": ["mvp", "launch", "checklist", "gap-analysis", "stripe", "saas", "startup", "production-ready"]
+}
