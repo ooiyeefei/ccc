@@ -9,7 +9,7 @@ Custom plugins and skills for [Claude Code](https://github.com/anthropics/claude
 | [deckling](./plugins/deckling) | Plugin | Generate PPTX presentations using Anthropic Platform Skills API | `/plugin install deckling@ccc` |
 | [mvp-launch](./plugins/mvp-launch) | Plugin | MVP launch readiness checker with `/launch-check` command | `/plugin install mvp-launch@ccc` |
 | [product-management](./plugins/product-management) | Plugin | AI-native PM: competitor research, gap analysis, WINNING prioritization | `/plugin install product-management@ccc` |
-| [excalidraw](./skills/excalidraw) | Skill | Generate architecture diagrams as `.excalidraw` files | `/plugin install ccc-skills@ccc` |
+| [excalidraw](./skills/excalidraw) | Skill | Generate architecture diagrams as `.excalidraw` files with optional PNG/SVG export | `/plugin install ccc-skills@ccc` |
 | [streak](./skills/streak) | **Skill + Commands** | Universal challenge tracker with `/streak`, `/streak-new`, etc. | `/plugin install ccc-skills@ccc` |
 
 ---
@@ -70,13 +70,14 @@ See [plugins/mvp-launch/README.md](./plugins/mvp-launch/README.md) for full docu
 
 ## Skill: Excalidraw Generator
 
-Generate architecture diagrams from any codebase as `.excalidraw` files.
+Generate architecture diagrams from any codebase as `.excalidraw` files, with optional PNG and SVG export.
 
 **After installing ccc-skills, just ask Claude Code:**
 ```
 "Generate an architecture diagram for this project"
 "Create an excalidraw diagram of the system"
 "Visualize this codebase as an excalidraw file"
+"Export this diagram to PNG"
 ```
 
 **Features:**
@@ -85,7 +86,9 @@ Generate architecture diagrams from any codebase as `.excalidraw` files.
 - Proper 90-degree elbow arrows (not curved)
 - Color-coded components by type (database, API, storage, etc.)
 - Dynamic IDs and labels based on discovered components
+- PNG/SVG export via Playwright and `@excalidraw/utils` (no manual upload needed)
 
+See [skills/excalidraw/README.md](./skills/excalidraw/README.md) for quick start guide.
 See [skills/excalidraw/SKILL.md](./skills/excalidraw/SKILL.md) for full documentation.
 
 ---

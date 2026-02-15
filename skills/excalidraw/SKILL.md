@@ -1,11 +1,11 @@
 ---
 name: excalidraw
-description: Generate architecture diagrams as .excalidraw files from codebase analysis. Use when the user asks to create architecture diagrams, system diagrams, visualize codebase structure, or generate excalidraw files.
+description: Generate architecture diagrams as .excalidraw files from codebase analysis, with optional PNG/SVG export. Use when the user asks to create architecture diagrams, system diagrams, visualize codebase structure, generate excalidraw files, export excalidraw diagrams to PNG or SVG, or convert .excalidraw files to image formats.
 ---
 
 # Excalidraw Diagram Generator
 
-Generate architecture diagrams as `.excalidraw` files directly from codebase analysis.
+Generate architecture diagrams as `.excalidraw` files directly from codebase analysis, with optional export to PNG and SVG.
 
 ---
 
@@ -23,6 +23,7 @@ Generate architecture diagrams as `.excalidraw` files directly from codebase ana
 2. Identify components, services, databases, APIs
 3. Map relationships and data flows
 4. Generate valid `.excalidraw` JSON with dynamic IDs and labels
+5. Optionally export to PNG and/or SVG using Playwright
 
 **No prerequisites:** Works without existing diagrams, Terraform, or specific file types.
 
@@ -169,6 +170,16 @@ Run validation before writing. Save to `docs/` or user-specified path.
 
 **Validation checklist:** See `references/validation.md`
 
+### Step 7: Export to PNG/SVG (Optional)
+
+After writing the `.excalidraw` file, ask the user if they want PNG, SVG, or both exports.
+
+Uses Playwright MCP tools and `@excalidraw/utils` to programmatically render the diagram — no manual upload to excalidraw.com needed.
+
+**Requires:** Playwright MCP tools (`browser_navigate`, `browser_run_code`, `browser_close`).
+
+**Full export procedure:** See `references/export.md`
+
 ---
 
 ## Quick Arrow Reference
@@ -256,6 +267,7 @@ Before writing file:
 | `references/colors.md` | Default, AWS, Azure, GCP, K8s palettes |
 | `references/examples.md` | Complete JSON examples, layout patterns |
 | `references/validation.md` | Checklists, validation algorithm, bug fixes |
+| `references/export.md` | PNG/SVG export procedure via Playwright |
 
 ---
 
@@ -263,4 +275,5 @@ Before writing file:
 
 - **Location:** `docs/architecture/` or user-specified
 - **Filename:** Descriptive, e.g., `system-architecture.excalidraw`
-- **Testing:** Open in https://excalidraw.com or VS Code extension
+- **Exports (optional):** `system-architecture.svg` and/or `system-architecture.png` in same directory
+- **Testing:** Open `.excalidraw` in https://excalidraw.com or VS Code extension; `.svg` and `.png` can be viewed directly or embedded in documentation
