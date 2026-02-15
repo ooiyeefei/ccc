@@ -16,10 +16,13 @@ Phase 1: Discovery
   └─ Identify what was built/changed
 
 Phase 2: Environment Setup
-  ├─ Check for .env.local (or equivalent)
-  ├─ If missing → ask user for env file or credentials
-  ├─ Ask user for test account credentials
-  └─ Verify dev server starts successfully
+  ├─ Determine target: local or production/staging?
+  ├─ Local path:
+  │   ├─ Check for .env.local → ask user if missing
+  │   └─ Start dev server (npm run dev or equivalent)
+  ├─ Prod/staging path:
+  │   └─ Get application URL, verify reachable
+  └─ Ask user for test account credentials (both paths)
 
 Phase 3: Test Case Generation
   ├─ Write uat-test-cases.md (see references/test-case-template.md)
@@ -79,7 +82,23 @@ Summarize findings to the user:
 
 ## Phase 2: Environment Setup
 
-### Check Environment Variables
+### Determine Target Environment
+
+Ask the user (or infer from context) whether this is local or production testing:
+
+> Are we testing **locally** (I'll start the dev server) or against a **deployed environment** (provide the URL)?
+
+| Aspect | Local | Production / Staging |
+|--------|-------|----------------------|
+| **Server** | Start with `npm run dev` | Already running at provided URL |
+| **Env vars** | Need `.env.local` with all keys | N/A — app is already configured |
+| **Test data** | May need seeding or setup | Uses existing real/staging data |
+| **Auth** | Test account on local auth provider | Test account on prod/staging auth |
+| **Base URL** | `http://localhost:3000` (or configured port) | `https://app.example.com` |
+
+### Local Environment Path
+
+#### Check Environment Variables
 
 ```bash
 # Check if env file exists
@@ -95,20 +114,7 @@ ls -la .env.local .env 2>/dev/null
 >
 > Please provide the file path or paste the required variables.
 
-### Request Test Account
-
-Always ask before attempting to authenticate:
-
-> For UAT testing I need a test account to log in. Most auth systems require email verification, so I can't create a new account.
->
-> Please provide:
-> 1. **Login URL** (if not the default `/sign-in`)
-> 2. **Email/username** for the test account
-> 3. **Password**
-> 4. **Any 2FA/MFA steps** I should be aware of
-> 5. **Which business/org/team** to select after login (if applicable)
-
-### Verify Dev Server
+#### Start Dev Server
 
 Detect the framework and start the dev server:
 
@@ -126,6 +132,32 @@ Verify the server is reachable before proceeding:
 ```bash
 curl -s -o /dev/null -w "%{http_code}" http://localhost:3000
 ```
+
+### Production / Staging Environment Path
+
+No server startup or env file needed. Ask the user for:
+
+> Please provide:
+> 1. **Application URL** (e.g., `https://app.example.com`)
+> 2. **Any test data considerations** (is there a staging org/business to use?)
+
+Verify the URL is reachable:
+```bash
+curl -s -o /dev/null -w "%{http_code}" https://app.example.com
+```
+
+### Request Test Account (Both Environments)
+
+Always ask before attempting to authenticate:
+
+> For UAT testing I need a test account to log in. Most auth systems require email verification, so I can't create a new account.
+>
+> Please provide:
+> 1. **Login URL** (if not the default `/sign-in`)
+> 2. **Email/username** for the test account
+> 3. **Password**
+> 4. **Any 2FA/MFA steps** I should be aware of
+> 5. **Which business/org/team** to select after login (if applicable)
 
 ## Phase 3: Test Case Generation
 

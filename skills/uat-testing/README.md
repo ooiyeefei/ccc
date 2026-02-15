@@ -76,11 +76,24 @@ Produces a structured report with:
 | **FAIL** | Any Critical (P1) case fails, or >50% High (P2) cases fail |
 | **PARTIAL** | Critical passes but significant High (P2) failures exist |
 
+## Environments
+
+Works against both local dev and deployed environments:
+
+| Aspect | Local | Production / Staging |
+|--------|-------|----------------------|
+| **Server** | Starts `npm run dev` (auto-detected) | Uses provided URL |
+| **Env vars** | Needs `.env.local` (asks if missing) | N/A |
+| **Test data** | May need seeding | Uses existing data |
+| **Auth** | Test account on local provider | Test account on prod provider |
+
+The skill asks which environment at the start of Phase 2.
+
 ## Prerequisites
 
 - **Playwright MCP server** must be configured (for browser automation)
 - **Test account credentials** - the agent cannot create new accounts due to email verification
-- **`.env.local`** or equivalent environment file - the agent will ask if not found
+- **Local only**: `.env.local` or equivalent environment file - the agent will ask if not found
 
 ## Skill Structure
 
