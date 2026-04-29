@@ -20,6 +20,11 @@
       "source": "./plugins/product-management"
     },
     {
+      "name": "rethink-surveys",
+      "description": "Survey design framework grounded in Caroline Jarrett, Dillman, and Tourangeau methods. Captures real intent (past behavior, not hypotheticals) via multimodal flows (text/voice/AI-interviewer). Includes 3 use-case templates (event organizers, startup founders, gig workers) and commands for design, critique, and app-scaffold generation.",
+      "source": "./plugins/rethink-surveys"
+    },
+    {
       "name": "ccc-skills",
       "description": "Collection of skills and commands including Excalidraw diagrams and Streak challenge tracker",
       "source": "./",

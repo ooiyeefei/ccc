@@ -1,0 +1,21 @@
+{
+  "name": "rethink-surveys",
+  "version": "0.1.0",
+  "description": "Survey design framework grounded in proven research methods (Caroline Jarrett's Surveys That Work, Dillman's Tailored Design, Tourangeau's cognitive model). Captures user intent — what people are actually trying to do, what friction they face, what outcomes they want — without leading questions, satisficing bait, or shallow Likert noise. Includes a 4-part hybrid structure (discovery / diagnostic / intent / segmentation), a question library with behavioral anchors, and three battle-tested templates (event organizers, startup founders, gig-economy workers). Supports text, voice, and AI-interviewer modalities. Use when designing a new survey, critiquing an existing one, or turning survey questions into an app scaffold.",
+  "author": {
+    "name": "ooiyeefei"
+  },
+  "keywords": [
+    "survey",
+    "user-research",
+    "customer-discovery",
+    "intent-capture",
+    "questionnaire",
+    "jarrett",
+    "dillman",
+    "behavioral-anchors",
+    "voice-survey",
+    "ai-interviewer",
+    "multimodal"
+  ]
+}
