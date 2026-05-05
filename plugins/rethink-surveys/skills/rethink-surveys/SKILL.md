@@ -1,6 +1,6 @@
 ---
 name: rethink-surveys
-description: Design, critique, or scaffold surveys grounded in Caroline Jarrett, Dillman, and Tourangeau methods. Use when designing a new survey, critiquing an existing one, or turning questions into an app. Triggers on "survey", "questionnaire", "user research", "customer discovery", "intent capture", "interview script", or "how to ask better questions". Captures real past behavior over hypotheticals, supports text/voice/AI-interviewer modalities, and includes templates for event organizers, startup founders, and gig-economy workers.
+description: Design, critique, or scaffold surveys grounded in Caroline Jarrett, Dillman, and Tourangeau methods. Use when designing a new survey, critiquing an existing one, scoring or clustering responses, or turning questions into an app. Triggers on "survey", "questionnaire", "user research", "customer discovery", "intent capture", "interview script", "lint my survey", "score responses", or "how to ask better questions". When the bundled MCP server is connected, prefer its deterministic tools (`critique_survey`, `get_template`, `design_survey_session`, `score_response`, `cluster_responses`) over manual reasoning. Captures real past behavior over hypotheticals, supports text/voice/AI-interviewer modalities, and includes templates for event organizers, startup founders, and gig-economy workers.
 ---
 
 # Rethink Surveys
@@ -8,6 +8,17 @@ description: Design, critique, or scaffold surveys grounded in Caroline Jarrett,
 A survey is a conversation with a busy person. Design it like one.
 
 This skill packages a framework for designing, critiquing, and operationalizing surveys that capture real intent — not satisficed checkbox approval. Built from the experience of designing the Proxymate muShanghai survey (which surfaced bugs in ~6 hours of testing that a category-checkbox flow would have hidden for weeks).
+
+## Tool affordances (read first)
+
+The bundled `rethink-survey-mcp-server` exposes the skill's deterministic operations as MCP tools, its canonical content as MCP resources, and three framing prompts as slash-prompts. **When available, prefer them over reasoning from memory.**
+
+- **Use MCP tools** when the user wants a *specific deterministic result*: `critique_survey` for lint, `get_template` for a use-case starter, `design_survey_session` for the staged wizard, `score_response` for a single response, `cluster_responses` for a batch.
+- **Reason from skill content** when the user wants to *understand*: debate a principle, discuss trade-offs, explain why hypotheticals fail, or do anything not exposed as a tool (e.g. `/turn-into-app` codegen).
+- **Fetch resources for grounding** instead of paraphrasing: `rethink://principles`, `rethink://principles/{id}`, `rethink://structure/4-part`, `rethink://question-library/{part}`, `rethink://use-case/{event|founder|gig}`, `rethink://scoring/rubrics`, `rethink://modality/decision-tree`, `rethink://anti-patterns`.
+- **Slash-prompts** the user may invoke: `/jarrett-review` (Caroline Jarrett-style review), `/design-coaching` (Socratic design questions), `/mom-test-check` (Rob Fitzpatrick founder-discovery lint).
+
+If the MCP server isn't connected, all of the below still works from this skill's reference files. For details on tool inputs/outputs, fallback rules, and prompt framing, read `references/mcp-integration.md`.
 
 ## Three operating modes (commands)
 
@@ -105,16 +116,20 @@ When the user names a use case that matches one of the three (or wants to fork f
 
 ### When user says "I want to design a survey for X"
 
+If `design_survey_session` MCP tool is available, prefer it: call with `stage: start`, then iterate `add_question`, then `finalize`. Otherwise walk through manually:
+
 1. Scope: what's the **research goal** (single sentence)? Don't proceed without this.
 2. Audience: who's the **respondent**? How will they encounter the survey?
 3. Length budget: 60s / 90s / 3min / longer? Be honest with yourself before being honest with them.
 4. Hypotheses: what 2–4 things are you trying to prove or disprove? Each becomes a section.
-5. Match to template if available (use case in `references/use-cases.md`).
+5. Match to template if available — call `get_template` if MCP is up, else read `references/use-cases.md`.
 6. Walk through the 4-part hybrid structure, picking 1–3 questions per part.
 7. Modality: form / voice-mixed / AI-interviewer.
 8. Output schema: what columns/JSONB shape lands in the DB?
 
 ### When user says "Critique this survey"
+
+If `critique_survey` MCP tool is available, call it with the pasted survey and surface the typed `CritiqueReport`. Fetch `rethink://principles/{id}` if a flagged item needs explanation. Otherwise lint manually:
 
 1. Read the survey question by question.
 2. Check each against the seven principles. Note violations.
@@ -122,7 +137,14 @@ When the user names a use case that matches one of the three (or wants to fork f
 4. Check the length claim against actual estimated time.
 5. Return: a punch-list of issues + concrete rewrites for the worst 3–5 + a verdict on the overall instrument.
 
+### When user says "Score / cluster these responses"
+
+- Single response → call `score_response`. Batch → call `cluster_responses`. Both return rubric prompts + JSON Schema; the host LLM (you) then executes the extraction.
+- If MCP is unavailable, work from `references/scoring-framework.md`.
+
 ### When user says "Turn this into an app"
+
+No MCP tool for this — codegen stays host-side.
 
 1. Confirm the question set is final. If not → bounce back to `/design-survey`.
 2. Pick the stack: TanStack Start (we have a reference impl), Next.js, or static HTML. Default: TanStack Start if user has no preference and wants voice support.
@@ -131,6 +153,7 @@ When the user names a use case that matches one of the three (or wants to fork f
 
 ## Reference files (load on demand)
 
+- **`references/mcp-integration.md`** — full MCP tool/resource/prompt reference: when to call each tool, expected inputs/outputs, fallback rules. Read when first deciding tool-vs-manual, or when a tool call needs disambiguation.
 - **`references/design-principles.md`** — Jarrett, Dillman, Tourangeau primer + satisficing theory. Read when designing from scratch and the user wants the *why*.
 - **`references/question-library.md`** — battle-tested question patterns by part, with EN+ZH parallel text. Read when proposing specific questions.
 - **`references/use-cases.md`** — three full templates: event organizers, startup founders, gig-economy workers. Read when the user names a matching use case.
