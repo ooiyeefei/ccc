@@ -1,0 +1,9 @@
+{
+  "name": "agentic-toolkit",
+  "version": "0.1.0",
+  "description": "Reusable infrastructure for building agentic systems with multi-model councils, hierarchical sub-agents, and provenance-tracked tool loops. Lifted from production code (Brandling, 2026 BytePlus Seedance Beta hackathon) and hardened with depth caps + required provenance.",
+  "author": {
+    "name": "ooiyeefei"
+  },
+  "keywords": ["agents", "multi-agent", "council", "sub-agents", "tool-use", "ai-sdk", "tokenrouter"]
+}

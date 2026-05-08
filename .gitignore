@@ -1,2 +1,5 @@
 node_modules/
 test-document-skills/
+.playwright-mcp/
+firebase-debug.log
+firebase-debug.*.log
