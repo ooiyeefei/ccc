@@ -32,7 +32,17 @@ htmldrop init
 htmldrop auth setup
 ```
 
-Requires Node.js ≥ 18. For **AI converge**, also set an LLM key in your environment — `ANTHROPIC_API_KEY`, `OPENAI_API_KEY`, `GEMINI_API_KEY`, or `LLM_API_KEY`. The provider is auto-detected from the key prefix; no SDK install needed.
+Requires Node.js ≥ 18.
+
+### The AI key is optional (bring-your-own)
+
+Sharing and the **whole feedback loop work without any LLM key** — publish, password-protect, enable `--feedback`, and collect/pull/add/reply/clear comments. You only need an LLM key for the **AI features**: `htmldrop converge` (synthesizing feedback into an improved doc) and the dashboard’s AI insights.
+
+If you want those, set a key in your environment — `ANTHROPIC_API_KEY`, `OPENAI_API_KEY`, `GEMINI_API_KEY`, or `LLM_API_KEY`. The provider is auto-detected from the key prefix; no SDK install needed.
+
+- **Your key, your cost.** You pay your provider (Anthropic / OpenAI / Gemini) directly at their rates — htmldrop adds no markup and has no key of its own.
+- **It’s never stored.** The key is read from your terminal environment for a single run; the dashboard keeps it in browser session memory and clears it when you close the tab. Nothing is written to disk or any server.
+- **Handle it securely.** Keep it in an environment variable on your own terminal, don’t commit it, and rotate it if exposed.
 
 ---
 
