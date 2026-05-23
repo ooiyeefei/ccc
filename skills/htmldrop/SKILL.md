@@ -115,7 +115,7 @@ There is no separate "viewer link" vs "author link." Share the one URL and you a
 ### Prerequisites for this mode
 
 - `htmldrop auth setup` run once (creates the author API key). Add `--force` to regenerate it.
-- `converge` additionally needs `ANTHROPIC_API_KEY` in the environment and the optional SDK: `npm install @anthropic-ai/sdk`.
+- `converge` additionally needs an LLM API key (Anthropic, OpenAI, or Gemini) in the environment — `ANTHROPIC_API_KEY`, `OPENAI_API_KEY`, `GEMINI_API_KEY`, or `LLM_API_KEY`. The provider is auto-detected from the key; override with `--provider`/`--model`. No SDK install needed.
 
 ### Feedback & Converge Commands
 
@@ -189,7 +189,7 @@ When the user asks to create an HTML artifact AND share/review it:
 | Not initialized (simple share) | Run `htmldrop init` interactively |
 | Auth error on push | Run `htmldrop init` to re-authenticate |
 | Feedback command rejected / no author key | Run `htmldrop auth setup` once |
-| `converge` fails | Ensure `ANTHROPIC_API_KEY` is set and `npm install @anthropic-ai/sdk` is done |
+| `converge` fails | Ensure an LLM key is set (`ANTHROPIC_API_KEY` / `OPENAI_API_KEY` / `GEMINI_API_KEY` / `LLM_API_KEY`); pass `--provider` if the key prefix is unrecognized |
 | Feedback link changed unexpectedly | You likely passed `--new-doc`; omit it to keep the stable link |
 | File not found | Use absolute path |
 | Change password | Re-push with new `--password` (overwrites) |

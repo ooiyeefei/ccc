@@ -27,7 +27,7 @@ htmldrop init
 htmldrop auth setup
 ```
 
-Requires Node.js >= 18. The `converge` command additionally needs `ANTHROPIC_API_KEY` and `npm install @anthropic-ai/sdk`.
+Requires Node.js >= 18. The `converge` command additionally needs an LLM API key (Anthropic, OpenAI, or Gemini) in the environment — `ANTHROPIC_API_KEY`, `OPENAI_API_KEY`, `GEMINI_API_KEY`, or `LLM_API_KEY`. The provider is auto-detected from the key; no SDK install needed.
 
 ## Quick Start
 

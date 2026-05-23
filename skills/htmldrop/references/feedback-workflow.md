@@ -55,12 +55,11 @@ Use this sparingly — it abandons the old link and its comments.
    htmldrop auth setup --force
    ```
 
-2. **For `converge` only** — the synthesis step calls the Anthropic API directly:
+2. **For `converge` only** — the synthesis step calls an LLM. It supports **Anthropic, OpenAI, or Gemini**, and auto-detects the provider from the key prefix (`sk-ant-` → Anthropic, `AIza` → Gemini, `sk-` → OpenAI). Set whichever you have:
    ```bash
-   export ANTHROPIC_API_KEY=sk-ant-...
-   npm install @anthropic-ai/sdk
+   export ANTHROPIC_API_KEY=sk-ant-...   # or OPENAI_API_KEY / GEMINI_API_KEY / LLM_API_KEY
    ```
-   The SDK is an optional dependency, so install it in the project (or globally) before converging. `--dry-run` does NOT need the key or the SDK because it only prints the prompt.
+   No SDK install is needed (it uses raw fetch). Override provider/model explicitly with `--provider anthropic|openai|gemini` and `--model <id>` if desired. `--dry-run` needs no key — it only prints the prompt.
 
 ## The agent loop, step by step
 
@@ -176,8 +175,8 @@ This is destructive and cannot be undone — confirm with the user before runnin
 |-------|-------------|
 | Feedback command rejected / "no author key" | Run `htmldrop auth setup` once to create the author key in `~/.htmldrop/config.json`. |
 | Author key seems wrong or leaked | Regenerate with `htmldrop auth setup --force`. |
-| `converge` errors about API key | Set `ANTHROPIC_API_KEY` in the environment. |
-| `converge` errors about a missing module | `npm install @anthropic-ai/sdk` (it's an optional dependency). |
+| `converge` errors about API key | Set an LLM key in the environment: `ANTHROPIC_API_KEY`, `OPENAI_API_KEY`, `GEMINI_API_KEY`, or `LLM_API_KEY`. |
+| `converge` can't determine the provider | The key prefix is unrecognized — pass `--provider anthropic\|openai\|gemini` explicitly. |
 | Feedback URL changed unexpectedly | You passed `--new-doc`; omit it so the stable `docId` (and existing comments) are reused. |
 | Reviewers say they can't comment | Confirm the doc was pushed with `--feedback` (plain `push` produces a static Surge page with no widget). |
 | Comment landed at page level instead of on text | Pass `--on "<exact anchor text>"`; without it, comments are general/page-level. |
