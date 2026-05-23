@@ -18,7 +18,7 @@ Share any HTML file and get a hosted URL instantly. Powered by Surge.sh. Optiona
 
 ```bash
 # Install the htmldrop CLI
-npm install -g @ooiyeefei/htmldrop@latest
+npm install -g @yeefeiooi/htmldrop@latest
 
 # Initialize simple sharing (creates Surge account + picks your subdomain)
 htmldrop init

@@ -13,7 +13,7 @@ Publish any HTML file and get a shareable URL instantly via the `htmldrop` CLI. 
 ## Prerequisites
 
 - Node.js >= 18
-- `npm install -g @ooiyeefei/htmldrop@latest` (the binary is still `htmldrop`)
+- `npm install -g @yeefeiooi/htmldrop@latest` (the binary is still `htmldrop`)
 - For **simple share**: run `htmldrop init` once (sets up Surge account + subdomain)
 - For **feedback/converge**: run `htmldrop auth setup` once (generates an author API key in `~/.htmldrop/config.json`)
 
@@ -185,7 +185,7 @@ When the user asks to create an HTML artifact AND share/review it:
 
 | Issue | Fix |
 |-------|-----|
-| `htmldrop: command not found` | `npm install -g @ooiyeefei/htmldrop@latest` |
+| `htmldrop: command not found` | `npm install -g @yeefeiooi/htmldrop@latest` |
 | Not initialized (simple share) | Run `htmldrop init` interactively |
 | Auth error on push | Run `htmldrop init` to re-authenticate |
 | Feedback command rejected / no author key | Run `htmldrop auth setup` once |
