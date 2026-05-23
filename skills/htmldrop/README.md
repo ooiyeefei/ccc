@@ -1,6 +1,11 @@
-# htmldrop - Share HTML as Hosted Links
+# htmldrop — Share HTML as Hosted Links (+ collaborative feedback & AI converge)
 
-Share any HTML file and get a hosted URL instantly. Powered by Surge.sh. Optionally publish with an embedded annotation widget so reviewers can comment, then synthesize that feedback with AI.
+A Claude Code skill that publishes HTML files as shareable links, and — when you want review — embeds an annotation widget so others can comment, then synthesizes that feedback with AI. It wraps the `htmldrop` CLI; you just describe what you want in natural language.
+
+Two modes:
+
+1. **Simple share** — publish any HTML and get a public or password-protected link (free, via Surge.sh).
+2. **Collaborative feedback + converge** — publish with `--feedback` so reviewers highlight text and comment (no account, one stable link), then pull and synthesize that feedback into an improved version.
 
 ---
 
@@ -17,84 +22,89 @@ Share any HTML file and get a hosted URL instantly. Powered by Surge.sh. Optiona
 ## Prerequisites
 
 ```bash
-# Install the htmldrop CLI
+# Install the htmldrop CLI (the skill drives this)
 npm install -g @yeefeiooi/htmldrop@latest
 
-# Initialize simple sharing (creates Surge account + picks your subdomain)
+# One-time: Surge login + subdomain (for simple share)
 htmldrop init
 
-# One-time setup for the feedback/converge features (generates an author key)
+# One-time: author key (for feedback/converge)
 htmldrop auth setup
 ```
 
-Requires Node.js >= 18. The `converge` command additionally needs an LLM API key (Anthropic, OpenAI, or Gemini) in the environment — `ANTHROPIC_API_KEY`, `OPENAI_API_KEY`, `GEMINI_API_KEY`, or `LLM_API_KEY`. The provider is auto-detected from the key; no SDK install needed.
+Requires Node.js ≥ 18. For **AI converge**, also set an LLM key in your environment — `ANTHROPIC_API_KEY`, `OPENAI_API_KEY`, `GEMINI_API_KEY`, or `LLM_API_KEY`. The provider is auto-detected from the key prefix; no SDK install needed.
 
-## Quick Start
+---
 
-After installing, just ask Claude Code:
+## How you use it: just talk to Claude Code
 
-```
-"Share this HTML file"
-"Publish report.html"
-"Get me a link for this"
-"Make this shareable"
-```
+The skill recognizes intent from plain language and runs the right `htmldrop` command. The examples below are labeled (E1–E6) so you can follow a full review cycle, but each line works on its own.
 
-Or, for collaborative review:
+### Simple sharing
 
-```
-"Share this spec so the team can comment on it"
-"Get feedback on report.html"
-"What did reviewers say?"
-"Converge the feedback into a better version"
-```
+| You say | What the skill does |
+|---|---|
+| **E1.** “Share this report publicly: report.html” | `htmldrop push report.html` → returns the URL |
+| “Share spec.html but password-protect it” | asks for / generates a password, then `htmldrop push --password …` |
+| “Block crawlers from indexing it” | adds `--noindex` |
+| “List everything I’ve published” | `htmldrop list` |
 
-Or use the command directly:
+### Collaborative review (the feedback loop)
+
+| You say | What the skill does |
+|---|---|
+| **E2.** “Publish this spec so reviewers can comment on it” | `htmldrop push spec.html --feedback` → returns one stable Feedback URL |
+| **E3.** “What did reviewers say?” | `htmldrop feedback pull spec.html` → summarizes the comments |
+| **E4.** “Add a note backing up the Postgres choice, anchored to where it mentions PostgreSQL” | researches, then `htmldrop feedback add spec.html --on "PostgreSQL" --name "AI Research" --text …` |
+| **E5.** “Synthesize all the feedback into a better version” | `htmldrop converge spec.html` → writes `spec.converged.html` |
+| **E6.** “Publish the updated version” | re-push with `--feedback` → **same link**, comments intact |
+
+In **E2**, the Feedback URL is the single link everyone uses: reviewers open it, **select text → “+ Comment”**, and leave anchored comments with no account. You open the same link to see them inline.
+
+You can also use the direct command:
 
 ```
 /share report.html
 ```
 
-Claude Code will push the file and return a shareable URL.
+---
 
 ## Features
 
-- **Instant sharing**: One command to publish any HTML file
-- **Zero cost**: Hosted on Surge.sh for free
-- **Password protection**: Optionally restrict access with a password
-- **Works with generated HTML**: Claude Code can create an HTML report/spec and share it in one step
-- **List published files**: See all your shared files and their URLs
-- **Collaborative feedback**: Publish with `--feedback` to embed an annotation widget — reviewers highlight text and comment with no account, at one stable link
-- **AI converge**: Pull all feedback and synthesize an improved version of the document with `htmldrop converge`
+- **Instant sharing** — one request to publish any HTML file, free on Surge.sh
+- **Password protection** — AES-256 client-side encryption; share URL + password
+- **Works with generated HTML** — Claude Code can create a report/spec and share it in one step
+- **Collaborative feedback** — `--feedback` embeds an annotation widget; reviewers highlight + comment at one stable link, with replies and page-level notes
+- **Agent participation** — Claude can read feedback, post evidence-backed anchored comments, and reply
+- **AI converge** — synthesize all feedback into an improved document; supports **Anthropic, OpenAI, or Gemini** (auto-detected from your key, overridable)
+- **Converge Studio** — `htmldrop studio` opens a visual dashboard with segments, debate detection, and per-segment insights
 
-## Password Protection
+---
 
-To share a file with restricted access:
+## The agent loop
 
-```
-"Share spec.html but password-protect it"
-```
-
-Claude Code will ask for a password (or generate one), push the file, and give you both the URL and the password to share with recipients.
-
-## Collaborative Feedback & Converge
-
-Publish a doc, spec, or report with an embedded annotation widget so others can review it:
+The reason the feedback features exist: an agent can run the whole cycle for you.
 
 ```
-"Get feedback on report.html"
+generate doc → push --feedback → share link
+   → reviewers comment
+   → pull feedback → add researched/anchored comments → converge
+   → re-push (same link, comments intact) → repeat
 ```
 
-Claude Code pushes the file with `--feedback` and returns a single, stable Feedback URL. Reviewers open that link, highlight text, and comment — no account needed. Later, Claude can pull the feedback, post evidence-backed answers as comments, and run `htmldrop converge` to synthesize an improved version, then re-push to update the same link.
+Re-pushing keeps the **same URL** (the docId is reused), so the document iterates in place while reviewers keep the link they already have. See **`references/feedback-workflow.md`** for the full step-by-step.
 
-See `references/feedback-workflow.md` for the full agent loop.
+---
 
-## How It Works
+## How it works
 
-1. `htmldrop` wraps Surge.sh for static file hosting (simple share)
-2. Surge authentication is stored in `~/.netrc`; the feedback author key lives in `~/.htmldrop/config.json`
-3. Simple-share files are published to your chosen subdomain on surge.sh
-4. `--feedback` documents are served from the feedback worker at one stable `/doc/<uuid>` link that both reviewers and the author share
+1. `htmldrop` wraps Surge.sh for static hosting (simple share).
+2. Surge auth lives in `~/.netrc`; the feedback author key in `~/.htmldrop/config.json`.
+3. Simple-share files publish to your subdomain on surge.sh.
+4. `--feedback` documents are served from the feedback Worker at one stable `/doc/<uuid>` link used by both reviewers and the author.
+5. AI features use a bring-your-own LLM key — in the dashboard it’s held in session memory only and cleared when you close the browser.
+
+---
 
 ## License
 
