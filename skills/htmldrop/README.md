@@ -120,6 +120,16 @@ Re-pushing keeps the **same URL** (the docId is reused), so the document iterate
 4. `--feedback` documents are served from the feedback Worker at one stable `/doc/<uuid>` link used by both reviewers and the author.
 5. AI features use a bring-your-own LLM key — in the dashboard it’s held in session memory only and cleared when you close the browser.
 
+## Where comments live (data ownership)
+
+Surge hosts the HTML (stores nothing); a Cloudflare Worker + KV stores the **comments** (a static page can't accept writes). You choose whose Worker:
+
+- **Free tier (shared Worker):** zero setup; comments sit in *our* Cloudflare, **auto-expire after 90 days**, clearable anytime (`htmldrop feedback clear`), code is open-source. Honest caveat: convenient, but **not** zero-knowledge.
+- **Own your data (self-host):** deploy the Worker to *your* free Cloudflare account (`cd worker && wrangler deploy`), then `export HTMLDROP_WORKER_URL=https://your-worker.workers.dev` — now we see nothing.
+- **Comments in your repo (either tier):** `htmldrop feedback pull <file> --save` writes them to `<file>.feedback.json` — owned + versioned in your repo. Reviewers never need repo access; you sync.
+
+No database to manage — storage is Cloudflare KV only (no Supabase/Postgres).
+
 ---
 
 ## License
