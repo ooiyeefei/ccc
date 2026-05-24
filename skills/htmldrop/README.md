@@ -87,7 +87,7 @@ You can also use the direct command:
 - **Instant sharing** — one request to publish any HTML file, free on Surge.sh
 - **Password protection** — AES-256 client-side encryption; share URL + password
 - **Works with generated HTML** — Claude Code can create a report/spec and share it in one step
-- **Collaborative feedback** — `--feedback` embeds an annotation widget; reviewers highlight + comment at one stable link, with replies and page-level notes
+- **Collaborative feedback** — `--feedback` embeds an annotation widget; reviewers highlight text **or drag a box over an area** (▢) and comment at one stable link, with replies and page-level notes
 - **Private feedback** — combine `--feedback --password` so a password-protected doc still collects comments (widget appears after decryption)
 - **Teammate / multi-agent review** — anyone with the link can read + comment via `feedback read`, `feedback add --doc-id`, and `fetch` (no ownership, no key); their Claude/Codex session participates the same way
 - **Roles** — reviewers (link holders) read + comment; the owner (author-key holder) additionally `converge`s and clears — so synthesis stays with the publisher

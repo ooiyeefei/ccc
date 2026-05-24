@@ -105,7 +105,7 @@ https://htmldrop-feedback.htmldrop.workers.dev/doc/<uuid>
 
 That single `/doc/<uuid>` link serves everyone:
 
-- **Reviewers** open it, highlight any text, and leave comments — **no account, no login**. They comment anonymously (an optional name field is available).
+- **Reviewers** open it, highlight any text (or drag a box over an area via the **▢** toggle) and leave comments — **no account, no login**. They comment anonymously (an optional name field is available).
 - **The author** uses the same link to see the page with all comments rendered inline.
 
 There is no separate "viewer link" vs "author link." Share the one URL and you are done.
