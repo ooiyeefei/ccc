@@ -123,13 +123,18 @@ There is no separate "viewer link" vs "author link." Share the one URL and you a
 |---------|---------|
 | `htmldrop auth setup [--force]` | One-time: generate an author API key. Required before any feedback feature. |
 | `htmldrop push <file> --feedback` | Publish with the annotation widget; prints a stable Feedback URL. Re-push same file → same link, comments preserved. |
+| `htmldrop push <file> --feedback --password <pw>` | Feedback-enabled **private** doc — the widget appears after the viewer decrypts. Review link is the password-gated URL (reviewers need the password). |
 | `htmldrop push <file> --feedback --new-doc` | Force a fresh feedback doc/link (clean slate). |
-| `htmldrop feedback pull <file> [--json]` | Retrieve all feedback (comments + replies) for a file. |
+| `htmldrop feedback pull <file> [--json]` | Retrieve feedback for **your own** file (uses local manifest + author key). |
+| `htmldrop feedback read <docId\|url> [--json]` | Read feedback for **any** doc by id or link — no ownership/manifest. Use this when reviewing a teammate's doc. |
 | `htmldrop feedback list` | List which published files have feedback enabled. |
-| `htmldrop feedback add <file> --text "..." [--name "..."] [--on "<anchor text>"] [--parent-id <id>]` | Post a comment programmatically (the agent write path). `--on` anchors to specific text; default is page-level. `--parent-id` replies to a comment. |
-| `htmldrop feedback clear <file>` | Delete all feedback for a file (author only). |
-| `htmldrop converge <file> [--dry-run]` | Pull all feedback → send to Claude → write `<file>.converged.html`. `--dry-run` prints the prompt without calling the API. |
+| `htmldrop feedback add [file] --text "..." [--doc-id <id\|url>] [--name "..."] [--on "<anchor>"] [--parent-id <id>]` | Post a comment (the agent write path). `--doc-id` comments on a doc you didn't publish; `--on` anchors to text; `--parent-id` replies. |
+| `htmldrop feedback clear <file>` | Delete all feedback for a file (**owner only**). |
+| `htmldrop fetch <url> [--password <pw>] [--out <f>]` | Fetch + decrypt a published doc so the agent can read its content (use with a teammate's link + password). |
+| `htmldrop converge <file> [--dry-run]` | Pull all feedback → LLM → write `<file>.converged.html` (**owner only**). `--dry-run` prints the prompt without calling the API. |
 | `htmldrop studio [--port <n>] [--no-browser]` | Open the local "Converge Studio" dashboard to review feedback + trigger AI insights. |
+
+**Roles:** anyone with the link is a **reviewer** (read + comment, via `feedback read` / `feedback add --doc-id` / `fetch` — no key). The **owner** (author-key holder who published) additionally runs `converge` and `feedback clear`. So a teammate's Claude/Codex session can fully review a shared doc, but only the owner synthesizes/converges it.
 
 ### The Agent Loop
 

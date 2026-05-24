@@ -68,8 +68,11 @@ The skill recognizes intent from plain language and runs the right `htmldrop` co
 | **E4.** “Add a note backing up the Postgres choice, anchored to where it mentions PostgreSQL” | researches, then `htmldrop feedback add spec.html --on "PostgreSQL" --name "AI Research" --text …` |
 | **E5.** “Synthesize all the feedback into a better version” | `htmldrop converge spec.html` → writes `spec.converged.html` |
 | **E6.** “Publish the updated version” | re-push with `--feedback` → **same link**, comments intact |
+| **E7.** (teammate) “Review this doc they shared: <link> — read the comments and add mine” | `htmldrop feedback read <link>`, then `htmldrop feedback add --doc-id <link> …` — no ownership needed |
 
 In **E2**, the Feedback URL is the single link everyone uses: reviewers open it, **select text → “+ Comment”**, and leave anchored comments with no account. You open the same link to see them inline.
+
+For a **private doc**, add `--password` to E2 (“publish it privately but still collect feedback”) — the widget appears after the viewer decrypts. In **E7**, a teammate's agent can also run `htmldrop fetch <link> --password <pw>` to read the protected content before commenting.
 
 You can also use the direct command:
 
@@ -85,6 +88,9 @@ You can also use the direct command:
 - **Password protection** — AES-256 client-side encryption; share URL + password
 - **Works with generated HTML** — Claude Code can create a report/spec and share it in one step
 - **Collaborative feedback** — `--feedback` embeds an annotation widget; reviewers highlight + comment at one stable link, with replies and page-level notes
+- **Private feedback** — combine `--feedback --password` so a password-protected doc still collects comments (widget appears after decryption)
+- **Teammate / multi-agent review** — anyone with the link can read + comment via `feedback read`, `feedback add --doc-id`, and `fetch` (no ownership, no key); their Claude/Codex session participates the same way
+- **Roles** — reviewers (link holders) read + comment; the owner (author-key holder) additionally `converge`s and clears — so synthesis stays with the publisher
 - **Agent participation** — Claude can read feedback, post evidence-backed anchored comments, and reply
 - **AI converge** — synthesize all feedback into an improved document; supports **Anthropic, OpenAI, or Gemini** (auto-detected from your key, overridable)
 - **Converge Studio** — `htmldrop studio` opens a visual dashboard with segments, debate detection, and per-segment insights

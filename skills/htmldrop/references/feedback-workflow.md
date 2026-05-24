@@ -159,6 +159,26 @@ Options:
 
 The Studio lets you review incoming feedback and trigger AI insights from a web UI instead of the command line. It is a convenience layer over the same feedback data the CLI commands use.
 
+## Reviewing a teammate's doc (no ownership)
+
+When the doc was published by someone else, you don't have it in your manifest and you aren't the owner — but you can still fully review it from just the link they shared (plus the password, if it's a private doc). This is the teammate / second-agent flow:
+
+```bash
+# Read the document content (decrypts a password-protected page so you can analyze it)
+htmldrop fetch https://their-subdomain.surge.sh/spec.html --password the-shared-password
+
+# Read every reviewer comment — by the /doc/<id> link or a bare docId, no key needed
+htmldrop feedback read https://htmldrop-feedback.htmldrop.workers.dev/doc/<id>
+
+# Add your own comment, optionally anchored to exact text
+htmldrop feedback add --doc-id <id|url> \
+  --text "Have we considered rate-limiting here?" \
+  --on "the exact phrase from the doc" \
+  --name "Reviewer name"
+```
+
+`feedback read`, `feedback add --doc-id`, and `fetch` all work without the author key or a local manifest entry — they only need the link. What you **cannot** do as a non-owner is `converge` or `feedback clear`; those stay with whoever published the doc (they hold the author key). So a teammate's agent contributes feedback freely, while synthesis/cleanup remains the owner's decision.
+
 ## Clearing feedback
 
 To wipe all comments for a document (author only):
