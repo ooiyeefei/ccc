@@ -165,7 +165,8 @@ When the doc was published by someone else, you don't have it in your manifest a
 
 ```bash
 # Read the document content (decrypts a password-protected page so you can analyze it)
-htmldrop fetch https://their-subdomain.surge.sh/spec.html --password the-shared-password
+# Bare --password reads $HTMLDROP_PASSWORD or prompts hidden, keeping the secret out of shell history.
+htmldrop fetch https://their-subdomain.surge.sh/spec.html --password
 
 # Read every reviewer comment — by the /doc/<id> link or a bare docId, no key needed
 htmldrop feedback read https://htmldrop-feedback.htmldrop.workers.dev/doc/<id>
