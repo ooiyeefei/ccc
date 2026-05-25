@@ -85,7 +85,7 @@ You can also use the direct command:
 ## Features
 
 - **Instant sharing** — one request to publish any HTML file, free on Surge.sh
-- **Password protection** — AES-256 client-side encryption; share URL + password
+- **Password protection** — AES-256 client-side encryption; share URL + password. The password is stored **nowhere** (encrypts in memory, then discarded) — save it yourself, since a forgotten one can't be recovered (just re-push)
 - **Works with generated HTML** — Claude Code can create a report/spec and share it in one step
 - **Collaborative feedback** — `--feedback` embeds an annotation widget; reviewers highlight text **or drag a box over an area** (▢) and comment at one stable link, with replies and page-level notes
 - **Private feedback** — combine `--feedback --password` so a password-protected doc still collects comments (widget appears after decryption)
