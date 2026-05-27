@@ -119,11 +119,20 @@ If you omit both `--on` and `--parent-id`, the comment is attached at the page l
 
 ### 5. Converge — synthesize into an improved document
 
+There are **two ways** to converge, and the difference matters:
+
+| Path | Command | Who resolves disagreements |
+|------|---------|----------------------------|
+| **One-shot (automated)** | `htmldrop converge <file>` | The LLM auto-resolves everything itself and writes `<file>.converged.html`. |
+| **Interactive (human-in-the-loop)** | Claude/Codex edits the doc directly | The agent folds in clear wins, but escalates judgment calls to the human. |
+
+#### One-shot: `htmldrop converge`
+
 ```bash
 htmldrop converge /home/user/report.html
 ```
 
-This pulls all feedback, sends the document plus the comments to Claude, and writes an improved copy to `report.html.converged.html` (it does NOT overwrite your source). Inspect the result, and once it looks right, promote it to the working file:
+This pulls all feedback, sends the document plus the comments to Claude, and writes an improved copy to `report.html.converged.html` (it does NOT overwrite your source). It **auto-resolves** disagreements on its own — fast, but it makes the hard calls for you. Inspect the result, and once it looks right, promote it to the working file:
 
 ```bash
 cp /home/user/report.html.converged.html /home/user/report.html
@@ -136,6 +145,40 @@ htmldrop converge /home/user/report.html --dry-run
 ```
 
 This prints the assembled prompt (document + feedback) so you can sanity-check it.
+
+#### Interactive: two-tier folding (when the agent edits in place)
+
+When Claude/Codex is editing the document directly (rather than running the one-shot command), sort each piece of feedback into one of two tiers:
+
+- **Clear wins — fold them in directly.** Objective improvements with nothing to decide: a vague success metric → a concrete, measurable target; a factual error → the correct figure; a broken link → the fixed one. Just make the edit.
+- **Judgment calls — leave them for the human.** Genuine disagreements, strategic forks, or trade-offs with no objectively-correct answer (e.g. "ship iOS-first vs Android-first"). Do **not** silently pick one. Leave that part of the doc unchanged and lay out both sides with a recommendation, so the human makes the call.
+
+The distinction is deliberate: `htmldrop converge` is the automated one-shot that auto-resolves; the agent-driven edit-in-place flow keeps the human in the loop on the hard calls. Use the one-shot when speed beats judgment; use edit-in-place when the forks are strategic and a human should own them.
+
+### 5b. Close the loop — post resolutions back as replies
+
+After you fold in a comment (clear win) **or** the human decides an open item (judgment call), post the resolution back as a **reply on that reviewer's comment**. This keeps the conversation on the artifact instead of in a side channel: when the reviewer refreshes the link they see their original comment → that it was addressed → and the reasoning. This is the "the document evolves from the conversation" loop.
+
+```bash
+# 1. Get comment ids
+htmldrop feedback pull /home/user/report.html --json
+
+# 2. Reply on the specific comment with how it was resolved
+htmldrop feedback add /home/user/report.html \
+  --parent-id <id> \
+  --name "<reviewer's author label or your own>" \
+  --text "Folded in — success metric is now 'p95 < 200ms at 1k RPS'."
+```
+
+**Private-doc nuance:** a password-gated doc needs `--password <pw>` on the reply too. Gated feedback requires the access token derived from the password, so without it the reply is rejected:
+
+```bash
+htmldrop feedback add /home/user/report.html \
+  --parent-id <id> \
+  --name "AI Research" \
+  --text "Resolved as discussed." \
+  --password <pw>
+```
 
 ### 6. Re-push to update the same link
 
@@ -209,4 +252,6 @@ This is destructive and cannot be undone — confirm with the user before runnin
 - One `--feedback` push = one stable link that both reviewers and the author share.
 - Reviewers need nothing but the link.
 - Claude reads feedback (`pull`), answers it with researched evidence (`add --on`), and rewrites the doc (`converge`).
+- Two converge paths: `htmldrop converge` auto-resolves everything (one-shot); editing in place folds in clear wins but leaves judgment calls for the human.
+- Close the loop: post each resolution back as a `--parent-id` reply so reviewers see it on the document (use `--password` for private docs).
 - Re-pushing the same file keeps the link and comments — that's the loop.

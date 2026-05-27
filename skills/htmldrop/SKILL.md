@@ -131,7 +131,7 @@ There is no separate "viewer link" vs "author link." Share the one URL and you a
 | `htmldrop feedback add [file] --text "..." [--doc-id <id\|url>] [--name "..."] [--on "<anchor>"] [--parent-id <id>]` | Post a comment (the agent write path). `--doc-id` comments on a doc you didn't publish; `--on` anchors to text; `--parent-id` replies. |
 | `htmldrop feedback clear <file>` | Delete all feedback for a file (**owner only**). |
 | `htmldrop fetch <url> [--password <pw>] [--out <f>]` | Fetch + decrypt a published doc so the agent can read its content (use with a teammate's link + password). |
-| `htmldrop converge <file> [--dry-run]` | Pull all feedback → LLM → write `<file>.converged.html` (**owner only**). `--dry-run` prints the prompt without calling the API. |
+| `htmldrop converge <file> [--dry-run]` | One-shot: pull all feedback → LLM → write `<file>.converged.html`, **auto-resolving** disagreements (**owner only**). `--dry-run` prints the prompt without calling the API. |
 | `htmldrop studio [--port <n>] [--no-browser]` | Open the local "Converge Studio" dashboard to review feedback + trigger AI insights. |
 
 **Roles:** anyone with the link is a **reviewer** (read + comment, via `feedback read` / `feedback add --doc-id` / `fetch` — no key). The **owner** (author-key holder who published) additionally runs `converge` and `feedback clear`. So a teammate's Claude/Codex session can fully review a shared doc, but only the owner synthesizes/converges it.
@@ -160,19 +160,24 @@ When Claude generates a doc/spec/report and the user wants collaborative review,
    ```
    Use `--parent-id <id>` to reply directly under a specific reviewer comment instead of anchoring to text.
 
-4. **Converge** — synthesize all comments into an improved document:
-   ```bash
-   htmldrop converge /path/to/doc.html
-   ```
-   This writes `/path/to/doc.html.converged.html`. Review it, then promote it to the working file (e.g., copy it over `doc.html`) once it looks right. Use `--dry-run` first to inspect the prompt without spending an API call.
+4. **Converge** — synthesize all comments into an improved document. Two paths:
+   - **One-shot (automated):** `htmldrop converge /path/to/doc.html` pulls all feedback, calls an LLM, and writes `/path/to/doc.html.converged.html`. It **auto-resolves** disagreements itself. Review it, then promote it over `doc.html` once it looks right. Use `--dry-run` first to inspect the prompt without spending an API call.
+   - **Interactive (human-in-the-loop):** when you edit the doc directly instead, work in two tiers — **fold in the clear wins** (objective improvements with nothing to decide, e.g. a vague success metric → a concrete, measurable target) but **leave judgment calls for the human** (genuine disagreements / strategic forks, e.g. "ship iOS-first vs Android-first"): don't silently pick one — leave that part unchanged and lay out both sides with a recommendation so the human decides.
 
-5. **Re-push to the same link** — publish the improved version so reviewers see it update in place:
+5. **Close the loop — post resolutions back as replies.** After you fold in a comment or the human decides an open item, reply on that reviewer's comment so the resolution lives on the document (reviewer refreshes the link → sees their comment was addressed → and why):
+   ```bash
+   htmldrop feedback pull /path/to/doc.html --json   # get comment ids
+   htmldrop feedback add /path/to/doc.html --parent-id <id> --name "<author>" --text "<how it was resolved>"
+   ```
+   For a **password-gated** doc, add `--password <pw>` to the reply (gated feedback requires the token derived from the password).
+
+6. **Re-push to the same link** — publish the improved version so reviewers see it update in place:
    ```bash
    htmldrop push /path/to/doc.html --feedback
    ```
    Same URL, comments intact. The loop can repeat as more feedback arrives.
 
-For the detailed walkthrough, the single-URL mechanics, anchoring rules, and troubleshooting, read **`references/feedback-workflow.md`**.
+For the detailed walkthrough — single-URL mechanics, anchoring rules, the two-tier converge (clear wins vs. judgment calls), closing the loop with reply resolutions, and troubleshooting — read **`references/feedback-workflow.md`**.
 
 ---
 
