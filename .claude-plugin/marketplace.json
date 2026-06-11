@@ -6,13 +6,18 @@
   },
   "metadata": {
     "description": "Custom Claude Code plugins and skills",
-    "version": "1.2.0"
+    "version": "1.3.0"
   },
   "plugins": [
     {
       "name": "deckling",
       "description": "Generate professional PPTX presentations using Anthropic Platform Skills API",
       "source": "./plugins/deckling"
+    },
+    {
+      "name": "mvp-launch",
+      "description": "Web app MVP launch readiness checker. Analyzes existing codebases against a battle-tested 10-point checklist (Stripe, mobile, onboarding, AI stability, emails, logging, feedback, auth, domain, database) via /launch-check.",
+      "source": "./plugins/mvp-launch"
     },
     {
       "name": "product-management",
@@ -26,12 +31,17 @@
     },
     {
       "name": "ccc-skills",
-      "description": "Collection of skills and commands including Excalidraw diagrams and Streak challenge tracker",
+      "description": "Collection of skills and commands: Excalidraw diagrams, Streak challenge tracker, agentic system design, self-improving systems, htmldrop HTML sharing, landing page GTM, and UAT testing",
       "source": "./",
       "strict": false,
       "skills": [
         "./skills/excalidraw",
-        "./skills/streak"
+        "./skills/streak",
+        "./skills/agentic-system-design",
+        "./skills/self-improving-systems",
+        "./skills/htmldrop",
+        "./skills/landing-page-gtm",
+        "./skills/uat-testing"
       ],
       "commands": [
         "./commands/streak.md",

@@ -9,8 +9,15 @@ Custom plugins and skills for [Claude Code](https://github.com/anthropics/claude
 | [deckling](./plugins/deckling) | Plugin | Generate PPTX presentations using Anthropic Platform Skills API | `/plugin install deckling@ccc` |
 | [mvp-launch](./plugins/mvp-launch) | Plugin | MVP launch readiness checker with `/launch-check` command | `/plugin install mvp-launch@ccc` |
 | [product-management](./plugins/product-management) | Plugin | AI-native PM: competitor research, gap analysis, WINNING prioritization | `/plugin install product-management@ccc` |
+| [rethink-surveys](./plugins/rethink-surveys) | Plugin | Survey design grounded in research methods (Jarrett, Dillman, Tourangeau) with design/critique/app-scaffold commands + bundled MCP server | `/plugin install rethink-surveys@ccc` |
+| [agentic-toolkit](./plugins/agentic-toolkit) | Reference package | Reusable TypeScript infrastructure for multi-model councils, sub-agent hierarchies, and provenance-tracked tool loops | Copy the source — see [README](./plugins/agentic-toolkit/README.md) |
 | [excalidraw](./skills/excalidraw) | Skill | Generate architecture diagrams as `.excalidraw` files with optional PNG/SVG export | `/plugin install ccc-skills@ccc` |
 | [streak](./skills/streak) | **Skill + Commands** | Universal challenge tracker with `/streak`, `/streak-new`, etc. | `/plugin install ccc-skills@ccc` |
+| [agentic-system-design](./skills/agentic-system-design) | Skill | 12-stage Q&A workflow for designing agentic pipelines, councils, and sub-agent hierarchies | `/plugin install ccc-skills@ccc` |
+| [self-improving-systems](./skills/self-improving-systems) | Skill | Decide whether your agent actually needs memory/feedback/learning — then design the smallest thing that pays for itself | `/plugin install ccc-skills@ccc` |
+| [htmldrop](./skills/htmldrop) | Skill | Publish HTML as shareable links (Surge.sh) with collaborative annotation + AI converge | `/plugin install ccc-skills@ccc` |
+| [landing-page-gtm](./skills/landing-page-gtm) | Skill | High-converting SaaS landing pages with GTM-aware copy and competitive positioning | `/plugin install ccc-skills@ccc` |
+| [uat-testing](./skills/uat-testing) | Skill | End-to-end UAT for web apps via Playwright: test case generation, execution, pass/fail reports | `/plugin install ccc-skills@ccc` |
 
 ---
 
@@ -20,14 +27,17 @@ Custom plugins and skills for [Claude Code](https://github.com/anthropics/claude
 # Add this repo as a marketplace
 /plugin marketplace add ooiyeefei/ccc
 
-# Install the deckling plugin (has /deckling command)
+# Install a plugin (e.g. deckling, which has the /deckling command)
 /plugin install deckling@ccc
 
-# Install the skills collection (includes excalidraw and streak)
+# Install the skills collection (excalidraw, streak, agentic-system-design,
+# self-improving-systems, htmldrop, landing-page-gtm, uat-testing)
 /plugin install ccc-skills@ccc
 ```
 
 ---
+
+# Plugins
 
 ## Plugin: Deckling
 
@@ -68,6 +78,92 @@ See [plugins/mvp-launch/README.md](./plugins/mvp-launch/README.md) for full docu
 
 ---
 
+## Plugin: Product Management
+
+AI-native product management for startups. Process signals, not features.
+
+**After installing, just ask Claude Code:**
+```
+"Analyze my product"
+"Research competitors"
+"Find feature gaps we should build"
+"What should we build next?"
+```
+
+### Key Commands
+
+```bash
+/pm analyze     # Deep product understanding
+/pm landscape   # Market overview + competitors
+/pm gaps        # Batch gap analysis with WINNING scores
+/pm file        # Create GitHub Issues for top priorities
+/pm roadmap     # Organize into Now/Next/Later
+```
+
+### WINNING Filter
+
+Prioritize with objective scoring: `WINNING = Pain × Timing × Execution`
+
+- **40-60**: FILE (high conviction)
+- **25-39**: WAIT (monitor)
+- **0-24**: SKIP (not worth it)
+
+### spec-kit Integration
+
+This skill handles **WHAT to build** (product discovery). For **HOW to build**, use [spec-kit](https://github.com/github/spec-kit):
+
+```
+/pm file → GitHub Issue → /speckit.specify → /speckit.plan → /speckit.implement
+```
+
+The GitHub Issue IS the handoff—no extra command needed.
+
+See [plugins/product-management/README.md](./plugins/product-management/README.md) for full documentation.
+
+---
+
+## Plugin: Rethink Surveys
+
+Survey design framework grounded in proven research methods — Caroline Jarrett's *Surveys That Work*, Dillman's Tailored Design, and Tourangeau's cognitive model. Captures what people are actually trying to do (past behavior, not hypotheticals) without leading questions, satisficing bait, or shallow Likert noise.
+
+```bash
+/design-survey     # Interactive design session for a new survey
+/critique-survey   # Jarrett-style critique of an existing survey
+/turn-into-app     # Turn a finalized design into a working app scaffold
+```
+
+**Features:**
+- 4-part hybrid structure: discovery / diagnostic / intent / segmentation
+- Question library with behavioral anchors
+- Three battle-tested templates: event organizers, startup founders, gig-economy workers
+- Text, voice, and AI-interviewer modalities
+- Bundles the `rethink-survey` MCP server for designing, critiquing, scoring, and clustering survey responses
+
+See [plugins/rethink-surveys](./plugins/rethink-surveys) for full documentation.
+
+---
+
+## Plugin: Agentic Toolkit (Reference Package)
+
+Reusable TypeScript infrastructure for building agentic systems with multi-model councils, hierarchical sub-agents, and provenance-tracked tool loops. Lifted from production code and hardened with depth caps and required provenance.
+
+This is a **reference package to copy from**, not an installable command plugin — the point is to save a week of plumbing per new agentic project.
+
+**The five components:**
+1. **Gateway adapter** — one provider seam for Claude / GPT / Gemini behind a unified endpoint (TokenRouter, OpenRouter, LiteLLM, Vercel AI Gateway)
+2. **Models registry** — typed role → `{ model, knobs }` bindings, with per-model quirks in one place
+3. **Sub-agent runner** — depth cap, per-parent spawn cap, wall-clock timeout, typed results
+4. **Events** — typed `AgentSseEvent` union for streaming agent progress
+5. **Provenance** — required `_source` tagging so cached vs. live generations are never ambiguous
+
+Pairs well with the [agentic-system-design](./skills/agentic-system-design) skill: design the system with the skill, build it with the toolkit.
+
+See [plugins/agentic-toolkit/README.md](./plugins/agentic-toolkit/README.md) for full documentation.
+
+---
+
+# Skills
+
 ## Skill: Excalidraw Generator
 
 Generate architecture diagrams from any codebase as `.excalidraw` files, with optional PNG and SVG export.
@@ -93,7 +189,7 @@ See [skills/excalidraw/SKILL.md](./skills/excalidraw/SKILL.md) for full document
 
 ---
 
-## Streak - Challenge Tracker
+## Skill: Streak - Challenge Tracker
 
 Universal challenge tracker with flexible cadence, intelligent insights, and cross-challenge learning detection.
 
@@ -140,47 +236,100 @@ See [skills/streak/SKILL.md](./skills/streak/SKILL.md) for full documentation.
 
 ---
 
-## Plugin: Product Management
+## Skill: Agentic System Design
 
-AI-native product management for startups. Process signals, not features.
+Prescriptive design partner for any agentic system: tool-loop agents, multi-model councils, sub-agent hierarchies, plan-execute pipelines, handoff networks. Walks you through a 12-stage Q&A flow — one question at a time — and emits a buildable design doc with citations.
 
 **After installing ccc-skills, just ask Claude Code:**
 ```
-"Analyze my product"
-"Research competitors"
-"Find feature gaps we should build"
-"What should we build next?"
+"Design an agent that does HAZOP analysis"
+"Should I use a multi-model council for finance review?"
+"I want to build an AI brand strategist — orchestrator-worker or handoff?"
+"Real agency or workflow?"
 ```
 
-### Key Commands
+**Opinionated by design:** most "agent" requests are workflows; most "council" requests are wasteful; most depth-3 hierarchies are depth-2 with a tool that needed renaming. The skill filters ruthlessly *before* you start building — via an agent-washing rubric, council-decision test, and depth-3 sanity check.
 
-```bash
-/pm analyze     # Deep product understanding
-/pm landscape   # Market overview + competitors
-/pm gaps        # Batch gap analysis with WINNING scores
-/pm file        # Create GitHub Issues for top priorities
-/pm roadmap     # Organize into Now/Next/Later
+See [skills/agentic-system-design/SKILL.md](./skills/agentic-system-design/SKILL.md) for full documentation.
+
+---
+
+## Skill: Self-Improving Systems
+
+Decide whether your agent actually needs persistent memory, feedback loops, or closed-loop learning — then design the smallest thing that pays for itself.
+
+**After installing ccc-skills, just ask Claude Code:**
+```
+"Add memory to my agent"
+"Make my marketing agent learn from past campaigns"
+"Should I use mem0 or Letta?"
+"Why does my agent keep making the same mistake?"
 ```
 
-### WINNING Filter
+**Headline message:** most agents shouldn't have persistent memory. Memory is a liability surface (drift, poisoning, debugging difficulty, GDPR/HIPAA exposure). The skill's first two stages exist to stop over-engineering — most users discover they want a state cache (or stateless RAG), not memory + learning. Default position: scratchpad-only with a stateless agent shipped first.
 
-Prioritize with objective scoring: `WINNING = Pain × Timing × Execution`
+See [skills/self-improving-systems/SKILL.md](./skills/self-improving-systems/SKILL.md) for full documentation.
 
-- **40-60**: FILE (high conviction)
-- **25-39**: WAIT (monitor)
-- **0-24**: SKIP (not worth it)
+---
 
-### spec-kit Integration
+## Skill: htmldrop
 
-This skill handles **WHAT to build** (product discovery). For **HOW to build**, use [spec-kit](https://github.com/github/spec-kit):
+Publish any HTML file as a shareable link instantly, with optional collaborative review. Wraps the [`htmldrop` CLI](https://www.npmjs.com/package/@yeefeiooi/htmldrop) — you just describe what you want in natural language.
 
+**Two modes:**
+1. **Simple share** — public or password-protected link via free Surge.sh hosting
+2. **Collaborative feedback + converge** — publish with an embedded annotation widget so reviewers highlight text and comment (no account needed), then pull the feedback and synthesize an improved version with AI
+
+**After installing ccc-skills, just ask Claude Code:**
 ```
-/pm file → GitHub Issue → /speckit.specify → /speckit.plan → /speckit.implement
+"Share this HTML report"
+"Publish this and let people comment on it"
+"What did reviewers say? Converge the feedback"
 ```
 
-The GitHub Issue IS the handoff—no extra command needed.
+**Prerequisites:** Node.js >= 18 and `npm install -g @yeefeiooi/htmldrop@latest`.
 
-See [plugins/product-management/README.md](./plugins/product-management/README.md) for full documentation.
+See [skills/htmldrop/README.md](./skills/htmldrop/README.md) for quick start guide.
+See [skills/htmldrop/SKILL.md](./skills/htmldrop/SKILL.md) for full documentation.
+
+---
+
+## Skill: Landing Page GTM
+
+Build conversion-focused SaaS landing pages that sell — not just describe. Combines product research, competitive positioning, sales copywriting, and frontend implementation into a single workflow.
+
+**After installing ccc-skills, just ask Claude Code:**
+```
+"Build a landing page for this product"
+"Rewrite the feature cards as sales copy"
+"Update the pricing page with competitive positioning"
+```
+
+**Workflow:** researches the actual product first (never invents features), studies competitors, then writes GTM-aware copy and implements it in your existing design system.
+
+See [skills/landing-page-gtm/SKILL.md](./skills/landing-page-gtm/SKILL.md) for full documentation.
+
+---
+
+## Skill: UAT Testing
+
+End-to-end User Acceptance Testing for web applications: analyze → generate test cases → set up environment → execute → report.
+
+**After installing ccc-skills, just ask Claude Code:**
+```
+"Run UAT on this branch"
+"Test this feature against the spec"
+"Generate test cases for my changes"
+```
+
+**Features:**
+- Analyzes branch diff and specs to generate exhaustive test cases (happy path, errors, persistence, auth, responsive)
+- Sets up local dev server or targets staging/production
+- Executes tests via Playwright browser automation
+- Produces pass/fail results report with screenshots and fix documentation
+
+See [skills/uat-testing/README.md](./skills/uat-testing/README.md) for quick start guide.
+See [skills/uat-testing/SKILL.md](./skills/uat-testing/SKILL.md) for full documentation.
 
 ---
 
@@ -220,3 +369,15 @@ If you find CCC useful, consider supporting its development:
 ## License
 
 MIT
+
+---
+
+## Star History
+
+<a href="https://www.star-history.com/?repos=ooiyeefei%2Fccc&type=date&legend=top-left">
+ <picture>
+   <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/chart?repos=ooiyeefei/ccc&type=date&theme=dark&legend=top-left" />
+   <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/chart?repos=ooiyeefei/ccc&type=date&legend=top-left" />
+   <img alt="Star History Chart" src="https://api.star-history.com/chart?repos=ooiyeefei/ccc&type=date&legend=top-left" />
+ </picture>
+</a>
