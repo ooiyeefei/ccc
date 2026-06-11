@@ -250,6 +250,7 @@ Prescriptive design partner for any agentic system: tool-loop agents, multi-mode
 
 **Opinionated by design:** most "agent" requests are workflows; most "council" requests are wasteful; most depth-3 hierarchies are depth-2 with a tool that needed renaming. The skill filters ruthlessly *before* you start building — via an agent-washing rubric, council-decision test, and depth-3 sanity check.
 
+See [skills/agentic-system-design/README.md](./skills/agentic-system-design/README.md) for quick start guide.
 See [skills/agentic-system-design/SKILL.md](./skills/agentic-system-design/SKILL.md) for full documentation.
 
 ---
@@ -268,6 +269,7 @@ Decide whether your agent actually needs persistent memory, feedback loops, or c
 
 **Headline message:** most agents shouldn't have persistent memory. Memory is a liability surface (drift, poisoning, debugging difficulty, GDPR/HIPAA exposure). The skill's first two stages exist to stop over-engineering — most users discover they want a state cache (or stateless RAG), not memory + learning. Default position: scratchpad-only with a stateless agent shipped first.
 
+See [skills/self-improving-systems/README.md](./skills/self-improving-systems/README.md) for quick start guide.
 See [skills/self-improving-systems/SKILL.md](./skills/self-improving-systems/SKILL.md) for full documentation.
 
 ---
@@ -307,6 +309,7 @@ Build conversion-focused SaaS landing pages that sell — not just describe. Com
 
 **Workflow:** researches the actual product first (never invents features), studies competitors, then writes GTM-aware copy and implements it in your existing design system.
 
+See [skills/landing-page-gtm/README.md](./skills/landing-page-gtm/README.md) for quick start guide.
 See [skills/landing-page-gtm/SKILL.md](./skills/landing-page-gtm/SKILL.md) for full documentation.
 
 ---
