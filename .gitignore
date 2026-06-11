@@ -3,3 +3,7 @@ test-document-skills/
 .playwright-mcp/
 firebase-debug.log
 firebase-debug.*.log
+
+# Local no-mistakes dev gate (installed by `no-mistakes init`, not part of this repo)
+.agents/skills/no-mistakes/
+.claude/skills/no-mistakes/
