@@ -122,6 +122,35 @@ the value) and never falls back to interactive entry.
   populated password field.
 - Prefer dedicated, low-privilege test accounts; rotate them.
 
+### Security posture: this is the BASELINE tier, not the strongest
+
+This env-file + `process.env` pattern is the standard E2E/CI auth approach and the
+right **default for local/dev/test** UAT — but be honest that it is **not** the top
+of the secrets hierarchy. OWASP rates environment-variable secrets *below* secrets
+managers ("not recommended unless the other methods are not possible"), for real
+reasons:
+- `process.env` is **process-global**: every child process inherits it and **any
+  transitive dependency can read it** — and Playwright pulls in many deps, so it's
+  a genuine supply-chain surface.
+- The env file is **plaintext at rest** — it can leak via logs, crash dumps,
+  backups, or a verbose runner.
+- A static long-lived password, and the saved `storageState` (a bearer token at
+  rest), are standing liabilities.
+
+**Escalate to the hardened tier when the target is shared/staging/prod or the
+account is privileged:**
+- Source secrets from a **secrets manager** (Vault, AWS/GCP Secrets Manager,
+  1Password CLI, Doppler) or the **OS keychain**, injected at runtime — not written
+  to a plaintext file.
+- Prefer **token/API auth** (or seed `storageState` via an API login) over UI
+  password entry where the app supports it.
+- Use a **dedicated, least-privilege, rotated/ephemeral test account on staging** —
+  never prod credentials. **Never put MFA codes in env** (enter them via UI/prompt).
+- Keep the auth script **minimal-dependency**; treat `storageState` as **short-TTL**
+  and delete it after the run.
+
+Default to the env-file flow for local/dev/test; escalate as above otherwise.
+
 ### Bot detection
 Some providers challenge headless/automated browsers (CAPTCHA, device checks). If
 the setup script can't pass the challenge: retry headed (`UAT_HEADFUL=1` in the

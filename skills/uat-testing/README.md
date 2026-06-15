@@ -80,6 +80,14 @@ through the agent's tool calls, context, or output. A ready template lives at
 security rules, and the bot-detection fallback) is in `references/agent-guide.md`
 → Auth Handling. **Put credentials in the env file, not in chat.**
 
+> **Security posture:** the env-file flow is the right *baseline* for local/dev/test
+> (and the standard E2E pattern), but it is **not** the top of the secrets hierarchy —
+> `process.env` is process-global and readable by transitive deps, the file is
+> plaintext at rest, and `storageState` is a bearer token. For shared/staging/prod or
+> privileged accounts, escalate to a **secrets manager / OS keychain**, **token/API
+> auth**, and **dedicated least-privilege staging accounts**. See `agent-guide.md` →
+> *Security posture* for the full tiered model.
+
 ### Reporting
 
 Produces a structured report with:

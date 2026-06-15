@@ -1,5 +1,16 @@
 # Changelog — uat-testing skill
 
+## 1.4.1
+- **Honest security posture for the env-var auth.** Documented that the env-file +
+  `process.env` flow is the correct *baseline* for local/dev/test (and the standard
+  E2E pattern) but **not** the strongest tier — OWASP rates env-var secrets below
+  secrets managers. Added a tiered defense-in-depth model to `references/agent-guide.md`
+  → *Security posture*: residual risks called out (process-global env readable by
+  transitive deps / supply-chain; plaintext at rest; `storageState` as a bearer
+  token), with a hardened tier (secrets manager / OS keychain, token/API auth,
+  dedicated least-privilege rotated staging accounts, MFA never in env, minimal-dep
+  script, short-TTL storageState). README updated. Docs-only; no behavior change.
+
 ## 1.4.0
 - **Secure, env-var authentication — the agent never types a password into a login
   field.** Interactive credential entry (`browser_fill_form`/`browser_type`/computer
