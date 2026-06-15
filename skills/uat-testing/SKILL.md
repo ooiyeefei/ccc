@@ -31,7 +31,7 @@ Phase 3: Test Case Generation
 
 Phase 4: Test Execution
   ├─ Start dev server (framework-appropriate command)
-  ├─ Authenticate with test account via browser
+  ├─ Authenticate via the env-var auth script (never type passwords)
   ├─ Execute test cases with Playwright MCP tools
   ├─ Take screenshots as evidence
   └─ If a test fails → document the failure, continue testing
@@ -148,16 +148,22 @@ curl -s -o /dev/null -w "%{http_code}" https://app.example.com
 
 ### Request Test Account (Both Environments)
 
-Always ask before attempting to authenticate:
+Authentication uses the **env-var auth script**, never interactive password entry
+(see Phase 4 and `references/agent-guide.md` → Auth Handling). So ask the user to
+put the credentials in a **gitignored env file**, not to paste the password into chat:
 
-> For UAT testing I need a test account to log in. Most auth systems require email verification, so I can't create a new account.
->
-> Please provide:
-> 1. **Login URL** (if not the default `/sign-in`)
-> 2. **Email/username** for the test account
-> 3. **Password**
-> 4. **Any 2FA/MFA steps** I should be aware of
-> 5. **Which business/org/team** to select after login (if applicable)
+> For UAT I authenticate with a small script that reads the test creds from a
+> gitignored env file — I never type your password into a login field. Please
+> either point me at an existing env file (e.g. `.env.local`) or create
+> `.env.uat` (gitignored) with:
+> ```
+> UAT_BASE_URL=https://app.example.com   # or http://localhost:3000
+> UAT_USER_EMAIL=test@example.com
+> UAT_USER_PASSWORD=...
+> ```
+> Also tell me: any **2FA/MFA** steps, and which **business/org/team** to use
+> after login (if applicable). Don't paste the password in chat — the env file
+> keeps it out of the conversation.
 
 ## Phase 3: Test Case Generation
 
@@ -195,6 +201,25 @@ ToolSearch: "playwright browser"
 Key tools: `browser_navigate`, `browser_snapshot`, `browser_click`, `browser_fill_form`, `browser_type`, `browser_press_key`, `browser_take_screenshot`, `browser_wait_for`, `browser_console_messages`, `browser_evaluate`.
 
 See `references/agent-guide.md` for the full tool reference and auth handling patterns.
+
+### Authenticate (secure, env-var — never type passwords)
+
+**Do not type a password into a login field** (not `browser_fill_form`,
+`browser_type`, `computer`, or any interactive tool). Instead:
+
+1. Copy `references/uat-auth-setup.mjs` into the project and adapt `signIn()` to
+   the app's auth provider.
+2. Run it to produce an authenticated session (the secret is read from the env
+   file, never echoed):
+   ```bash
+   node --env-file=.env.uat uat-auth-setup.mjs    # writes .uat-auth/state.json
+   ```
+3. Reuse the saved session for the run — either drive the UAT as a Playwright
+   script with `browser.newContext({ storageState: '.uat-auth/state.json' })`, or
+   load its cookies into the MCP browser via `browser_evaluate` before navigating.
+
+Add `.env.uat` and `.uat-auth/` to `.gitignore`. See `references/agent-guide.md`
+→ Auth Handling for the full pattern, security rules, and bot-detection fallback.
 
 ### Execution Pattern
 

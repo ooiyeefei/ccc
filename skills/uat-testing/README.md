@@ -54,11 +54,31 @@ The skill reads your spec and branch diff, then generates structured test cases 
 ### Test Execution
 
 Uses Playwright MCP tools (browser_navigate, browser_snapshot, browser_click, etc.) to:
-- Authenticate with a test account you provide
+- Authenticate via a **code-driven, env-var script** — the agent never types your
+  password into a login field (see [Secure authentication](#secure-authentication))
 - Navigate through each test case
 - Take screenshots as evidence
 - Check browser console for JS errors
 - Continue on failure (doesn't stop at first failure)
+
+## Secure authentication
+
+The skill **never types a password into a login field** — interactive credential
+entry is a security risk (and a hard-blocked action for AI agents). Instead it
+authenticates with a small code script that reads credentials from a **gitignored
+env file** and saves an authenticated browser session (`storageState`) for the run
+to reuse:
+
+```bash
+# .env.uat (gitignored): UAT_BASE_URL, UAT_USER_EMAIL, UAT_USER_PASSWORD
+node --env-file=.env.uat uat-auth-setup.mjs   # writes .uat-auth/state.json
+```
+
+The secret flows env-file → script → auth field deterministically and never passes
+through the agent's tool calls, context, or output. A ready template lives at
+`references/uat-auth-setup.mjs`; the full pattern (storageState reuse, mandatory
+security rules, and the bot-detection fallback) is in `references/agent-guide.md`
+→ Auth Handling. **Put credentials in the env file, not in chat.**
 
 ### Reporting
 

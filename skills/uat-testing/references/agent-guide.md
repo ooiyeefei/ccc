@@ -69,15 +69,68 @@ For each test case:
 
 Most apps require authentication. The agent cannot create new accounts (email verification, 2FA, etc.).
 
-Strategy:
-1. Ask user for test account credentials before starting
-2. Navigate to login page
-3. Use browser_fill_form to enter credentials
-4. Use browser_click to submit
-5. Verify auth by checking for logged-in state (user avatar, dashboard content)
-6. Store the authenticated page context — all subsequent tests reuse it
+> **Never type a password (or any credential) into a login field interactively** —
+> not via `browser_fill_form`, `browser_type`, `computer`, or any other live tool.
+> Interactive credential entry is a security risk (the agent reads page/file
+> content that can carry injected instructions and could be steered onto a
+> lookalike/phishing page, and the secret would pass through the agent's context)
+> and it is a hard-blocked action for AI agents. Authenticate with the **env-var
+> code-script** pattern below instead.
 
-If using cookie/token-based auth, an alternative is to set auth cookies directly via `browser_evaluate`:
-```js
-document.cookie = "session=<token>; path=/"
+**Pattern: code-driven auth → saved session → reuse.** A small script reads
+credentials from `process.env` (loaded from a gitignored env file), signs in, and
+saves the authenticated browser session (`storageState`) to a gitignored file.
+The credential flows env-file → script → auth field deterministically, and never
+through the agent's interactive tool calls or output. The UAT then reuses the
+saved session — so the rest of the run drives a browser that is *already* logged
+in, and the agent never handles the password.
+
+### 1. Credentials in a gitignored env file (never committed, never echoed)
 ```
+# .env.uat   (add to .gitignore)
+UAT_BASE_URL=https://app.example.com
+UAT_USER_EMAIL=test@example.com
+UAT_USER_PASSWORD=...        # the agent must never read, print, log, or screenshot this value
+```
+
+### 2. Auth setup script (reads env → saves storageState)
+Copy `references/uat-auth-setup.mjs` into the project, adapt the selectors in
+`signIn()` to the app's auth provider, then run it:
+```bash
+node --env-file=.env.uat uat-auth-setup.mjs   # saves .uat-auth/state.json
+```
+It fails closed if a required env var is missing (errors with the var NAME, never
+the value) and never falls back to interactive entry.
+
+### 3. Reuse the saved session for the UAT (no re-auth)
+- **Fully code-driven (recommended, reproducible):** write the test cases as a
+  Playwright script that loads `storageState: '.uat-auth/state.json'` and runs the
+  assertions + screenshots. The session token never passes through interactive tools.
+- **Interactive MCP tools:** read the storageState file and apply its cookies via
+  `browser_evaluate` (`document.cookie = ...`) before navigating, then drive the
+  UAT with the `browser_*` tools against the already-authenticated session.
+
+### Security best practices (MANDATORY for AI agents)
+- Secrets live ONLY in the gitignored env file — never hardcode them in the
+  script, never commit them, never paste them into chat or a tool argument.
+- Reference `process.env.X` only; never `console.log`/print/echo a credential value.
+- **Fail closed:** if a required env var is missing, stop with the var NAME (not
+  value). Do NOT fall back to typing the password interactively.
+- Treat the saved `storageState` file as a live secret (it holds a session token):
+  gitignore it, don't commit it, don't print it.
+- Redact secrets from screenshots and the results report — never screenshot a
+  populated password field.
+- Prefer dedicated, low-privilege test accounts; rotate them.
+
+### Bot detection
+Some providers challenge headless/automated browsers (CAPTCHA, device checks). If
+the setup script can't pass the challenge: retry headed (`UAT_HEADFUL=1` in the
+template) and/or with a persistent profile, or — last resort — have the **user**
+sign in once in a real browser and export the session (cookies / storageState) for
+the script to load. The agent still never types the password. (Tested working
+headless against a live Clerk app, but provider behavior varies.)
+
+### Token/cookie auth (alternative)
+If the app uses token-based sessions, set the auth cookie via the storageState
+file or `browser_evaluate` (`document.cookie = "session=<token>; path=/"`),
+sourcing the token from `process.env` the same way — never inline it.

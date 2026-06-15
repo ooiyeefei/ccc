@@ -7,3 +7,8 @@ firebase-debug.*.log
 # Local no-mistakes dev gate (installed by `no-mistakes init`, not part of this repo)
 .agents/skills/no-mistakes/
 .claude/skills/no-mistakes/
+
+# UAT secure-auth artifacts — NEVER commit credentials or saved sessions
+.env.uat
+.uat-auth/
+*.storageState.json
