@@ -18,6 +18,7 @@ Custom plugins and skills for [Claude Code](https://github.com/anthropics/claude
 | [htmldrop](./skills/htmldrop) | Skill | Publish HTML as shareable links (Surge.sh) with collaborative annotation + AI converge | `/plugin install ccc-skills@ccc` |
 | [landing-page-gtm](./skills/landing-page-gtm) | Skill | High-converting SaaS landing pages with GTM-aware copy and competitive positioning | `/plugin install ccc-skills@ccc` |
 | [uat-testing](./skills/uat-testing) | Skill | End-to-end UAT for web apps via Playwright: test case generation, execution, pass/fail reports | `/plugin install ccc-skills@ccc` |
+| [cross-app-shared-auth](./skills/cross-app-shared-auth) | Skill | Onboard apps into a platform with one shared login and a central accounts database: per-app opt-in access, deny-by-default, dual sign-up paths | `/plugin install ccc-skills@ccc` |
 
 ---
 
