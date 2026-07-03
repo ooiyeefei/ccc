@@ -93,11 +93,18 @@ Inside an app, add a client to the central store (separate from the app's own da
 // (see section 6: the template token carries the audience the store checks, not the bare session token)
 const accounts = makeCentralClient(process.env.PLATFORM_ACCOUNTS_DB_URL, storeTemplateToken);
 
-// on first authenticated use per session (guarded so it runs once)
+// on first authenticated use per session. Guard this with a DURABLE marker
+// (cookie / token claim / short-TTL cache), not an in-memory flag: on serverless
+// an in-memory flag is per-instance and silently does not hold.
+const safe = fn => fn().catch(err => log("central call failed (fail-open)", err));
 async function onAuthenticated() {
-  await accounts.call("ensureUser");
-  await accounts.call("activateApp", { appSlug: "<this-slug>" });   // auto-activate, no lockout
+  // independent best-effort calls: one failing must not veto the other.
+  // activateApp upserts its own user row too, so activation survives an ensureUser outage.
+  await safe(() => accounts.call("ensureUser"));
+  await safe(() => accounts.call("activateApp", { appSlug: "<this-slug>" }));   // auto-activate, no lockout
 }
+// fail-open trap: the catch above hides a broken central function. Pair it with a
+// post-deploy probe that reads back a row you just wrote (see the deploy/verify step).
 
 // server-side gate on a protected route (deny-by-default)
 async function requireAppAccess(userToken) {
@@ -125,7 +132,7 @@ PLATFORM_ACCOUNTS_DB_URL        = <central accounts store url>
 APP_OWN_DB_URL                  = <this app's own db url>
 ```
 
-The two failure modes to watch: giving the app's own database and the accounts store the **same** env var name (one clobbers the other), and setting these only locally so production has nothing.
+The failure modes to watch: giving the app's own database and the accounts store the **same** env var name (one clobbers the other); setting these only locally so production has nothing; pointing the store URL at the wrong deployment (a stray auto-generated one that lacks the central functions), which makes every call hang or 404 while looking configured; and, on frameworks that expose a public-prefixed URL to the browser (for example `NEXT_PUBLIC_`), letting a **secret** or deploy key accidentally carry that same public prefix. The store URL is safe to expose; secrets are not.
 
 ## 6. The token the app sends: the audience must match
 

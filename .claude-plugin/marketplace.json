@@ -6,7 +6,7 @@
   },
   "metadata": {
     "description": "Custom Claude Code plugins and skills",
-    "version": "1.5.1"
+    "version": "1.5.2"
   },
   "plugins": [
     {

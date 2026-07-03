@@ -10,6 +10,7 @@ Two parts: a one-time platform setup, and a per-app checklist you run every time
 - [ ] **A central accounts database** with the schema and functions from `examples.md`: `users`, `app_access`, and the functions `ensureUser`, `getAccess`, `listMyApps`, `activateApp`, all server-side and deny-by-default.
 - [ ] The central database is configured to **trust the shared identity provider** (its auth points at the provider's issuer), so the same user id resolves inside it.
 - [ ] An **app catalog** (a table or a small config) that lists the apps in the family: slug, name, url, status. The hub and any "your apps" view read from it.
+- [ ] A **published, versioned platform contract** file that pins the platform-specific values every app needs: the token template name, the central store URL, the exact central function names, and the app-slug registry. Every app cites it by version. Without this, apps invent mismatched APIs against a store that does not have them.
 
 ## Part 1: per-app onboarding
 
@@ -31,9 +32,13 @@ Run this for each new app. Do the steps in order.
 - [ ] Call the central functions **by reference** (the app repo does not have the central database's generated types). See `examples.md`.
 
 ### Step 4: wire the gate and activation
-- [ ] On first authenticated use per session, call `ensureUser` then `activateApp("<slug>")`. Make it idempotent and guard it so it fires once per session, not on every render.
+- [ ] **Unauthenticated requests: always deny** at the backend. This layer is fixed.
+- [ ] **Authenticated with no row: pick a policy and write it down.** Hub-style "enable this app?" gate, or, for a live app with existing users, **auto-activate** (grandfather anyone authenticated) so no one is locked out. Do not switch to hard deny while the central table is empty.
+- [ ] When auto-activating, call `ensureUser` and `activateApp("<slug>")` as **independent best-effort calls** (one failing must not veto the other). Make each idempotent.
+- [ ] Guard "first authenticated use" with a **durable** marker (cookie, token claim, or short-TTL shared cache), not an in-memory or module-level flag: on serverless that flag is per-instance and silently does not hold.
+- [ ] If you fail **open** on central errors (so a central outage does not lock users out), add a post-deploy probe that reads back a written row (Step 7). Fail-open otherwise hides a broken central function indefinitely.
 - [ ] Where you gate, check `getAccess("<slug>")` server-side, deny-by-default.
-- [ ] For a **live app with existing users**, keep this as **auto-activate** (grandfather anyone authenticated) so no one is locked out. Do not switch to hard deny while the central table is empty.
+- [ ] If the app's backend is a **separate service**, set any identity header (for example `X-User-Id`) from the verified token at the edge and strip any client-supplied copy. Never forward a client's own identity header.
 - [ ] Keep the app's own **tier, quota, credits, and billing** in the app's own database. Do not centralize them.
 
 ### Step 5: register the app
@@ -46,6 +51,7 @@ Each app ends up with its own database URL and the shared accounts database URL.
 - [ ] `<PLATFORM>_ACCOUNTS_DB_URL`: the shared central accounts database. A distinct name.
 - [ ] Shared identity: publishable key, secret key, issuer, and `authorizedParties=https://<slug>.example.com`.
 - [ ] Set all of these in the app's **deploy environment** (its hosting dashboard), not only in local files. Local files are gitignored and do not reach production.
+- [ ] Mind client-exposed prefixes. A store **URL** is safe to expose to the browser (some frameworks require a public prefix like `NEXT_PUBLIC_` for it), but a **secret** or deploy key must never carry that prefix. And confirm the URL points at the deployment that actually has the central functions, not a stray auto-generated one: a wrong-deployment URL makes every central call hang or 404 while looking correctly configured.
 
 ### Step 7: deploy and verify
 - [ ] The app builds and its existing tests pass. The change is additive.
@@ -62,9 +68,11 @@ Drop a short block into each app repo so its state is legible. Reference the can
 <app> integrates the shared-auth platform (contract vN):
   [ ] shared identity: shared publishable key + issuer
   [ ] authorizedParties = https://<slug>.example.com
-  [ ] central accounts gate: getAccess server-side, deny-by-default
+  [ ] unauthenticated requests denied at the backend (always)
+  [ ] authenticated-without-row policy: hub-gate OR live-app auto-activate (state which): ____
+  [ ] (if auto-activate) ensureUser + activateApp("<slug>") on first authenticated use, best-effort + idempotent, grandfathering existing users
   [ ] central-store calls use the store's token template (aud matches), not the bare session token
-  [ ] auto-activate on first authenticated use (ensureUser + activateApp("<slug>"))
+  [ ] "first use" guard is durable (not an in-memory flag); fail-open paired with a row-existence probe
   [ ] user rows keyed on the shared user id
   [ ] tier / quota / billing stay in this app's own db
   [ ] usage rollup pushed to central (optional)
