@@ -43,10 +43,12 @@ function requireUser(ctx) {
   return identity;                               // identity.subject is the shared user id
 }
 
-// upsert the identity link on first sign in
+// upsert the identity link on first sign in. Treat profile claims (email, name)
+// as OPTIONAL best-effort: the token template may not emit them, and hard-requiring
+// a claim that is absent makes this throw on every call (a 500 even though auth is fine).
 ensureUser = mutation(ctx => {
   const id = requireUser(ctx);
-  upsert(users, { authId: id.subject, email: id.email, role: "member", createdAt: now() });
+  upsert(users, { authId: id.subject, email: id.email /* may be undefined */, role: "member", createdAt: now() });
 });
 
 // deny-by-default read: the caller's access to one app, or null
