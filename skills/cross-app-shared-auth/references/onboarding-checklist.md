@@ -10,7 +10,7 @@ Two parts: a one-time platform setup, and a per-app checklist you run every time
 - [ ] **A central accounts database** with the schema and functions from `examples.md`: `users`, `app_access`, and the functions `ensureUser`, `getAccess`, `listMyApps`, `activateApp`, all server-side and deny-by-default.
 - [ ] The central database is configured to **trust the shared identity provider** (its auth points at the provider's issuer), so the same user id resolves inside it.
 - [ ] An **app catalog** (a table or a small config) that lists the apps in the family: slug, name, url, status. The hub and any "your apps" view read from it.
-- [ ] A **published, versioned platform contract** file that pins the platform-specific values every app needs: the token template name, the central store URL, the exact central function names, and the app-slug registry. Every app cites it by version. Without this, apps invent mismatched APIs against a store that does not have them.
+- [ ] A **published, versioned platform contract** file that pins the platform-specific values every app needs: the **template registry** (one JWT template per backend the platform supports), the central store URL, the exact central function names, and the app-slug registry. Every app cites it by version. Without this, apps invent mismatched APIs against a store that does not have them.
 
 ## Part 1: per-app onboarding
 
@@ -27,6 +27,7 @@ Run this for each new app. Do the steps in order.
 - [ ] The app pins **`authorizedParties`** (or the provider's equivalent) to its own origin, for example `https://<slug>.example.com`. This is the shared-cookie security requirement.
 
 ### Step 3: add a central-accounts client
+- [ ] **Check the template registry** in the platform contract for every backend this app talks to (the central store, and the app's own backend if different). If a backend has no template yet, add it to the shared provider once, then continue. A missing template is a silent NoAuthProvider.
 - [ ] Add a client pointed at the **central accounts database** (a distinct connection from the app's own database).
 - [ ] Authenticate it by requesting the **central-store token template** (for example `getToken({ template: "<name>" })`), not the bare session token. The template carries the audience the store checks, and the store resolves the same user id from it. Sending the plain session token is the most common cause of a silent "no matching provider" rejection.
 - [ ] Call the central functions **by reference** (the app repo does not have the central database's generated types). See `examples.md`.
