@@ -151,15 +151,16 @@ const accounts = makeCentralClient(process.env.PLATFORM_ACCOUNTS_DB_URL, token);
 
 One session token stays clean (no service `aud`), and you add one template per backend. A Supabase-backed app requests its own template (`aud = "authenticated"`), a gateway-authorizer app requests its own, and this central store gets the one above. Each token is bound only for its backend, so wiring one app never breaks another.
 
-## 7. Template registry (one per backend)
+## 7. Template registry (one per distinct audience)
 
-The shared provider hosts one token template per backend the platform supports. Record them where onboarding agents look (the platform contract), so an agent checks the registry before wiring: request an existing template, or add a missing one first.
+The shared provider hosts one token template per distinct token audience. A backend with a **fixed** audience gets one template reused by every project on it (add once, for example a store or database platform whose audience is constant); a backend whose audience is **per-resource** gets one template per resource. Record them where onboarding agents look (the platform contract), so an agent checks the registry before wiring: request an existing template, or add a missing one first.
 
 ```
-| template   | backend                     | aud            | other claims                          |
-|------------|-----------------------------|----------------|---------------------------------------|
-| <store>    | the central accounts store  | <store-id>     | subject + any profile claims you read |
-| <other>    | a second backend (Supabase) | authenticated  | role, subject, email                  |
+| template | backend                    | aud           | scope                         |
+|----------|----------------------------|---------------|-------------------------------|
+| <store>  | the central accounts store | <store-id>    | per-provider (fixed audience) |
+| <fixed>  | a fixed-audience backend   | <constant>    | per-provider (reused for all) |
+| <res>    | a per-resource backend     | <resource id> | per-resource (one per app)    |
 ```
 
-Adding a backend is a one-time step: create the template with the claims that backend verifies, record it in the registry, bump the contract version. Every app then requests the template matching its backend. The session token stays claim-clean, so adding a backend never touches the others.
+Adding one is a one-time step: create the template with the claims that backend verifies, record it in the registry, bump the contract version. Every app then requests the template matching its backend. The session token stays claim-clean, so adding one never touches the others.

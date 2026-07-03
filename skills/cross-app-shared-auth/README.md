@@ -39,7 +39,7 @@ Claude will inspect the app, confirm the shared identity is in place, add the ce
 - **The gotchas**: shared-cookie security (`authorizedParties`), matching the token audience the central store checks (request a per-service token template, and never put a service's audience on the shared session token or you break every other backend), production keys being domain-locked to the real domain, env var name collisions between an app's own database and the shared one, and subdomain versus separate-domain single sign-on.
 - **Clean data ownership**: the central store holds the thin "which apps" index. Each app keeps its own tier, quota, credits, and billing as the system of record.
 - **Two modes**: build a new integration, or **audit** an existing one (score each record-block line PASS/FAIL/N-A with evidence). It also insists the platform publish one versioned contract so apps stop inventing mismatched APIs, and covers the operational traps a real rollout hits: fail-open hiding a broken central call, in-memory "once per session" guards that break on serverless, and client-supplied identity headers.
-- **A backend registry**: one JWT template per backend the platform supports (Convex, Supabase, and so on), added once and reused. Onboarding checks the registry and adds a missing template before wiring, so a new backend never fails silently.
+- **A backend registry**: one JWT template per token audience. Fixed-audience backends (Convex, Supabase, and so on) get one template reused everywhere; per-resource backends get one per resource. Onboarding checks the registry and adds a missing template before wiring, so a new backend never fails silently.
 
 ## Architecture
 
