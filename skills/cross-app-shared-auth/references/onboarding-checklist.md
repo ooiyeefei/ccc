@@ -5,7 +5,7 @@ Two parts: a one-time platform setup, and a per-app checklist you run every time
 ## Part 0: platform prerequisites (once, before any app)
 
 - [ ] **One shared identity provider instance** for the whole family, rooted at the parent domain so its cookie spans subdomains.
-- [ ] A **token template** on that provider that the central database can verify (give it a stable name so backends can request that exact token).
+- [ ] A **token template** on that provider that the central database can verify. Give it a stable name so backends can request that exact token, and make sure it stamps the audience the central database expects. (The store matches the token's `aud` claim to its configured audience. The bare session token has no `aud` and is rejected. See "The token audience" in `architecture.md`.)
 - [ ] **Development keys** available for local work, since production keys are usually locked to the production domain.
 - [ ] **A central accounts database** with the schema and functions from `examples.md`: `users`, `app_access`, and the functions `ensureUser`, `getAccess`, `listMyApps`, `activateApp`, all server-side and deny-by-default.
 - [ ] The central database is configured to **trust the shared identity provider** (its auth points at the provider's issuer), so the same user id resolves inside it.
@@ -27,7 +27,7 @@ Run this for each new app. Do the steps in order.
 
 ### Step 3: add a central-accounts client
 - [ ] Add a client pointed at the **central accounts database** (a distinct connection from the app's own database).
-- [ ] Authenticate it with the **shared identity token** requested with the template name from Part 0, so the central database resolves the same user id.
+- [ ] Authenticate it by requesting the **central-store token template** (for example `getToken({ template: "<name>" })`), not the bare session token. The template carries the audience the store checks, and the store resolves the same user id from it. Sending the plain session token is the most common cause of a silent "no matching provider" rejection.
 - [ ] Call the central functions **by reference** (the app repo does not have the central database's generated types). See `examples.md`.
 
 ### Step 4: wire the gate and activation
@@ -50,6 +50,7 @@ Each app ends up with its own database URL and the shared accounts database URL.
 ### Step 7: deploy and verify
 - [ ] The app builds and its existing tests pass. The change is additive.
 - [ ] After deploy on the real domain, sign in and confirm the central `activateApp("<slug>")` fires and writes an `app_access` row for the user.
+- [ ] If the store rejects tokens with "no matching provider," or the app hangs on "loading," decode the token the app sends and confirm its `aud` claim equals the store's configured audience. A missing or wrong `aud` means the app is sending the bare session token instead of the store's template.
 - [ ] Confirm a signed-out request is gated (deny-by-default) at the backend, not only in the UI.
 - [ ] If local verification is blocked because production keys are domain-locked, verify on the deployed domain or with development keys.
 
@@ -62,6 +63,7 @@ Drop a short block into each app repo so its state is legible. Reference the can
   [ ] shared identity: shared publishable key + issuer
   [ ] authorizedParties = https://<slug>.example.com
   [ ] central accounts gate: getAccess server-side, deny-by-default
+  [ ] central-store calls use the store's token template (aud matches), not the bare session token
   [ ] auto-activate on first authenticated use (ensureUser + activateApp("<slug>"))
   [ ] user rows keyed on the shared user id
   [ ] tier / quota / billing stay in this app's own db

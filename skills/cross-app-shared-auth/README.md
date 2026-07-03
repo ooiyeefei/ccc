@@ -36,7 +36,7 @@ Claude will inspect the app, confirm the shared identity is in place, add the ce
 - **One shared identity** across all apps, with per-app authorization on top.
 - **Two sign-up paths**: from the central landing page (explicit opt-in) and from inside any app (auto-activate on first use). Both register the same account centrally.
 - **Deny-by-default access** checked server-side, with the migration trap solved (auto-activate grandfathers existing users so no one is locked out when the central table is still empty).
-- **The gotchas**: shared-cookie security (`authorizedParties`), the token template the central store verifies, production keys being domain-locked to the real domain, env var name collisions between an app's own database and the shared one, and subdomain versus separate-domain single sign-on.
+- **The gotchas**: shared-cookie security (`authorizedParties`), matching the token audience the central store checks (request a per-service token template, and never put a service's audience on the shared session token or you break every other backend), production keys being domain-locked to the real domain, env var name collisions between an app's own database and the shared one, and subdomain versus separate-domain single sign-on.
 - **Clean data ownership**: the central store holds the thin "which apps" index. Each app keeps its own tier, quota, credits, and billing as the system of record.
 
 ## Architecture

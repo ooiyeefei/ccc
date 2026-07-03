@@ -76,6 +76,7 @@ Configure the central store's auth to accept tokens from the shared provider, us
 
 ```ts
 // central store auth config
+// applicationID is the audience the store REQUIRES: an incoming token's `aud` must equal it.
 export default {
   providers: [
     { domain: process.env.SHARED_IDENTITY_ISSUER, applicationID: "<token-template-name>" },
@@ -88,8 +89,9 @@ export default {
 Inside an app, add a client to the central store (separate from the app's own database), authed with the shared identity token. Call the central functions by reference, because this repo does not have the central store's generated types.
 
 ```ts
-// a client pointed at the CENTRAL accounts store, authed with the shared identity token
-const accounts = makeCentralClient(process.env.PLATFORM_ACCOUNTS_DB_URL, sharedIdentityToken);
+// a client pointed at the CENTRAL accounts store, authed with the store's TEMPLATE token
+// (see section 6: the template token carries the audience the store checks, not the bare session token)
+const accounts = makeCentralClient(process.env.PLATFORM_ACCOUNTS_DB_URL, storeTemplateToken);
 
 // on first authenticated use per session (guarded so it runs once)
 async function onAuthenticated() {
@@ -124,3 +126,18 @@ APP_OWN_DB_URL                  = <this app's own db url>
 ```
 
 The two failure modes to watch: giving the app's own database and the accounts store the **same** env var name (one clobbers the other), and setting these only locally so production has nothing.
+
+## 6. The token the app sends: the audience must match
+
+The store verifies that the token's `aud` claim equals the `applicationID` from section 3. The identity provider's default session token has no `aud`, so the store rejects it as "no matching provider." Request the per-service template instead, and never put a service's audience on the shared session token, because that would break any other backend that checks `aud`.
+
+```ts
+// WRONG: the bare session token has no aud, so the store rejects it as "no matching provider"
+const token = await getToken();
+
+// RIGHT: request the template that stamps aud = "<token-template-name>"
+const token = await getToken({ template: "<token-template-name>" });
+const accounts = makeCentralClient(process.env.PLATFORM_ACCOUNTS_DB_URL, token);
+```
+
+One session token stays clean (no service `aud`), and you add one template per backend. A Supabase-backed app requests its own template (`aud = "authenticated"`), a gateway-authorizer app requests its own, and this central store gets the one above. Each token is bound only for its backend, so wiring one app never breaks another.

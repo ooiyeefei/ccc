@@ -50,6 +50,20 @@ Every app in the family connects to three things. Note that the app's database n
 
 Everything joins on the **shared user id**. The central accounts database holds the thin "which apps, what status" index. Each app's own database holds the heavy, authoritative domain data and any money state.
 
+## The token audience: one clean session token, per-service templates
+
+Integration point 1 hides a detail that silently breaks the whole chain if you miss it. A backend that verifies a JWT (the central accounts store, and equally any other app backend) checks the token's audience claim (`aud`) against the audience it is configured to accept. A token whose `aud` does not match is rejected as "no matching provider," even though the person is perfectly signed in.
+
+The generic session token an identity provider issues carries no `aud`, because it is meant to be universal. So you do not send it to an audience-checking backend directly. Instead you define one named token template per backend, each stamping that backend's expected audience, and each app requests the template for the backend it is calling:
+
+| Token | Requested with | `aud` claim | Used by |
+|-------|----------------|-------------|---------|
+| session token | the default `getToken()` | none | generic identity, anything that does not check `aud` |
+| central-store template | `getToken({ template: "<store-name>" })` | the central store's id | the central accounts store |
+| another backend's template | `getToken({ template: "<other>" })` | that backend's audience | for example a Supabase app (`authenticated`), a gateway authorizer, an identity-aware proxy |
+
+The rule that keeps a multi-database portfolio correct: **never stamp a service's audience onto the shared session token.** Doing so makes every app's identity token claim it is for that one service, which breaks every other backend that validates a different audience. Keep the session token clean and add one template per backend, so only the tokens bound for a given backend carry that backend's audience.
+
 ## Where each kind of data lives
 
 - **Identity** (email, profile, credentials, sessions): the shared identity provider. Never copied into app databases.
