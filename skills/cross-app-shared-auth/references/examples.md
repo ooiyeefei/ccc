@@ -95,6 +95,11 @@ Inside an app, add a client to the central store (separate from the app's own da
 // (see section 6: the template token carries the audience the store checks, not the bare session token)
 const accounts = makeCentralClient(process.env.PLATFORM_ACCOUNTS_DB_URL, storeTemplateToken);
 
+// if you keep a dev stub (an in-memory whitelist for when the store is unconfigured),
+// it must HARD-REFUSE in production: a missing PLATFORM_ACCOUNTS_DB_URL in prod would
+// otherwise silently run the per-instance stub, write nothing centrally, and fail-open hides it.
+if (isProduction && !process.env.PLATFORM_ACCOUNTS_DB_URL) throw new Error("accounts store unconfigured in production");
+
 // on first authenticated use per session. Guard this with a DURABLE marker
 // (cookie / token claim / short-TTL cache), not an in-memory flag: on serverless
 // an in-memory flag is per-instance and silently does not hold.
@@ -113,6 +118,15 @@ async function requireAppAccess(userToken) {
   const access = await accounts.call("getAccess", { appSlug: "<this-slug>" }, userToken);
   if (!access || access.status !== "enabled") throw forbidden();
   return access;   // access.tier is available for premium gating; billing stays local
+}
+
+// STANDING post-deploy probe: the required partner to fail-open. Run on a schedule or a
+// health route: activate for a known test user, then read the row back, and alert on absence.
+// A one-time manual read is NOT this; fail-open needs a check that keeps running.
+async function probe(testUserToken) {
+  await accounts.call("activateApp", { appSlug: "<this-slug>" }, testUserToken);
+  const row = await accounts.call("getAccess", { appSlug: "<this-slug>" }, testUserToken);
+  if (!row || row.status !== "enabled") throw new Error("probe: central write did not persist");
 }
 ```
 
@@ -164,3 +178,5 @@ The shared provider hosts one token template per distinct token audience. A back
 ```
 
 Adding one is a one-time step: create the template with the claims that backend verifies, record it in the registry, bump the contract version. Every app then requests the template matching its backend. The session token stays claim-clean, so adding one never touches the others.
+
+**Worked per-resource case:** an identity-aware proxy (or an API gateway JWT authorizer) protecting `app-a` and `app-b`. Each resource's expected `aud` is its own generated id (the proxy's client id, or the audience you set on that specific authorizer), so `app-a` needs a template with `aud = <app-a id>` and `app-b` needs its own. There is no single reusable template. When you audit such a backend, classify it per-resource and confirm one template exists per protected resource, not one for the whole provider.
