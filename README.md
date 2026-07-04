@@ -6,6 +6,7 @@ Custom plugins and skills for [Claude Code](https://github.com/anthropics/claude
 
 | Name | Type | Description | Install Command |
 |------|------|-------------|-----------------|
+| [bash-safety-guard](./plugins/bash-safety-guard) | Plugin (hook) | Fail-closed PreToolUse bash guard: blocks prod-data loss, credential exfiltration, and catastrophic `rm -rf` before they run — even under `--dangerously-skip-permissions` | `/plugin install bash-safety-guard@ccc` |
 | [deckling](./plugins/deckling) | Plugin | Generate PPTX presentations using Anthropic Platform Skills API | `/plugin install deckling@ccc` |
 | [mvp-launch](./plugins/mvp-launch) | Plugin | MVP launch readiness checker with `/launch-check` command | `/plugin install mvp-launch@ccc` |
 | [product-management](./plugins/product-management) | Plugin | AI-native PM: competitor research, gap analysis, WINNING prioritization | `/plugin install product-management@ccc` |

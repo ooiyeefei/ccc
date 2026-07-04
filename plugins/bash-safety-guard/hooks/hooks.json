@@ -1,0 +1,17 @@
+{
+  "description": "Fail-closed bash safety guard: blocks prod-data-loss, credential-leak, and catastrophic rm before any Bash command runs. Non-bash tools are untouched.",
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node --no-warnings --experimental-strip-types \"${CLAUDE_PLUGIN_ROOT}/hooks/guard-hook.ts\"",
+            "timeout": 15
+          }
+        ]
+      }
+    ]
+  }
+}

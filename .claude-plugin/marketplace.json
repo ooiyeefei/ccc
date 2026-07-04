@@ -6,9 +6,14 @@
   },
   "metadata": {
     "description": "Custom Claude Code plugins and skills",
-    "version": "1.5.8"
+    "version": "1.6.0"
   },
   "plugins": [
+    {
+      "name": "bash-safety-guard",
+      "description": "Fail-closed PreToolUse bash guard: blocks destructive prod-data operations, credential exfiltration, and catastrophic rm -rf before they run — even under --dangerously-skip-permissions. Non-bash tools untouched.",
+      "source": "./plugins/bash-safety-guard"
+    },
     {
       "name": "deckling",
       "description": "Generate professional PPTX presentations using Anthropic Platform Skills API",

@@ -1,0 +1,9 @@
+{
+  "name": "bash-safety-guard",
+  "version": "1.0.0",
+  "description": "Fail-closed PreToolUse bash guard for Claude Code: blocks destructive production-data operations (DROP/TRUNCATE/DELETE FROM, convex import --replace/--prod, prisma/drizzle reset, redis flush, dynamo/S3 deletes), credential exfiltration (secret files/tokens sent off-box or piped to paste/tunnel sinks), and catastrophic rm -rf (/, ~, $HOME, ., system dirs). Non-bash tools are untouched.",
+  "author": {
+    "name": "ooiyeefei"
+  },
+  "keywords": ["security", "guardrail", "safety", "hooks", "pretooluse", "bash", "fail-closed"]
+}
