@@ -1,14 +1,17 @@
 ---
 name: htmldrop
-description: This skill should be used when the user asks to "share this HTML", "publish HTML", "get a link for this file", "share this report", "make this shareable", "upload this HTML", or wants to publish any HTML artifact for others to view. ALSO use it for collaborative review on an HTML doc/spec/report — triggers include "get feedback on this", "let reviewers comment", "collect feedback", "share for review", "let people annotate this", "synthesize the feedback", "converge the feedback", "what did reviewers say", "incorporate the comments", or "improve this from the feedback". Wraps Surge.sh for zero-cost hosting with guided privacy options, plus an embedded annotation + AI converge workflow.
+description: This skill should be used when the user asks to "share this HTML", "publish HTML", "get a link for this file", "share this report", "make this shareable", "upload this HTML", or wants to publish any HTML artifact for others to view. ALSO use it for collaborative review on an HTML doc/spec/report — triggers include "get feedback on this", "let reviewers comment", "collect feedback", "share for review", "let people annotate this", "synthesize the feedback", "converge the feedback", "what did reviewers say", "incorporate the comments", or "improve this from the feedback". ALSO use it for local, real-time iteration on an HTML doc or page WITH the user before publishing — triggers include "edit mode", "iterate on this locally", "let me refine this with you live", "review this before I share it", "open this so I can give live feedback", "chat about this page and update it", or any pre-publish loop where the user wants to annotate/comment and have you edit the page live. Wraps Surge.sh for zero-cost hosting with guided privacy options, an embedded annotation + AI converge workflow, and a local edit-mode session server.
 ---
 
 # htmldrop — Share HTML as Hosted Links
 
-Publish any HTML file and get a shareable URL instantly via the `htmldrop` CLI. Two modes:
+Publish any HTML file and get a shareable URL instantly via the `htmldrop` CLI. Three modes:
 
 - **Simple share** (Surge.sh hosting) — get a public or password-protected link to a static page.
 - **Collaborative feedback + converge** — publish with an embedded annotation widget so reviewers can highlight text and comment with no account, then pull the feedback, add evidence-backed comments programmatically, and synthesize an improved version with AI.
+- **Edit mode** (local, pre-publish) — serve the file on `127.0.0.1` and iterate on it live *with the user*: they chat, annotate, and comment; you edit the file and it hot-reloads. No hosting, nothing published. This is the loop to firm a doc up before sharing it — or between rounds of external feedback. See **`references/edit-mode.md`**.
+
+**Design applies to every mode:** before generating or serving any HTML, match the design system of the project the artifact is about, so it looks like the real product rather than a generic page. See **`references/design-and-visuals.md`** — read it whenever you author or edit HTML here.
 
 ## Prerequisites
 
@@ -16,6 +19,7 @@ Publish any HTML file and get a shareable URL instantly via the `htmldrop` CLI. 
 - `npm install -g @yeefeiooi/htmldrop@latest` (the binary is still `htmldrop`)
 - For **simple share**: run `htmldrop init` once (sets up Surge account + subdomain)
 - For **feedback/converge**: run `htmldrop auth setup` once (generates an author API key in `~/.htmldrop/config.json`)
+- For **edit mode**: nothing — it's fully local (no `init`, no Surge, no auth key). Lowest-friction entry point.
 
 ## Critical Rules
 
@@ -181,15 +185,36 @@ For the detailed walkthrough — single-URL mechanics, anchoring rules, the two-
 
 ---
 
+## Mode 3: Edit Mode (Local, Real-Time Iteration)
+
+Use this when the user wants to **refine an HTML doc or page with you, live, before publishing** — not to collect async feedback from others. It runs entirely on `127.0.0.1`; nothing is hosted.
+
+The core is a listen loop: you serve the file, the user chats/annotates in the browser, and you **poll** to receive their input, edit the file, and it hot-reloads. Minimal shape:
+
+```bash
+htmldrop edit start /abs/path/doc.html        # serve locally; opens the browser
+htmldrop edit poll /abs/path/doc.html --json  # BLOCKS until the user sends a message or leaves a comment
+# → act on what you receive, edit doc.html (it live-reloads), then:
+htmldrop edit reply /abs/path/doc.html --text "what you changed"
+# → re-run `edit poll` and repeat. `edit layout` checks render issues; `edit end` closes it.
+```
+
+Keep `edit poll` running like any long-poll — it stays silent until there's input, so re-run it after each reply. When the doc is ready, publish with `htmldrop push --feedback` (Mode 2) for external review. To iterate on feedback you already collected, `htmldrop edit start <file> --with-feedback` loads those reviewer comments into the session.
+
+**Read `references/edit-mode.md` before running an edit session** — it has the full command reference, the poll payload shape (messages / comments / layout warnings), the listen-loop pattern, and how design/theme matching applies here.
+
+---
+
 ## Generate Then Share
 
 When the user asks to create an HTML artifact AND share/review it:
 
-1. Generate the HTML file and write it to disk
+1. Generate the HTML file and write it to disk — matching the project's design system (**`references/design-and-visuals.md`**)
 2. Verify it exists: `test -f /path/to/file.html`
 3. Pick the mode:
    - Just a link → follow the **Simple Share** guided flow
-   - Collaborative review → use `--feedback` and follow the **Agent Loop**
+   - Collaborative (async) review → use `--feedback` and follow the **Agent Loop**
+   - Iterate live with the user first → **Edit mode** (`references/edit-mode.md`), then publish when ready
 
 ## Troubleshooting
 
@@ -203,8 +228,12 @@ When the user asks to create an HTML artifact AND share/review it:
 | Feedback link changed unexpectedly | You likely passed `--new-doc`; omit it to keep the stable link |
 | File not found | Use absolute path |
 | Change password | Re-push with new `--password` (overwrites) |
+| `edit poll` returns nothing | Correct — it blocks silently until the user acts. Leave it running; re-run after each reply |
+| Edit session won't start / stale | `htmldrop edit stop`, then `htmldrop edit start <file>` again |
 
 ## Additional Resources
 
+- **`references/edit-mode.md`** — Local real-time edit mode: commands, the listen loop, poll payload, layout QA, re-engaging an ended session
+- **`references/design-and-visuals.md`** — Match the project's design system (all modes) + when to make an artifact more visual/dynamic
 - **`references/feedback-workflow.md`** — Deep dive on the feedback + converge agent loop, single-URL model, auth setup, and troubleshooting
 - **`references/privacy-levels.md`** — Detailed privacy/security comparison and user FAQ
