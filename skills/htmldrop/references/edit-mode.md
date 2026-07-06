@@ -1,6 +1,8 @@
 # Edit Mode — Local Real-Time Iteration
 
-Edit mode turns an HTML file into a live, local review surface on `127.0.0.1`. The user chats, annotates, and comments in the browser; you receive their input by polling, edit the file, and it hot-reloads. Nothing is hosted or published. It's the pre-publish loop — firm a doc up with the user before sharing, or iterate between rounds of external feedback.
+Edit mode turns an HTML file into a live, local review surface on `127.0.0.1`. The user annotates and comments in the browser; you receive their input by polling, edit the file, and it hot-reloads. Nothing is hosted or published. It's the pre-publish loop — firm a doc up with the user before sharing, or iterate between rounds of external feedback.
+
+**One surface.** The page shows the document with the annotation widget plus a small control bar. A page-level comment is a message to you; a threaded reply is your answer. Selecting text auto-opens the comment box; ⌘⏎ / Ctrl+Enter submits. A **Live ⇄ Async** toggle in the control bar controls delivery: **Live** = comments reach your poll in real time; **Async** = collected for a batch the user sends explicitly.
 
 It is **author-facing** (the user and you), distinct from `push --feedback`, which is for **async external reviewers**. When the doc is ready, publish with `push --feedback`.
 
@@ -14,7 +16,8 @@ None beyond the CLI. Edit mode is fully local — no `htmldrop init`, no Surge a
 |---------|---------|
 | `htmldrop edit start <file>` | Serve the file locally + open the browser. `--with-feedback` loads the published doc's reviewer comments into the session; `--no-open` skips the browser |
 | `htmldrop edit poll <file> [--json]` | **The listen call.** Blocks until the user sends a chat message or leaves a comment, then returns them plus current layout warnings. Re-run after each reply |
-| `htmldrop edit reply <file> --text "<t>"` | Post your response into the conversation after editing (the user sees it, and the reloaded page reflects your change) |
+| `htmldrop edit reply <file> --text "<t>"` | Post your response into the conversation after editing (the user sees it in the control bar; the reloaded page reflects your change) |
+| `htmldrop edit ask <file> --text "<q>" [--options "A\|B\|C"]` | Ask the user a question in the browser. Pops a card (prompt + clickable options + free-text note); the answer returns on your next `poll` as `{choice, text}`. Use for decisions you can't make alone (e.g. "iOS-first or Android-first?") instead of guessing |
 | `htmldrop edit layout <file> [--json]` | Report layout issues (overflow, clipped/overlapping text) in the rendered page, on demand |
 | `htmldrop edit end <file>` | End the session |
 | `htmldrop edit stop` | Shut the background edit server down |
@@ -33,10 +36,11 @@ This is the heart of edit mode — treat `edit poll` like any long-poll: leave i
 
 ## Poll Payload
 
-`edit poll --json` returns a JSON object. When there's input, `status` is `"feedback"` and it carries:
+`edit poll --json` returns a JSON object. When there's input, `status` is `"feedback"` and it carries any of:
 
-- `messages` — chat messages from the user (transient instructions; each delivered once). Each may have a `context` pinning it to selected text: `{ text, selector }`.
-- `newComments` — comments/annotations just left on the page (delivered once each). Each has an `anchor` (`selectedText` for text, `capturedText`+`rect` for an area, or `page_level`), `content.text`, and `author.displayName`.
+- `answer` — the user's reply to a question you asked via `edit ask`: `{ choice, text, question }`. Highest priority; delivered once.
+- `newComments` — comments/annotations just left on the page (delivered once each). Each has an `anchor` (`selectedText` for text, `capturedText`+`rect` for an area, or `page_level`), `content.text`, and `author.displayName`. In Async mode these arrive only when the user sends the batch.
+- `messages` — free-text messages from the user (transient; each delivered once), each optionally with a `context` `{ text, selector }`.
 - `comments` — the full current comment set, as standing context.
 - `layoutWarnings` — current render problems (see below).
 
@@ -58,6 +62,6 @@ If a session ended (or the user's message arrived while you weren't polling), th
 
 ## Notes
 
-- **Two input channels, one purpose:** chat messages are transient (delivered once, then cleared); comments are persistent annotations that stay on the page and are delivered to you once when new. Both reach you via `edit poll`.
-- **Localhost only:** the server binds loopback, rejects non-local requests, and serves only `.html`/`.htm`. Safe to leave running; it self-shuts after idle.
-- **Draft safety:** the user's unsent text survives a live-reload, so your edits won't wipe what they were typing.
+- **One surface:** comments (persistent annotations that stay on the page) are the primary channel; each new one is delivered to you once via `edit poll`. Your `edit reply` and `edit ask` are how you talk back.
+- **Ask instead of guessing:** when a change hinges on a decision only the user can make, `edit ask` with options is better than picking one silently — you get a structured answer back.
+- **Localhost only + reliable:** the server binds loopback (rejects non-local requests), serves only `.html`/`.htm`, uses a stable port so the user's tab survives your restarts, persists sessions on disk, and self-shuts after idle. The user's unsent text survives a live-reload, and a failed save shows them a retry toast rather than vanishing.
