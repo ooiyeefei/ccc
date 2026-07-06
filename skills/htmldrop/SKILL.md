@@ -9,7 +9,7 @@ Publish any HTML file and get a shareable URL instantly via the `htmldrop` CLI. 
 
 - **Simple share** (Surge.sh hosting) — get a public or password-protected link to a static page.
 - **Collaborative feedback + converge** — publish with an embedded annotation widget so reviewers can highlight text and comment with no account, then pull the feedback, add evidence-backed comments programmatically, and synthesize an improved version with AI.
-- **Edit mode** (local, pre-publish) — serve the file on `127.0.0.1` and iterate on it live *with the user*: they chat, annotate, and comment; you edit the file and it hot-reloads. No hosting, nothing published. This is the loop to firm a doc up before sharing it — or between rounds of external feedback. See **`references/edit-mode.md`**.
+- **Edit mode** (local, pre-publish) — serve the file on `127.0.0.1` and iterate on it live *with the user*: they annotate and comment on one surface; you edit the file (it hot-reloads), reply, or ask them a question. No hosting, nothing published. This is the loop to firm a doc up before sharing it — or between rounds of external feedback. See **`references/edit-mode.md`**.
 
 **Design applies to every mode:** before generating or serving any HTML, match the design system of the project the artifact is about, so it looks like the real product rather than a generic page. See **`references/design-and-visuals.md`** — read it whenever you author or edit HTML here.
 
@@ -189,14 +189,15 @@ For the detailed walkthrough — single-URL mechanics, anchoring rules, the two-
 
 Use this when the user wants to **refine an HTML doc or page with you, live, before publishing** — not to collect async feedback from others. It runs entirely on `127.0.0.1`; nothing is hosted.
 
-The core is a listen loop: you serve the file, the user chats/annotates in the browser, and you **poll** to receive their input, edit the file, and it hot-reloads. Minimal shape:
+The core is a listen loop: you serve the file, the user annotates/comments in the browser, and you **poll** to receive their input, edit the file, and it hot-reloads. Minimal shape:
 
 ```bash
 htmldrop edit start /abs/path/doc.html        # serve locally; opens the browser
-htmldrop edit poll /abs/path/doc.html --json  # BLOCKS until the user sends a message or leaves a comment
+htmldrop edit poll /abs/path/doc.html --json  # BLOCKS until the user leaves a comment (or answers a question)
 # → act on what you receive, edit doc.html (it live-reloads), then:
 htmldrop edit reply /abs/path/doc.html --text "what you changed"
-# → re-run `edit poll` and repeat. `edit layout` checks render issues; `edit end` closes it.
+# → re-run `edit poll` and repeat. `edit ask` puts a question to the user;
+#   `edit layout` checks render issues; `edit end` closes it.
 ```
 
 Keep `edit poll` running like any long-poll — it stays silent until there's input, so re-run it after each reply. When the doc is ready, publish with `htmldrop push --feedback` (Mode 2) for external review. To iterate on feedback you already collected, `htmldrop edit start <file> --with-feedback` loads those reviewer comments into the session.
