@@ -1,11 +1,12 @@
 # htmldrop — Share HTML as Hosted Links (+ collaborative feedback & AI converge)
 
-A Claude Code skill that publishes HTML files as shareable links, and — when you want review — embeds an annotation widget so others can comment, then synthesizes that feedback with AI. It wraps the `htmldrop` CLI; you just describe what you want in natural language.
+A Claude Code skill that publishes HTML files as shareable links, embeds an annotation widget so others can comment (then synthesizes that feedback with AI), and runs a local edit-mode session to iterate on a page with you live before you publish. It wraps the `htmldrop` CLI; you just describe what you want in natural language.
 
-Two modes:
+Three modes:
 
 1. **Simple share** — publish any HTML and get a public or password-protected link (free, via Surge.sh).
 2. **Collaborative feedback + converge** — publish with `--feedback` so reviewers highlight text and comment (no account, one stable link), then pull and synthesize that feedback into an improved version.
+3. **Edit mode** — serve the file locally and iterate on it in real time with you (chat, annotate, live reload) before publishing. No hosting, nothing published; no setup required.
 
 ---
 
