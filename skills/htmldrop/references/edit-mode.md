@@ -2,7 +2,7 @@
 
 Edit mode turns an HTML file into a live, local review surface on `127.0.0.1`. The user annotates and comments in the browser; you receive their input by polling, edit the file, and it hot-reloads. Nothing is hosted or published. It's the pre-publish loop — firm a doc up with the user before sharing, or iterate between rounds of external feedback.
 
-**One surface.** The page shows the document with the annotation widget plus a small control bar. A page-level comment is a message to you; a threaded reply is your answer. Selecting text auto-opens the comment box; ⌘⏎ / Ctrl+Enter submits. A **Live ⇄ Async** toggle in the control bar controls delivery: **Live** = comments reach your poll in real time; **Async** = collected for a batch the user sends explicitly.
+**One surface.** The page shows the document with the annotation widget plus a small control bar. A page-level comment is a message to you; a threaded reply is your answer. Selecting text auto-opens the comment box, or the **▢** button in the control bar starts an area-box drag; ⌘⏎ / Ctrl+Enter submits. A **Live ⇄ Async** toggle in the control bar controls delivery: **Live** = each comment pings your poll in real time; **Async** = comments are held on the page until the user clicks "Send N to agent". Either way the comment is saved on the page — the mode only changes *when* you're pinged.
 
 It is **author-facing** (the user and you), distinct from `push --feedback`, which is for **async external reviewers**. When the doc is ready, publish with `push --feedback`.
 
