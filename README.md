@@ -20,6 +20,8 @@ Custom plugins and skills for [Claude Code](https://github.com/anthropics/claude
 | [landing-page-gtm](./skills/landing-page-gtm) | Skill | High-converting SaaS landing pages with GTM-aware copy and competitive positioning | `/plugin install ccc-skills@ccc` |
 | [uat-testing](./skills/uat-testing) | Skill | End-to-end UAT for web apps via Playwright: test case generation, execution, pass/fail reports | `/plugin install ccc-skills@ccc` |
 | [cross-app-shared-auth](./skills/cross-app-shared-auth) | Skill | Onboard apps into a platform with one shared login and a central accounts database: per-app opt-in access, deny-by-default, dual sign-up paths | `/plugin install ccc-skills@ccc` |
+| [google-analytics-setup](./skills/google-analytics-setup) | Skill | Set up GA4 on a website and wire a real conversion (form/signup/purchase) end to end — property/stream structure, tag install, event, Key Event, and DebugView verification before ad spend | `/plugin install ccc-skills@ccc` |
+| [meta-pixel-setup](./skills/meta-pixel-setup) | Skill | Set up the Meta (Facebook/Instagram) Pixel and a conversion event end to end — steers past the Conversions-API push and the sensitive-category trap, with Pixel Helper verification before ad spend | `/plugin install ccc-skills@ccc` |
 
 ---
 
@@ -33,7 +35,8 @@ Custom plugins and skills for [Claude Code](https://github.com/anthropics/claude
 /plugin install deckling@ccc
 
 # Install the skills collection (excalidraw, streak, agentic-system-design,
-# self-improving-systems, htmldrop, landing-page-gtm, uat-testing)
+# self-improving-systems, htmldrop, landing-page-gtm, uat-testing,
+# cross-app-shared-auth, google-analytics-setup, meta-pixel-setup)
 /plugin install ccc-skills@ccc
 ```
 

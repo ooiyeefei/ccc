@@ -6,7 +6,7 @@
   },
   "metadata": {
     "description": "Custom Claude Code plugins and skills",
-    "version": "1.6.0"
+    "version": "1.7.0"
   },
   "plugins": [
     {
@@ -36,7 +36,7 @@
     },
     {
       "name": "ccc-skills",
-      "description": "Collection of skills and commands: Excalidraw diagrams, Streak challenge tracker, agentic system design, self-improving systems, htmldrop HTML sharing, landing page GTM, UAT testing, and cross-app shared auth",
+      "description": "Collection of skills and commands: Excalidraw diagrams, Streak challenge tracker, agentic system design, self-improving systems, htmldrop HTML sharing, landing page GTM, UAT testing, cross-app shared auth, Google Analytics (GA4) setup, and Meta Pixel setup",
       "source": "./",
       "strict": false,
       "skills": [
@@ -47,7 +47,9 @@
         "./skills/htmldrop",
         "./skills/landing-page-gtm",
         "./skills/uat-testing",
-        "./skills/cross-app-shared-auth"
+        "./skills/cross-app-shared-auth",
+        "./skills/google-analytics-setup",
+        "./skills/meta-pixel-setup"
       ],
       "commands": [
         "./commands/streak.md",
