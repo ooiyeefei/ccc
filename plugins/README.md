@@ -7,6 +7,7 @@ Plugins bundle commands, agents, skills, and MCP servers into installable packag
 | Plugin | Description |
 |--------|-------------|
 | [deckling](./deckling) | Generate and refine PPTX presentations using Anthropic's Platform Skills API, via the `/deckling` command |
+| [daily-chief](./daily-chief) | User-invoked Daily Chief Plan today with browser device login, local preview, and explicit remote apply via `/daily-chief` |
 | [mvp-launch](./mvp-launch) | MVP launch readiness checker. `/launch-check` analyzes your codebase against a battle-tested 10-point checklist (Stripe, mobile, onboarding, emails, logging, auth, backups, …) |
 | [product-management](./product-management) | AI-native PM for startups: competitor research, gap analysis, and WINNING prioritization (`/pm analyze`, `/pm landscape`, `/pm gaps`, `/pm file`) with GitHub Issues integration |
 | [rethink-surveys](./rethink-surveys) | Survey design framework grounded in Jarrett/Dillman/Tourangeau methods. `/design-survey`, `/critique-survey`, `/turn-into-app` commands plus a bundled `rethink-survey` MCP server |
@@ -20,6 +21,7 @@ Plugins bundle commands, agents, skills, and MCP servers into installable packag
 
 # Install a plugin
 /plugin install deckling@ccc
+/plugin install daily-chief@ccc
 /plugin install mvp-launch@ccc
 /plugin install product-management@ccc
 /plugin install rethink-surveys@ccc

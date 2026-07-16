@@ -35,6 +35,11 @@
       "source": "./plugins/rethink-surveys"
     },
     {
+      "name": "daily-chief",
+      "description": "Daily Chief Plan today workflow with browser device login, a local visual preview, and explicit remote apply.",
+      "source": "./plugins/daily-chief"
+    },
+    {
       "name": "ccc-skills",
       "description": "Collection of skills and commands: Excalidraw diagrams, Streak challenge tracker, agentic system design, self-improving systems, htmldrop HTML sharing, landing page GTM, UAT testing, cross-app shared auth, Google Analytics (GA4) setup, Meta Pixel setup, project showcase catalog, and the pitch suite (pitch-craft timed scripts, demo-video recording, pitch-deck, pitch-package orchestration)",
       "source": "./",

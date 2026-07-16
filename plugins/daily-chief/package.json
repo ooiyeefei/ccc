@@ -1,0 +1,39 @@
+{
+  "name": "daily-chief-agent",
+  "version": "1.0.0",
+  "description": "Daily Chief Plan today agent workflow with browser device login, local previews, and explicit remote apply.",
+  "license": "MIT",
+  "type": "module",
+  "engines": {
+    "node": ">=22"
+  },
+  "bin": {
+    "daily-chief": "bin/daily-chief.mjs"
+  },
+  "keywords": [
+    "daily-chief",
+    "agent",
+    "plan-today",
+    "claude-code",
+    "pi-package"
+  ],
+  "pi": {
+    "skills": [
+      "./skills"
+    ]
+  },
+  "files": [
+    ".claude-plugin",
+    "bin",
+    "commands",
+    "LICENSE",
+    "scripts",
+    "skills",
+    "API.md",
+    "README.md"
+  ],
+  "scripts": {
+    "test": "node --test tests/*.test.mjs",
+    "check": "node --check bin/daily-chief.mjs && node --check scripts/daily-chief.mjs && node --check scripts/render-plan-today.mjs"
+  }
+}

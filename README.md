@@ -8,6 +8,7 @@ Custom plugins and skills for [Claude Code](https://github.com/anthropics/claude
 |------|------|-------------|-----------------|
 | [bash-safety-guard](./plugins/bash-safety-guard) | Plugin (hook) | Fail-closed PreToolUse bash guard: blocks prod-data loss, credential exfiltration, and catastrophic `rm -rf` before they run — even under `--dangerously-skip-permissions` | `/plugin install bash-safety-guard@ccc` |
 | [deckling](./plugins/deckling) | Plugin | Generate PPTX presentations using Anthropic Platform Skills API | `/plugin install deckling@ccc` |
+| [daily-chief](./plugins/daily-chief) | Plugin + Pi package | User-invoked Plan today workflow with browser device login, local preview, and explicit remote apply | `/plugin install daily-chief@ccc` |
 | [mvp-launch](./plugins/mvp-launch) | Plugin | MVP launch readiness checker with `/launch-check` command | `/plugin install mvp-launch@ccc` |
 | [product-management](./plugins/product-management) | Plugin | AI-native PM: competitor research, gap analysis, WINNING prioritization | `/plugin install product-management@ccc` |
 | [rethink-surveys](./plugins/rethink-surveys) | Plugin | Survey design grounded in research methods (Jarrett, Dillman, Tourangeau) with design/critique/app-scaffold commands + bundled MCP server | `/plugin install rethink-surveys@ccc` |
@@ -39,6 +40,9 @@ The four pitch skills form one suite - **preparing a whole pitch -> start with `
 
 # Install a plugin (e.g. deckling, which has the /deckling command)
 /plugin install deckling@ccc
+
+# Install Daily Chief, then invoke /daily-chief for its explicit Plan today workflow
+/plugin install daily-chief@ccc
 
 # Install the skills collection (excalidraw, streak, agentic-system-design,
 # self-improving-systems, htmldrop, landing-page-gtm, uat-testing,
