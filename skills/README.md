@@ -13,6 +13,23 @@ Skills are markdown files that teach Claude Code how to perform specific tasks.
 | [self-improving-systems](./self-improving-systems/SKILL.md) | Decide whether your agent actually needs persistent memory, feedback loops, or closed-loop learning — then design the smallest thing that pays for itself. Default position: scratchpad-only, stateless agent first. See [README](./self-improving-systems/README.md) for details |
 | [htmldrop](./htmldrop/SKILL.md) | Publish HTML files as shareable links via Surge.sh, with optional embedded annotation widget for collaborative review and AI-converged feedback synthesis. See [README](./htmldrop/README.md) for details |
 | [landing-page-gtm](./landing-page-gtm/SKILL.md) | Build high-converting SaaS landing pages with GTM-aware marketing copy, competitive positioning, and sales psychology. See [README](./landing-page-gtm/README.md) for details |
+| [pitch-craft](./pitch-craft/SKILL.md) | The timed-spoken-script engine: demo voiceovers, deck narration, and live pitch speeches with word budgets, storytelling rules (hook, throughline, analogies), trim points, and re-sync after re-records. See [README](./pitch-craft/README.md) for details |
+| [demo-video](./demo-video/SKILL.md) | Record crisp hi-res product demo videos by driving the real app with a browser agent: beat sheet, Xvfb framebuffer capture (no macroblocking), milestone timestamps, narration synced to the frames. See [README](./demo-video/README.md) for details |
+| [pitch-deck](./pitch-deck/SKILL.md) | Build a pitch deck as one self-contained HTML file (hash nav, entry animations, brand mark, cited numbers), narrate it, and optionally record the walkthrough in parts that stitch around a demo. See [README](./pitch-deck/README.md) for details |
+| [pitch-package](./pitch-package/SKILL.md) | The end-to-end pitch orchestrator: interview the audience and slot, budget the time, compose deck + demo + live speech via the other pitch skills, with stitch plan, fallback ladder, and day-of checklist. See [README](./pitch-package/README.md) for details |
+
+## The pitch suite - when to use what
+
+Four skills, one factoring: three workflows plus one shared engine. Start from what you need to hand over:
+
+| You need | Start with | What it contains | It will pull in |
+|---|---|---|---|
+| The whole pitch for a slot (hackathon, VC, customer demo) | [pitch-package](./pitch-package/SKILL.md) | Audience interview, slot budgeting, composition plan, audience lenses, stitch variants + fallback ladder, day-of checklist | All three below, as gaps demand |
+| Words against a clock (demo voiceover, deck narration, live speech) | [pitch-craft](./pitch-craft/SKILL.md) | Beats-before-words workflow, words-per-second budgets, storytelling rules (hook, throughline, analogies), trim points, re-sync after re-records | Nothing - it is the shared engine |
+| Crisp footage of the product itself | [demo-video](./demo-video/SKILL.md) | Beat-sheet discipline, the Xvfb framebuffer recording recipe (fixes macroblocking), CDP driving patterns, the harness script, milestone JSON | pitch-craft, for the narration |
+| The deck itself, and optionally its recorded walkthrough | [pitch-deck](./pitch-deck/SKILL.md) | Single-file HTML deck skeleton (hash nav, animations, brand mark, cited numbers), walkthrough recording in parts around a demo | pitch-craft for narration; demo-video's harness for recording |
+
+Rules of thumb: preparing for an audience and a time slot -> **pitch-package** first, always. Only one artifact missing -> call that skill directly. Anything that produces spoken words routes through **pitch-craft**; anything that produces video pixels routes through **demo-video**'s harness.
 
 ## Installation
 

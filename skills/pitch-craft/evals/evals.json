@@ -1,0 +1,47 @@
+{
+  "skill_name": "pitch-suite (pitch-craft, demo-video, pitch-package)",
+  "evals": [
+    {
+      "id": 0,
+      "skill": "pitch-craft",
+      "prompt": "I recorded a 95-second screen demo of my app LedgerLens (an AI expense-audit tool for finance teams). The recording harness emitted these milestones: 0.0s OPEN_DASHBOARD (queue shows 800 receipts pending review); 6.5s RUN_AUDIT (bulk audit runs, queue collapses to 27 flagged); 21.0s OPEN_RECEIPT (one flagged receipt opens: duplicate-vendor pattern); 38.0s EVIDENCE_TRAIL (side-by-side of two duplicate invoices, $4,980 each, different PO numbers); 61.0s APPROVE_FLAG (reviewer confirms the flag; case sealed with an audit record); 78.0s NEXT_CASE_RECALL (the next similar receipt opens and cites the case just confirmed); 95.0s END. Write the voiceover narration to record over this video.",
+      "expected_output": "Numbered narration segments keyed to the milestone windows, each fitting its window at voiceover pace, spelled-out numbers, recorded register, closing on the product name.",
+      "assertions": [
+        "Segmented with timestamp windows that match the given milestones (approx 0:00->0:06, 0:06->0:21, 0:21->0:38, 0:38->1:01, 1:01->1:18, 1:18->1:35)",
+        "Every segment fits its window at voiceover pace: segment word count <= window_seconds x 2.8",
+        "Numbers are spelled out for the voice artist (eight hundred, twenty-seven), not digits",
+        "Recorded register: present tense describing the screen, no stage cues like (pause) and no audience address",
+        "The close lands the product name"
+      ],
+      "files": []
+    },
+    {
+      "id": 1,
+      "skill": "demo-video",
+      "prompt": "I need a crisp demo video of my web app (localhost:3000, finance dashboard with a canvas chart) for a hackathon submission. I tried Playwright's recordVideo with deviceScaleFactor: 2 but the result looks soft and blocky fullscreen. Ubuntu server. Explain what went wrong and give me a working recording script.",
+      "expected_output": "Correct diagnosis (CSS-viewport capture + bitrate starvation), a framebuffer-capture script (Xvfb + ffmpeg x11grab, DSF 2, CRF encode, -draw_mouse 0), and frame-verification guidance.",
+      "assertions": [
+        "Diagnoses why Playwright recordVideo + DSF2 is soft: CSS-viewport-sized capture and/or encoder bitrate starvation (not just 'raise the resolution')",
+        "Proposes real-framebuffer capture (Xvfb + ffmpeg x11grab or equivalent), not upscaling the existing file",
+        "The script hides or deliberately handles the cursor (-draw_mouse 0)",
+        "The script uses CRF-controlled encoding rather than default bitrate",
+        "Recommends visually verifying extracted frames before shipping"
+      ],
+      "files": []
+    },
+    {
+      "id": 2,
+      "skill": "pitch-package",
+      "prompt": "I'm pitching LedgerLens, my AI expense-audit app, at a fintech hackathon this Friday. I have a 4-minute slot (everything included), a working app, but no demo video and no deck yet. My teammate Sam will be on stage with me. Help me prepare the whole pitch.",
+      "expected_output": "Interview questions / explicit assumptions first, an explicit 4:00 budget line, a composition plan routing to deck/demo/script work, trim points and a fallback, a speaker plan - and NOT a full deck dump in the first response.",
+      "assertions": [
+        "Leads with interview questions or explicitly stated assumptions BEFORE any artifact content",
+        "Contains an explicit time-budget line decomposing the 4:00 slot (spoken + demo + buffer)",
+        "Does NOT produce a full deck (HTML or complete slide-by-slide copy) in this first response",
+        "Names trim points and/or a demo fallback plan",
+        "Includes a speaker plan for the two presenters (who says what, team intro placement)"
+      ],
+      "files": []
+    }
+  ]
+}

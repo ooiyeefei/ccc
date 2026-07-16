@@ -36,7 +36,7 @@
     },
     {
       "name": "ccc-skills",
-      "description": "Collection of skills and commands: Excalidraw diagrams, Streak challenge tracker, agentic system design, self-improving systems, htmldrop HTML sharing, landing page GTM, UAT testing, cross-app shared auth, Google Analytics (GA4) setup, Meta Pixel setup, and project showcase catalog",
+      "description": "Collection of skills and commands: Excalidraw diagrams, Streak challenge tracker, agentic system design, self-improving systems, htmldrop HTML sharing, landing page GTM, UAT testing, cross-app shared auth, Google Analytics (GA4) setup, Meta Pixel setup, project showcase catalog, and the pitch suite (pitch-craft timed scripts, demo-video recording, pitch-deck, pitch-package orchestration)",
       "source": "./",
       "strict": false,
       "skills": [
@@ -49,7 +49,11 @@
         "./skills/uat-testing",
         "./skills/cross-app-shared-auth",
         "./skills/google-analytics-setup",
-        "./skills/meta-pixel-setup"
+        "./skills/meta-pixel-setup",
+        "./skills/pitch-craft",
+        "./skills/demo-video",
+        "./skills/pitch-deck",
+        "./skills/pitch-package"
       ],
       "commands": [
         "./commands/streak.md",

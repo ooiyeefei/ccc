@@ -1,0 +1,26 @@
+# demo-video
+
+Record a **crisp, high-resolution product demo video** by driving the real app with a browser agent: beat sheet -> staged app -> Xvfb framebuffer recording -> milestone timestamps -> narration synced to the frames.
+
+Why it exists: the obvious tools produce bad footage at high resolution. Playwright's `recordVideo` captures at CSS-viewport size (device-scale-factor adds zero pixels) with a ~0.6 Mbps encoder that macroblocks anything above 1080p. The proven fix is capturing a real Xvfb framebuffer (2560x1600) while Chrome renders at DSF 2 over a 1280x800 viewport, encoded with CRF via ffmpeg x11grab.
+
+Leading rules: **milestones first** (a demo is an argument - every beat proves a claim), **real frames not upscaled**, **verify with your eyes** (extract frames and look before shipping), **narrate to the frame** (via the `pitch-craft` skill).
+
+Also the home of the recording harness that `pitch-deck` reuses for slide walkthroughs.
+
+## Use this, not that
+
+- **Use demo-video when the deliverable is FOOTAGE of the product** - a demo film, or fixing a pixelated recording.
+- The words over the footage -> `pitch-craft`. A slide-walkthrough video -> `pitch-deck` (which reuses this skill's harness). The whole pitch -> `pitch-package`.
+- Part of the pitch suite: decision guide in [skills/README.md](../README.md#the-pitch-suite---when-to-use-what).
+
+## Structure
+
+- `SKILL.md` - the seven-step workflow
+- `references/recording.md` - the framebuffer recipe and why each flag exists
+- `references/driving.md` - CDP driving: clicks, variable-latency waits, milestone marking
+- `scripts/record_template.py` - the harness (edit CONFIG + BEATS, plumbing is done)
+
+## Requirements
+
+Linux with `Xvfb`, `ffmpeg`, Chrome/Chromium, and `pip install websockets`. macOS: capture the retina display with `ffmpeg -f avfoundation` instead; same principles.
