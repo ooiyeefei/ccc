@@ -13,6 +13,33 @@ Publish any HTML file and get a shareable URL instantly via the `htmldrop` CLI. 
 
 **Design applies to every mode:** before generating or serving any HTML, match the design system of the project the artifact is about, so it looks like the real product rather than a generic page. See **`references/design-and-visuals.md`** — read it whenever you author or edit HTML here.
 
+---
+
+## MUST DO BEFORE WRITING ANY HTML (all modes)
+
+This fires **automatically**, whether the user runs simple share, feedback, or edit mode — and whether or not they ever type a `htmldrop playbook`/`htmldrop design` command. It is the default behavior of this skill, not an opt-in. Do both, in order, before you write or edit a single line of HTML:
+
+1. **Match the look first (theme + styling).** Detect and adopt the design system of the project the artifact is *about* (not necessarily your current working dir), in this priority:
+   1. a look/system the user named → use exactly that;
+   2. the target project's design system → Tailwind/theme config, `:root` CSS variables/design tokens, an in-use component library, or brand assets (logo, palette, fonts) on an existing styled page;
+   3. nothing to match → a clean, deliberate neutral default (small palette, system font stack, generous spacing, clear hierarchy).
+   When you deliver, state which source you used in one line ("styled with the project's Tailwind theme" / "no theme found — neutral default"). **Never ship a generic template when a real design system was discoverable.**
+
+2. **Pick the right shape (the MUST-router).** Match the content against these triggers and reach for the right structure before writing. One artifact often combines several:
+   - **relationships / flows / architecture / sequences** → a real **Mermaid diagram**, never hand-built `<div>` boxes. Re-render on light/dark flip (Mermaid never restyles an already-drawn SVG).
+   - **comparing options / tools / approaches / tradeoffs** → aligned option cards; make the **cost as visible as the benefit** (don't hide the downside).
+   - **teaching a concept / how something works** → the **explainer shape**: (a) lead with the one idea that explains everything; (b) a "feel-the-difference" micro-demo with the smallest honest code (a 450ms `setTimeout` *is* network lag; a toggle *is* a mode switch); (c) a looping before/after; (d) a cheat-sheet table last, including the honest trade-off.
+   - **proposing a change / roadmap / approach** → goal → current → proposed → risks → open questions. Mock the UI, don't describe it.
+   - **dense structured data / many attributes** → a real `<table>`, aligned columns, no horizontal overflow, highlight the decision-relevant column.
+   - **a decision/answer needed from the viewer** → an in-artifact form with native controls and one explicit "queue answer" per question.
+   - **sequential narrative to step through** → slides: one idea each, large type, keyboard nav.
+
+**The full contract lives in `references/design-and-visuals.md`** — ready-to-paste pinned CDN snippets (with integrity hashes), a layout-safety CSS block, a theme-aware Mermaid re-render snippet, and the per-shape guidance. Read it before authoring; it is the single source of truth for both the guardrail above and the optional commands below.
+
+**Optional standalone commands (same content, on demand).** If you (or a non-skill agent, or a curious user) want the guidance without this skill loaded, the CLI exposes it directly — these are a convenience, not a replacement for the guardrail:
+- `htmldrop design [--json]` — prints the design contract (priority rule, pinned snippets, layout-safety CSS, theme-aware Mermaid).
+- `htmldrop playbook [id] [--json]` — lists the shapes, or prints one (`diagram`, `comparison`, `input`, `plan`, `table`, `slides`, `explainer`).
+
 ## Prerequisites
 
 - Node.js >= 18
@@ -134,6 +161,8 @@ There is no separate "viewer link" vs "author link." Share the one URL and you a
 | `htmldrop feedback list` | List which published files have feedback enabled. |
 | `htmldrop feedback add [file] --text "..." [--doc-id <id\|url>] [--name "..."] [--on "<anchor>"] [--parent-id <id>]` | Post a comment (the agent write path). `--doc-id` comments on a doc you didn't publish; `--on` anchors to text; `--parent-id` replies. |
 | `htmldrop feedback clear <file>` | Delete all feedback for a file (**owner only**). |
+| `htmldrop pull <url> [--password <pw>] [--output <f>]` | Reconstruct the clean editable source from a published doc and re-link it to the **same** doc/link. A teammate pulls, edits, and `push --feedback` back to the same link with comments intact (no git). |
+| `htmldrop identity export [--json]` / `htmldrop identity import <blob> [--force]` | Share one **team** identity so teammates publish to the same link. Use a dedicated team account, never a personal one. |
 | `htmldrop fetch <url> [--password <pw>] [--out <f>]` | Fetch + decrypt a published doc so the agent can read its content (use with a teammate's link + password). |
 | `htmldrop converge <file> [--dry-run]` | One-shot: pull all feedback → LLM → write `<file>.converged.html`, **auto-resolving** disagreements (**owner only**). `--dry-run` prints the prompt without calling the API. |
 | `htmldrop studio [--port <n>] [--no-browser]` | Open the local "Converge Studio" dashboard to review feedback + trigger AI insights. |
@@ -193,6 +222,7 @@ The core is a listen loop: you serve the file, the user annotates/comments in th
 
 ```bash
 htmldrop edit start /abs/path/doc.html        # serve locally; opens the browser
+htmldrop edit ls [--json]                     # list all local edit sessions + which have unaddressed input
 htmldrop edit poll /abs/path/doc.html --json  # BLOCKS until the user leaves a comment (or answers a question)
 # → act on what you receive, edit doc.html (it live-reloads), then:
 htmldrop edit reply /abs/path/doc.html --text "what you changed"
@@ -210,7 +240,7 @@ Keep `edit poll` running like any long-poll — it stays silent until there's in
 
 When the user asks to create an HTML artifact AND share/review it:
 
-1. Generate the HTML file and write it to disk — matching the project's design system (**`references/design-and-visuals.md`**)
+1. Generate the HTML file and write it to disk — first run the **MUST DO BEFORE WRITING ANY HTML** step above (match the theme, pick the right shape), per **`references/design-and-visuals.md`**
 2. Verify it exists: `test -f /path/to/file.html`
 3. Pick the mode:
    - Just a link → follow the **Simple Share** guided flow
@@ -235,6 +265,6 @@ When the user asks to create an HTML artifact AND share/review it:
 ## Additional Resources
 
 - **`references/edit-mode.md`** — Local real-time edit mode: commands, the listen loop, poll payload, layout QA, re-engaging an ended session
-- **`references/design-and-visuals.md`** — Match the project's design system (all modes) + when to make an artifact more visual/dynamic
+- **`references/design-and-visuals.md`** — Match the project's design system (all modes) + when to make an artifact more visual/dynamic, **plus the full design contract** (pinned CDN snippets, layout-safety CSS, theme-aware Mermaid) and the per-shape playbook router. Same content as `htmldrop design` / `htmldrop playbook`.
 - **`references/feedback-workflow.md`** — Deep dive on the feedback + converge agent loop, single-URL model, auth setup, and troubleshooting
 - **`references/privacy-levels.md`** — Detailed privacy/security comparison and user FAQ

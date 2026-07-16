@@ -111,6 +111,14 @@ generate doc → push --feedback → share link
 
 Re-pushing keeps the **same URL** (the docId is reused), so the document iterates in place while reviewers keep the link they already have. See **`references/feedback-workflow.md`** for the full step-by-step.
 
+### Hand a doc off to a teammate — no git needed
+
+A teammate can pull the source from a published link, add to it, and publish back to the **same link** with comments intact:
+
+[![htmldrop collaborative hand-off flow: publish with feedback, a teammate pulls the source, edits and adds a section, then pushes back to the same link with comments intact](https://raw.githubusercontent.com/ooiyeefei/htmldrop/main/docs/assets/collab-flow.png)](https://yooi.surge.sh/htmldrop-v1.10.0.html)
+
+_Click the diagram for the interactive release note._
+
 ---
 
 ## How it works
