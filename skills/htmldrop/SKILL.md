@@ -52,7 +52,7 @@ This fires **automatically**, whether the user runs simple share, feedback, or e
 
 1. **Check prerequisites first** — the relevant setup must be done before any push
 2. **Never store credentials** — Surge auth lives in `~/.netrc`; the feedback author key lives in `~/.htmldrop/config.json`
-3. **For password-protected files** — report both the URL and the password to the user
+3. **For password-protected files** — report the URL and password to the user, and remind them htmldrop stores the password nowhere (it's unrecoverable), so they should save it in a password manager now
 4. **Use absolute paths** when calling `htmldrop push`
 
 ---
@@ -83,10 +83,22 @@ Present two options:
 - Yes → `htmldrop push --noindex /path/to/file.html`
 - No → `htmldrop push /path/to/file.html`
 
-**If password-protected** — ask for a password or offer to generate a memorable one (e.g., `coral-sunset-42`):
+**If password-protected** — ask for a password, offer to generate one, or pipe one from the user's password manager. htmldrop **never stores the password** (held in memory only to encrypt at push time, then discarded), so tell the user to save it in their password manager the moment it's created — a forgotten one can't be recovered (re-push with a new one). Three ways to supply it:
+
 ```bash
+# 1. Let htmldrop generate a memorable one (two words + a number), printed once:
+htmldrop push --password --generate-password /path/to/file.html
+
+# 2. Pipe from a password manager so it never touches shell history:
+htmldrop push --password "$(op read op://vault/item/password)" /path/to/file.html   # 1Password
+htmldrop push --password "$(bw get password <id>)" /path/to/file.html               # Bitwarden
+htmldrop push --password "$(pass show <name>)" /path/to/file.html                   # pass
+
+# 3. A known value:
 htmldrop push --password <pass> /path/to/file.html
 ```
+
+A bare `--password` (no value) reads from `$HTMLDROP_PASSWORD` or a hidden prompt.
 
 ### Step 4: Report Results
 
@@ -100,7 +112,8 @@ Published: https://subdomain.surge.sh/filename.html
 Published with password protection!
   URL: https://subdomain.surge.sh/filename.html
   Password: coral-sunset-42
-Share both with your recipients.
+htmldrop never stores this password — it can't be recovered.
+Save it in your password manager now, then share both with your recipients.
 ```
 
 ### Skip the Flow When Intent is Clear
@@ -115,7 +128,7 @@ If the user explicitly states preference in their request, skip the question:
 | Command | Purpose |
 |---------|---------|
 | `htmldrop init` | One-time setup (subdomain + Surge login) |
-| `htmldrop push <file>` | Publish a file (flags: `--password`, `--noindex`, `--open`) |
+| `htmldrop push <file>` | Publish a file (flags: `--password`, `--generate-password`, `--noindex`, `--open`) |
 | `htmldrop list` | Show all published files with URLs |
 | `htmldrop delete <file>` | Remove a file and redeploy |
 | `htmldrop open <file>` | Open published file in browser |
