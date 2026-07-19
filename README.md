@@ -24,7 +24,7 @@ Custom plugins and skills for [Claude Code](https://github.com/anthropics/claude
 | [google-analytics-setup](./skills/google-analytics-setup) | Skill | Set up GA4 on a website and wire a real conversion (form/signup/purchase) end to end — property/stream structure, tag install, event, Key Event, and DebugView verification before ad spend | `/plugin install ccc-skills@ccc` |
 | [meta-pixel-setup](./skills/meta-pixel-setup) | Skill | Set up the Meta (Facebook/Instagram) Pixel and a conversion event end to end — steers past the Conversions-API push and the sensitive-category trap, with Pixel Helper verification before ad spend | `/plugin install ccc-skills@ccc` |
 | [pitch-craft](./skills/pitch-craft) | Skill | Timed spoken scripts: demo voiceovers, deck narration, live pitch speeches - word budgets, storytelling rules, trim points, re-sync | `/plugin install ccc-skills@ccc` |
-| [demo-video](./skills/demo-video) | Skill | Crisp hi-res product demo videos via browser-agent driving + Xvfb framebuffer capture, with milestone-synced narration | `/plugin install ccc-skills@ccc` |
+| [demo-video](./skills/demo-video) | Skill | Crisp hi-res product demo videos via browser-agent driving + Xvfb framebuffer capture, with a gated recording contract and MP4-verified milestone narration | `/plugin install ccc-skills@ccc` |
 | [pitch-deck](./skills/pitch-deck) | Skill | Single-file HTML pitch decks with narration and recordable walkthroughs that stitch around a demo film | `/plugin install ccc-skills@ccc` |
 | [pitch-package](./skills/pitch-package) | Skill | End-to-end pitch orchestration (hackathon / VC / customer): slot budgeting, deck + demo + speech composition, rehearsal and fallbacks | `/plugin install ccc-skills@ccc` |
 

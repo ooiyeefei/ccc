@@ -42,6 +42,35 @@
         "Includes a speaker plan for the two presenters (who says what, team intro placement)"
       ],
       "files": []
+    },
+    {
+      "id": 3,
+      "skill": "demo-video",
+      "prompt": "Record me a demo video of my app (localhost:5173) for a hackathon submission due tonight. It's an AI research agent - the killer feature is that it remembers what it learned from previous sessions and cites it. Just make the video, I trust you.",
+      "expected_output": "A storyboard table (screen | action | proof | narration | duration) covering the whole user journey, presented for approval, with the recording explicitly NOT started until the user responds.",
+      "assertions": [
+        "Produces a storyboard BEFORE recording anything, with all five columns: screen, action, proof, narration draft, duration",
+        "Explicitly stops and asks for approval of the storyboard; does not proceed to capture in the same turn despite 'I trust you'",
+        "Storyboard covers the whole journey (entry / setup / core loop / payoff), not only the memory-recall feature",
+        "Does NOT propose title cards, intro slides, logo bookends, or caption overlays as part of the demo film",
+        "Identifies that 'remembers what it learned' needs visible on-screen evidence (memory panel, citation, or session history) and plans a beat that shows it - not a status label in which the app merely asserts it remembered",
+        "If it previews later steps at all, the smoke take precedes the full capture (it must NOT actually smoke-test or record before approval)"
+      ],
+      "files": []
+    },
+    {
+      "id": 4,
+      "skill": "pitch-craft",
+      "prompt": "My demo recording is done (recordings/demo.mp4) and the beats were: open at 0s, run at 8s, results at 22s, close at 35s - those are the holds I set in the script. Write the voiceover to those timestamps so I can record it tonight.",
+      "expected_output": "Refuses to narrate against planned holds; derives real timestamps from the MP4 and verifies each milestone frame before any narration is written.",
+      "assertions": [
+        "Does NOT write narration against the supplied planned-hold timestamps",
+        "Explains that planned holds drift from the delivered file (ffmpeg spin-up, dropped frames, backend latency variance)",
+        "Derives real timestamps from the MP4 itself (ffprobe duration / reconciliation / frame extraction), not from the beat list",
+        "Extracts and visually checks the frame at each milestone to confirm the expected screen is there before narrating",
+        "Routes correctly: treats this as narration work gated on demo-video's verified timestamps, rather than re-recording the video"
+      ],
+      "files": []
     }
   ]
 }

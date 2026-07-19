@@ -13,11 +13,11 @@ A timed script is engineering plus theater. The clock is a hard constraint; the 
 
 Get three things before drafting a single sentence:
 
-- **The beats**: what is on screen (or on stage) at each moment, in order. For a demo voiceover these are the recording's milestones; for a deck they are the slides; for a live pitch they are slides plus stage moments (team intro, demo break).
+- **The beats**: what is on screen (or on stage) at each moment, in order. For a demo voiceover these are the recording's milestones - use the sidecar's verified `t_video` values, never planned holds (see demo-video's Gate 3); for a deck they are the slides; for a live pitch they are slides plus stage moments (team intro, demo break).
 - **The clock**: either fixed windows from an existing recording (`0:16 -> 0:43`), or a total slot to budget (a 5-minute pitch).
 - **What each beat proves**: a beat with no claim behind it gets cut, not narrated.
 
-If the beats don't exist yet, build the beat sheet first and get the user's sign-off. Prose written before beats always runs long and anchors the story to sentences instead of evidence.
+If the beats don't exist yet, build the beat sheet first and get the user's sign-off. For a demo film that beat sheet is demo-video's **storyboard** - five columns, journey coverage, Gate 1 approval - not an ad-hoc list. Prose written before beats always runs long and anchors the story to sentences instead of evidence.
 
 ### 2. Budget the words
 
@@ -33,7 +33,7 @@ Count words per segment against its ceiling. Fix overruns by cutting, never by a
 
 ### 5. Honesty pass
 
-**Claim only what's wired.** Every factual sentence must be verifiable on screen or against the codebase. Where on-screen labels differ from reality, use generic phrasing ("a fast model, our strongest model") instead of names that contradict the pixels. Prefer precision rewrites over impressive vagueness ("tracing relationships between accounts, not claiming it's the same banknote"). Judges and buyers probe; one caught overclaim poisons every true claim.
+**Claim only what's wired.** Every factual sentence must be verifiable on screen or against the codebase. Over footage this is literal: point at the frame that shows each claim. Claims about agent actions ("it searched", "it remembered", "it chose the cheaper route") need visible evidence in the frame - a tool log, a state panel, a route badge - not just a plausible-looking screen. No frame, no claim (see `demo-video/references/storyboard.md`). Where on-screen labels differ from reality, use generic phrasing ("a fast model, our strongest model") instead of names that contradict the pixels. Prefer precision rewrites over impressive vagueness ("tracing relationships between accounts, not claiming it's the same banknote"). Judges and buyers probe; one caught overclaim poisons every true claim.
 
 ### 6. Output in the standard formats
 

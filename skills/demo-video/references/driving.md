@@ -29,7 +29,13 @@ Two kinds of waits, chosen per beat:
 
 ## Mark
 
-Emit a milestone at the START of every beat: `{"t_seconds": <since ffmpeg t0>, "milestone": "CASE_OPEN"}` appended to a list, written as a JSON sidecar next to the video. The sidecar is what pitch-craft syncs narration against, and what a re-record re-aligns from. Also record the trim offset (time between ffmpeg start and the on-camera re-navigation) so t0 means "first useful frame".
+Emit a milestone at the START of every beat: `{"t_wall": <since t0>, "milestone": "CASE_OPEN"}` appended to a list, written as a JSON sidecar next to the video.
+
+Then, once the beat's ready condition resolves and its animation has landed, record a second mark on the same milestone (`t_settled`). The beat start is the narration **cue**; the settled mark is where the beat's **proof** is actually on screen. On an async beat these are seconds apart, and verifying at the cue fails a correct take - see the cue-vs-proof section in `recording.md`.
+
+`t_wall` is the raw drive clock - a **hypothesis**, not a delivery timestamp. After the take, the harness reconciles it against the delivered MP4's real duration and writes `t_video` alongside it (see the timestamp-truth section in `recording.md`). Record the anchors that reconciliation needs: wall time from ffmpeg `Popen` to `SIGINT`, and the offset from `Popen` to the on-camera re-navigation.
+
+**`t_video` is what pitch-craft syncs narration against**, and what a re-record re-aligns from. Never hand `t_wall` downstream.
 
 ## Cursor visibility
 

@@ -27,7 +27,7 @@ Hand the slide list to the **pitch-craft** skill for the walkthrough script (per
 
 ### 4. Record the walkthrough (optional)
 
-Follow `references/deck-recording.md`: per-slide HOLD durations derived from the narration windows, recorded in two parts around the demo slot (Part A ends paused on the demo slide, Part B fresh-loads after it). The recording harness lives in the **demo-video** skill (`scripts/record_template.py`) - single source of truth; this skill only contributes the deck-specific driver (click `#next`, hold per window).
+Follow `references/deck-recording.md`: per-slide HOLD durations derived from the narration windows, recorded in two parts around the demo slot (Part A ends paused on the demo slide, Part B fresh-loads after it). The recording harness lives in the **demo-video** skill (`demo-video/scripts/record_template.py`) - single source of truth; this skill only contributes the deck-specific driver (click `#next`, hold per window).
 
 ### 5. Publish and verify
 

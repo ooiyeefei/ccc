@@ -69,7 +69,9 @@ Naming trims in advance is what lets a speaker hit the clock on stage without im
 
 A re-recorded take shifts every milestone (live backends have real latency variance - seconds, not milliseconds). Procedure:
 
-1. Get the new milestone timestamps (the recording harness emits a JSON sidecar).
+1. Get the new milestone timestamps from the sidecar's **`t_video`** field - the cue points, reconciled against the delivered MP4. Never sync against `t_wall` (the raw drive clock) and never against the storyboard's planned holds; both drift from the file by capture offset plus backend latency, and the drift is invisible until the voiceover lands on the wrong frame. (The sidecar's `t_proof` is a different thing - where the beat's claim is visible on screen, used to verify the take. Sync to `t_video`, not `t_proof`, or every segment lands late.)
+
+   **If the sidecar has `timestamps_suspect: true`, do not sync at all.** The harness sets it when the reconciliation model broke, meaning the timestamps may be wrong in a way no frame check caught. Locate the beats visually or re-record before writing a word - narration voiced against suspect timestamps has to be re-voiced, not re-cut.
 2. Map each narration segment's cue point to its new milestone (seg 1 -> CASE_OPEN, ..., last seg -> END).
 3. Where a window shrank, cut prose to fit. Never stretch prose to fill a grown window - let the video breathe instead.
 4. 1-2 seconds of drift per segment is acceptable; re-voice only if the wording itself changed.
