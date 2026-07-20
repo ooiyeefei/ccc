@@ -20,9 +20,15 @@ Every technical abstraction in the script gets exactly one everyday analogy, sai
 
 One analogy per idea. Two analogies for the same idea means neither landed. Zero means the audience is decoding jargon instead of listening. Never say the jargon word when the plain phrase exists: "a bank's compliance desk", not "AML alert triage optimization".
 
-## The throughline, three times
+## The throughline: bookend it, then emphasise where it is earned
 
-One sentence IS the pitch. Say it near the open, once in the middle, and as the close. Examples that worked: "When the customer changes, the offer changes." / "The AML that learns." If you cannot write the throughline in under ten words, the pitch is not ready - fix the story, not the script.
+One sentence IS the pitch. Examples that worked: "When the customer changes, the offer changes." / "The AML that learns." If you cannot write the throughline in under ten words, the pitch is not ready - fix the story, not the script.
+
+**Open with it and close on it.** A tagline that bookends the pitch reads as deliberate, and the close is where it has to land.
+
+**In between, restate it only where the story earns the emphasis** - the moment the demo proves it, the moment a number makes it undeniable. There is no required count. A writer who knows the story decides where the weight goes; a fixed number of repeats produces a jingle, not a pitch.
+
+**When you do restate it, paraphrase.** Same idea, different words. Verbatim repetition sounds like an ad; a rephrasing sounds like someone who means it. The bookend can be the exact tagline both times, since that is the line you want remembered. Everything in between should vary.
 
 ## Numbers: few, concrete, landing twice
 

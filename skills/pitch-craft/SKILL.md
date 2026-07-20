@@ -25,7 +25,7 @@ Read `references/timing.md` and compute a word ceiling per segment (words = seco
 
 ### 3. Draft with the craft rules
 
-Read `references/storytelling.md` and apply it: **hook before names**, **analogy per abstraction**, **throughline three times**, plain words, numbers that land twice. Recorded voiceover and live speech are different registers - never reuse one as the other (see the register section in storytelling.md).
+Read `references/storytelling.md` and apply it: **hook before names**, **analogy per abstraction**, **a throughline that bookends and is re-emphasised where earned** (paraphrased, not repeated verbatim), plain words, numbers that land twice. Recorded voiceover and live speech are different registers - never reuse one as the other (see the register section in storytelling.md).
 
 ### 4. Timing check
 
@@ -39,7 +39,7 @@ Then run the **per-window pacing check** in `references/timing.md`: every segmen
 
 ### 6. Human voice - written to be said, not read
 
-A script that reads as machine-written loses the room before the content lands. Work `references/human-voice.md` over every segment: the audible tells, the written-only patterns that do not apply, and the carve-outs for things this skill puts there on purpose (the throughline stated three times is craft, not a rule-of-three tell).
+A script that reads as machine-written loses the room before the content lands. Work `references/human-voice.md` over every segment: the audible tells, the written-only patterns that do not apply, and the carve-outs for things this skill puts there on purpose (a throughline bookending the script is craft, not a rule-of-three tell).
 
 Two ordering rules, both load-bearing:
 

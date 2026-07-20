@@ -80,7 +80,7 @@
       "assertions": [
         "Removes copula avoidance ('serves as a testament'), tailing negation ('not just X, it's Y'), filler ('in order to'), AI vocabulary ('leverages', 'robust', 'delves'), vague attribution ('experts believe'), significance inflation ('plays a crucial role'), authority trope ('what people miss'), and the generic uplift close ('the future looks bright')",
         "PRESERVES the repeated figure: four thousand nine hundred eighty appears with the count of two duplicates, since numbers landing twice is deliberate craft, not a tell",
-        "Does NOT flatten the deliberate repetition of the product name or throughline into synonym cycling ('the system', 'the platform')",
+        "Keeps ONE name for the product throughout rather than cycling synonyms ('the system', 'the platform'); paraphrasing the throughline itself is fine, renaming the product is not",
         "Numbers stay spelled out for the voice, not converted to digits",
         "Re-checks each rewritten segment against its window at 2.2-3.1 w/s rather than only shortening, and says so",
         "Flags that rewritten claims need the honesty pass again (the 'two duplicates' claim must be visible on screen)"

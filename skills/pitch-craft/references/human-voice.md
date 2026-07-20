@@ -52,10 +52,10 @@ Generic de-slopping flags these. Do not let it strip them.
 
 | Pattern | Why it stays |
 |---|---|
-| **Throughline three times** | Thematic repetition across a script is how an audience remembers one idea. What is banned is triadic *phrasing* inside a sentence ("innovation, inspiration, industry insights"). Repeating your throughline at the hook, the demo, and the close is craft |
+| **A throughline that bookends** | An audience remembers one sentence, and only if it opens and closes the pitch. What is banned is triadic *phrasing* inside a sentence ("innovation, inspiration, industry insights"). Any restatement between the bookends should be paraphrased, and only where the story earns the emphasis - see `storytelling.md`. Flag verbatim repeats in the middle; leave the bookend alone |
 | **Numbers landing twice** | A figure stated once is heard by nobody. Say it, then anchor it |
 | **Short sentences** | Speech needs them, and a clock rewards them. The tell is a *run* of fragments all landing like closers ("No setup. No config. No waiting."), not brevity itself |
-| **One term, repeated** | Prose style dislikes repetition. Speech requires it - a listener cannot re-read |
+| **One name per thing** | Not padding, consistency. Call it "LedgerLens" every time rather than cycling to "the system" then "the platform". Prose style prefers the variety; a listener cannot scroll back to work out who you meant |
 | **Present tense, describing the screen** | The recorded register. It can look flat on the page and is correct in the ear |
 
 ## Tells that only exist in speech
