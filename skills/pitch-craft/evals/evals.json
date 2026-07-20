@@ -71,6 +71,21 @@
         "Routes correctly: treats this as narration work gated on demo-video's verified timestamps, rather than re-recording the video"
       ],
       "files": []
+    },
+    {
+      "id": 5,
+      "skill": "pitch-craft",
+      "prompt": "Tighten this demo voiceover, it sounds AI-written. Windows are 0:00->0:12 and 0:12->0:26.\n\n1. 0:00 -> 0:12\nLedgerLens serves as a testament to what modern finance teams need. Not just an audit tool, it's a partner. In order to surface duplicates, it leverages a robust engine that delves into your ledger.\n\n2. 0:12 -> 0:26\nExperts believe duplicate invoicing plays a crucial role in leakage. LedgerLens caught two. Two duplicate invoices, four thousand nine hundred eighty dollars each. The future looks bright for finance teams who catch what people miss.",
+      "expected_output": "Both segments rewritten free of the audible tells, still inside their windows at voiceover pace, with the repeated figure preserved and each claim still checkable.",
+      "assertions": [
+        "Removes copula avoidance ('serves as a testament'), tailing negation ('not just X, it's Y'), filler ('in order to'), AI vocabulary ('leverages', 'robust', 'delves'), vague attribution ('experts believe'), significance inflation ('plays a crucial role'), authority trope ('what people miss'), and the generic uplift close ('the future looks bright')",
+        "PRESERVES the repeated figure: four thousand nine hundred eighty appears with the count of two duplicates, since numbers landing twice is deliberate craft, not a tell",
+        "Does NOT flatten the deliberate repetition of the product name or throughline into synonym cycling ('the system', 'the platform')",
+        "Numbers stay spelled out for the voice, not converted to digits",
+        "Re-checks each rewritten segment against its window at 2.2-3.1 w/s rather than only shortening, and says so",
+        "Flags that rewritten claims need the honesty pass again (the 'two duplicates' claim must be visible on screen)"
+      ],
+      "files": []
     }
   ]
 }

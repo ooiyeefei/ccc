@@ -33,7 +33,7 @@ This fires **automatically** on every demo film, whether or not the user asks fo
 
 Check the machine can do this before promising it: `ffmpeg` and `Xvfb` installed (`apt-get install -y xvfb` on Linux; this recipe is Linux-first - on macOS capture the retina display with `ffmpeg -f avfoundation` or the built-in screen recorder, same principles: physical pixels, controlled bitrate). Confirm the app runs with demo data and demo credentials, and that credentials stay OUT of the repo (scratchpad only).
 
-### 1. Storyboard — **GATE 1: approval before any capture**
+### 1. Storyboard - **GATE 1: approval before any capture**
 
 Write the visual storyboard before recording anything. One row per beat:
 
@@ -51,7 +51,7 @@ This gate is not politeness - it is the cheapest point to change the film. After
 
 Deterministic demo data, seeded to make the beats true. Log in OFF camera. Kill anything that can interrupt the frame: notifications, password-manager bubbles (pre-write Chrome preferences - see recording.md), first-run dialogs. Never trigger JS alerts mid-take; they freeze the driver.
 
-### 3. Smoke take — **GATE 2: inspect before the full capture**
+### 3. Smoke take - **GATE 2: inspect before the full capture**
 
 Run `record_template.py <name> --smoke`. It records through the first beat that actually *drives* something - rendering beat 1 alone cannot catch a dead selector, which is half of what this gate is for - then extracts frames and prints a contact sheet. **Read it as an image.**
 
@@ -71,7 +71,7 @@ Read `references/recording.md` before changing ANY parameter - every flag in tha
 
 **Camera move, not a cut.** Genuine footage still reads as a slideshow when the driver teleports: `scrollIntoView()` jumps and setting `.value` inserts a whole string in one frame. Beats therefore carry a `motion` field (an awaited camera move or annotation) and use `click` / `type`, which drive a drawn cursor to the target and then dispatch real CDP input events, so the app receives genuine events while the frame shows the movement. Motion costs real seconds, so budget it in the storyboard's `dur` column. Primitives, their costs, the annotate-never-substitute test, and proof-frame timing: `references/motion.md`.
 
-### 5. Verify the film and derive timestamps — **GATE 3: the MP4 is the arbiter, not the clock**
+### 5. Verify the film and derive timestamps - **GATE 3: the MP4 is the arbiter, not the clock**
 
 The harness records wall-clock marks during the drive. Those are a *hypothesis*; the delivered file is the fact. (Why they drift, and the reconciliation arithmetic, are in `references/recording.md`.)
 

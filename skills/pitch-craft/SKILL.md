@@ -1,6 +1,6 @@
 ---
 name: pitch-craft
-description: Write or fix any spoken script that has to hit a clock - demo-video voiceovers, deck walkthrough narration, and live pitch speeches. Use whenever the user asks for narration, a voiceover, a timestamp script, a pitch script, a speech that fits N minutes, wants it to "sell like Steve Jobs", or needs an existing script re-synced after a re-record or re-timed to a new slot. This is also the engine the demo-video, pitch-deck, and pitch-package skills call for their scripts. Not for - written submission forms or essays (no clock), building deck HTML (pitch-deck), or recording video (demo-video).
+description: Write or fix any spoken script that has to hit a clock - demo-video voiceovers, deck walkthrough narration, and live pitch speeches. Use whenever the user asks for narration, a voiceover, a timestamp script, a pitch script, a speech that fits N minutes, wants it to "sell like Steve Jobs", or needs an existing script re-synced after a re-record or re-timed to a new slot, or says a script sounds AI-written, robotic, generic, or wants it de-slopped. This is also the engine the demo-video, pitch-deck, and pitch-package skills call for their scripts. Not for - written submission forms or essays (no clock), building deck HTML (pitch-deck), or recording video (demo-video).
 ---
 
 # Pitch Craft - Timed Spoken Scripts
@@ -37,19 +37,16 @@ Then run the **per-window pacing check** in `references/timing.md`: every segmen
 
 **Claim only what's wired.** Every factual sentence must be verifiable on screen or against the codebase. Over footage this is literal: point at the frame that shows each claim. Claims about agent actions ("it searched", "it remembered", "it chose the cheaper route") need visible evidence in the frame - a tool log, a state panel, a route badge - not just a plausible-looking screen. No frame, no claim (see `demo-video/references/storyboard.md`). Where on-screen labels differ from reality, use generic phrasing ("a fast model, our strongest model") instead of names that contradict the pixels. Prefer precision rewrites over impressive vagueness ("tracing relationships between accounts, not claiming it's the same banknote"). Judges and buyers probe; one caught overclaim poisons every true claim.
 
-### 6. Strip the AI tells
+### 6. Human voice - written to be said, not read
 
-Narration that reads as machine-written undercuts a pitch before the content lands. Run this checklist over every segment and rewrite what it catches:
+A script that reads as machine-written loses the room before the content lands. Work `references/human-voice.md` over every segment: the audible tells, the written-only patterns that do not apply, and the carve-outs for things this skill puts there on purpose (the throughline stated three times is craft, not a rule-of-three tell).
 
-- [ ] **No em or en dashes.** Use a comma, or split the sentence. (Hyphens in compounds are fine.)
-- [ ] **No rule-of-three cadence.** "Faster, cheaper, safer" - cut to the one that carries the claim.
-- [ ] **No staccato fragment runs.** "No setup. No config. No waiting." - make it one sentence with a verb.
-- [ ] **No tailing negations.** "It's not just a linter, it's a teammate" / "and that's the point" - state the thing directly.
-- [ ] **No authority tropes.** "This is the part people underestimate", "here's what most teams miss" - if it matters, show it; if it doesn't, cut it.
-- [ ] **No aphorism formulas.** "X isn't Y. X is Z." Say what the product does.
-- [ ] **No vague significance.** "Fundamentally changes how teams work" - replace with the specific change, or delete.
+Two ordering rules, both load-bearing:
 
-Read the segment aloud once after rewriting. These patterns survive silent editing because they scan smoothly; they are audible.
+- **Run this before the final pacing check.** It rewrites, so it moves word counts. Cutting filler usually *buys* clock, so reach for it before cutting a claim.
+- **Re-run the honesty pass afterwards.** Rewriting for flow is how a precise claim drifts into a vague or larger one. For a demo voiceover, that means back through the claim-to-frame audit too.
+
+Then read each segment aloud once. These patterns scan smoothly on the page and are obvious in the ear, which is the only place they matter.
 
 ### 7. Output in the standard formats
 
@@ -79,4 +76,5 @@ When a recording is redone, milestones shift (live backends have latency varianc
 ## References
 
 - `references/storytelling.md` - the craft: hook, team intro placement, analogies, throughline, registers, delivery cues, honesty guardrails. Read before drafting.
-- `references/timing.md` - words-per-second tables, formats, estimation loop, trim points, re-sync procedure. Read before budgeting.
+- `references/timing.md` - words-per-second tables, the per-window pacing band, formats, estimation loop, trim points, re-sync procedure. Read before budgeting.
+- `references/human-voice.md` - the audible AI tells, what does not transfer from prose advice, the carve-outs this skill needs protected, and the tells that only exist in speech. Read before the timing check.
