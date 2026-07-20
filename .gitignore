@@ -12,3 +12,6 @@ firebase-debug.*.log
 .env.uat
 .uat-auth/
 *.storageState.json
+
+# local scratch, never published
+.lavish/
