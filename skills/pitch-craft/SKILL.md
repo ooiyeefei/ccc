@@ -31,11 +31,27 @@ Read `references/storytelling.md` and apply it: **hook before names**, **analogy
 
 Count words per segment against its ceiling. Fix overruns by cutting, never by asking the speaker to rush. Every script ships with 1-2 **named trim points** ("fold #6 into #7, cut #12 to one sentence, saves ~15s") so the speaker can hit the clock live without improvising.
 
+Then run the **per-window pacing check** in `references/timing.md`: every segment's words divided by its real window must land in **2.2 - 3.1 w/s**. Below that a voice model leaves audible silence; above it the read spills onto the next beat's frames. Check each window - a correct average hides the two segments that break.
+
 ### 5. Honesty pass
 
 **Claim only what's wired.** Every factual sentence must be verifiable on screen or against the codebase. Over footage this is literal: point at the frame that shows each claim. Claims about agent actions ("it searched", "it remembered", "it chose the cheaper route") need visible evidence in the frame - a tool log, a state panel, a route badge - not just a plausible-looking screen. No frame, no claim (see `demo-video/references/storyboard.md`). Where on-screen labels differ from reality, use generic phrasing ("a fast model, our strongest model") instead of names that contradict the pixels. Prefer precision rewrites over impressive vagueness ("tracing relationships between accounts, not claiming it's the same banknote"). Judges and buyers probe; one caught overclaim poisons every true claim.
 
-### 6. Output in the standard formats
+### 6. Strip the AI tells
+
+Narration that reads as machine-written undercuts a pitch before the content lands. Run this checklist over every segment and rewrite what it catches:
+
+- [ ] **No em or en dashes.** Use a comma, or split the sentence. (Hyphens in compounds are fine.)
+- [ ] **No rule-of-three cadence.** "Faster, cheaper, safer" - cut to the one that carries the claim.
+- [ ] **No staccato fragment runs.** "No setup. No config. No waiting." - make it one sentence with a verb.
+- [ ] **No tailing negations.** "It's not just a linter, it's a teammate" / "and that's the point" - state the thing directly.
+- [ ] **No authority tropes.** "This is the part people underestimate", "here's what most teams miss" - if it matters, show it; if it doesn't, cut it.
+- [ ] **No aphorism formulas.** "X isn't Y. X is Z." Say what the product does.
+- [ ] **No vague significance.** "Fundamentally changes how teams work" - replace with the specific change, or delete.
+
+Read the segment aloud once after rewriting. These patterns survive silent editing because they scan smoothly; they are audible.
+
+### 7. Output in the standard formats
 
 Recorded (chunked to milestones):
 

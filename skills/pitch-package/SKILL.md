@@ -35,7 +35,7 @@ The budget decides scope: how many slides get narrated, whether the demo needs a
 
 Pick the audience lens from `references/audiences.md` - same assets, different lead, emphasis, and close. Then fill only the gaps the inventory revealed:
 
-- Missing demo film -> **demo-video** skill (storyboard keyed to the proof this audience needs, approved before capture).
+- Missing demo film -> **demo-video** skill (storyboard keyed to the proof this audience needs, approved before capture). That skill also owns the motion and annotation layer, so the film can point at what it proves rather than relying on narration alone; budget the extra seconds it costs when you size the demo slot.
 - Missing or stale deck -> **pitch-deck** skill (demo-slot slide included; appendix slides for this audience's hard questions).
 - The live speech -> **pitch-craft** skill, LIVE register: hook first, team intro after the hook, the demo-break marker stating what the video covers, delivery cues, named trim points.
 

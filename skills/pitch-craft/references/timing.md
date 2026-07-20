@@ -10,6 +10,21 @@
 
 Word ceiling per segment = window seconds x wps. A 16-second voiceover window holds ~38-42 words. Compute ceilings BEFORE drafting and write them next to each beat.
 
+## The per-window pacing check
+
+The rates above are drafting targets. After drafting, check every segment's *actual* density against its real window:
+
+```
+density = words / window_seconds        # window from the sidecar's t_video deltas
+```
+
+**Keep each window inside 2.2 - 3.1 w/s.** This is an acceptance band, not a target - a script can average correctly and still have one window at 1.4 and another at 3.6.
+
+- **Below 2.2** - dead air. A voice model reads the segment and stops, leaving visible silence over moving footage. Add a sentence or shorten the beat.
+- **Above 3.1** - the read runs past its window and lands on the next beat's frames. Cut clauses, never ask for a faster read.
+
+Run this per window, not on the script as a whole. The average hides exactly the segments that break.
+
 The slot budget line goes at the top of every script, explicitly:
 
 ```

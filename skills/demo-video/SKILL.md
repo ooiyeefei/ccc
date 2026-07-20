@@ -1,6 +1,6 @@
 ---
 name: demo-video
-description: Record a crisp, high-resolution product demo video by driving the real app with a browser agent - the full pipeline from storyboard approval to staged app, smoke take, Xvfb framebuffer recording, MP4-derived timestamps, and a narration script synced to the frames. Use whenever the user wants a demo video, a product walkthrough recording, a screen capture of an app for a hackathon / launch / submission, or complains that a recording came out pixelated, blurry, blocky or soft, showed title cards instead of the product, jumped straight to the final feature, or had narration landing on the wrong frame. Also the home of the recording harness that pitch-deck reuses for slide walkthroughs. Not for - live pitching or deck building (pitch-deck, pitch-package), one-off screenshots, or editing footage that already exists.
+description: Record a crisp, high-resolution product demo video by driving the real app with a browser agent - the full pipeline from storyboard approval to staged app, smoke take, Xvfb framebuffer recording, MP4-derived timestamps, and a narration script synced to the frames. Use whenever the user wants a demo video, a product walkthrough recording, a screen capture of an app for a hackathon / launch / submission, or complains that a recording came out pixelated, blurry, blocky or soft, showed title cards instead of the product, jumped straight to the final feature, had narration landing on the wrong frame, or looks static / like a slideshow when the capture is genuine. Also the home of the recording harness that pitch-deck reuses for slide walkthroughs. Not for - live pitching or deck building (pitch-deck, pitch-package), one-off screenshots, or editing footage that already exists.
 ---
 
 # Demo Video - film the real product, crisply
@@ -11,7 +11,11 @@ A demo is an argument: every beat on camera proves a claim, and the narration is
 
 This fires **automatically** on every demo film, whether or not the user asks for it. These are the rules an agent under time pressure skips first, which is exactly why they are not optional. Rules 1-4: `references/storyboard.md`. Rules 5-6: `references/recording.md`.
 
-1. **Film the product, not a poster.** Every frame is real browser state from the running app, changing because the driver acted on it. Title cards, slide interstitials, mocked screens, static hero images, and captions - whether added in post or injected into the DOM mid-take - do **not** go in the demo film unless the user asked for that specific beat. Never propose one yourself. If a beat can't be staged, cut the beat or fix the app - never substitute a picture of the claim for the claim. (Slides are legitimate in `pitch-deck`'s deck take, stitched *around* the demo film, never inside it.)
+1. **Film the product, not a poster - annotate, never substitute.** Every frame is real browser state from the running app, changing because the driver acted on it.
+
+   Annotation drawn *over* live state is **standard practice**: callouts, the drawn cursor, spotlight, the terminal panel. A film that explains itself on mute is doing its job. The test is whether the overlay is load-bearing: **remove it, and does the frame still show the product doing the thing?** If yes it is annotation, use it freely. If no it is a poster - a title card, slide interstitial, mocked screen, static hero image - and it stays banned.
+
+   If a beat can't be staged, cut the beat or fix the app. Never substitute a picture of the claim for the claim. (Slides are legitimate in `pitch-deck`'s deck take, stitched *around* the demo film, never inside it.) Motion and annotation: `references/motion.md`.
 
 2. **Show the whole journey, not just the money shot.** The film covers entry -> setup -> the core loop -> the payoff. A viewer who has never seen the product must be able to follow how a real user gets from opening it to the result. Opening on the final feature reads as a mockup and answers none of "what is this, who uses it, how do you get there".
 
@@ -27,7 +31,7 @@ This fires **automatically** on every demo film, whether or not the user asks fo
 
 ### 0. Preflight
 
-Check the machine can do this before promising it: `ffmpeg` and `Xvfb` installed (`apt-get install -y xvfb` on Linux; this recipe is Linux-first - on macOS capture the retina display with `ffmpeg -f avfoundation` or QuickTime, same principles: physical pixels, controlled bitrate). Confirm the app runs with demo data and demo credentials, and that credentials stay OUT of the repo (scratchpad only).
+Check the machine can do this before promising it: `ffmpeg` and `Xvfb` installed (`apt-get install -y xvfb` on Linux; this recipe is Linux-first - on macOS capture the retina display with `ffmpeg -f avfoundation` or the built-in screen recorder, same principles: physical pixels, controlled bitrate). Confirm the app runs with demo data and demo credentials, and that credentials stay OUT of the repo (scratchpad only).
 
 ### 1. Storyboard — **GATE 1: approval before any capture**
 
@@ -63,7 +67,9 @@ The harness enforces this: a full take refuses to run until a smoke take exists 
 
 Xvfb at physical 2560x1600, Chrome in app mode with `--force-device-scale-factor=2` over a 1280x800 CSS viewport, ffmpeg x11grab with `-draw_mouse 0` at CRF 16-18, driven over CDP.
 
-Read `references/recording.md` before changing ANY parameter - every flag in that recipe exists because the obvious path (Playwright's `recordVideo`) produces macroblocked or soft footage at high resolution.
+Read `references/recording.md` before changing ANY parameter - every flag in that recipe exists because the obvious capture paths produce macroblocked or soft footage at high resolution.
+
+**Camera move, not a cut.** Genuine footage still reads as a slideshow when the driver teleports: `scrollIntoView()` jumps and setting `.value` inserts a whole string in one frame. Beats therefore carry a `motion` field (an awaited camera move or annotation) and use `click` / `type`, which drive a drawn cursor to the target and then dispatch real CDP input events, so the app receives genuine events while the frame shows the movement. Motion costs real seconds, so budget it in the storyboard's `dur` column. Primitives, their costs, the annotate-never-substitute test, and proof-frame timing: `references/motion.md`.
 
 ### 5. Verify the film and derive timestamps — **GATE 3: the MP4 is the arbiter, not the clock**
 
@@ -89,7 +95,9 @@ A new take shifts every milestone (live backends vary by seconds). Re-verify aga
 
 ## References
 
+- `references/motion.md` - the motion and annotation layer: primitives, the substitution test, beat wiring, what motion costs. Read before writing beats that move.
 - `references/storyboard.md` - the storyboard format, journey coverage, the claim-to-frame audit, and how to run the approval gate. Read before writing the storyboard.
 - `references/recording.md` - the framebuffer recipe and why each flag exists; the smoke-take and timestamp-verification checklists; process gotchas. Read before recording or debugging quality.
 - `references/driving.md` - CDP driving patterns: clicks, variable-latency waits, milestone marking, staying dialog-safe.
 - `scripts/record_template.py` - the harness. Edit the CONFIG and BEATS sections; the plumbing is done. Supports `--smoke` and `--verify`.
+- `scripts/cinema.js` - the in-page motion layer, injected automatically. Read it before changing a primitive's defaults; they were arrived at by fixing real defects.

@@ -2,13 +2,13 @@
 
 Record a **crisp, high-resolution product demo video** by driving the real app with a browser agent: approved storyboard -> staged app -> smoke take -> Xvfb framebuffer recording -> MP4-derived timestamps -> narration synced to the frames.
 
-Why it exists: the obvious tools produce bad footage at high resolution. Playwright's `recordVideo` captures at CSS-viewport size (device-scale-factor adds zero pixels) with a ~0.6 Mbps encoder that macroblocks anything above 1080p. The proven fix is capturing a real Xvfb framebuffer (2560x1600) while Chrome renders at DSF 2 over a 1280x800 viewport, encoded with CRF via ffmpeg x11grab.
+Why it exists: the obvious capture paths produce bad footage at high resolution. Screencast-based recording captures at CSS-viewport size (a device scale factor adds zero pixels) with a ~0.6 Mbps encoder that macroblocks anything above 1080p. The proven fix is capturing a real Xvfb framebuffer (2560x1600) while Chrome renders at DSF 2 over a 1280x800 viewport, encoded with CRF via ffmpeg x11grab.
 
 ## The recording contract
 
 Three rules about what goes on camera, and three blocking gates that enforce them. They exist because each is what an agent under time pressure drops first - so the harness itself refuses to proceed when 1 or 2 are unmet:
 
-1. **Film the product, not a poster** - real browser state changing because the driver acted. No title cards, mocked screens, or captions unless the user asked for that beat - never propose one.
+1. **Film the product, not a poster - annotate, never substitute** - real browser state changing because the driver acted. Callouts, a drawn cursor, spotlight and the terminal panel are standard practice; anything that *stands in for* product state (title card, mocked screen) is banned. Test: remove the overlay, does the frame still show the product doing the thing?
 2. **Whole journey, not just the money shot** - entry -> setup -> core loop -> payoff.
 3. **Every claim gets a frame** - especially agent actions, which are invisible unless the app renders the evidence. No frame, no claim.
 4. **Gate 1: storyboard approved** before any capture (`phase | screen | action | proof | narration | duration`). The harness requires `--storyboard <path>`.
@@ -28,10 +28,12 @@ Also the home of the recording harness that `pitch-deck` reuses for slide walkth
 ## Structure
 
 - `SKILL.md` - the recording contract and the gated workflow
+- `references/motion.md` - camera move, not a cut: the motion and annotation primitives, and what they cost
 - `references/storyboard.md` - storyboard format, journey coverage, claim-to-frame audit, approval gate
 - `references/recording.md` - the framebuffer recipe and why each flag exists; smoke-take and timestamp-verification checklists
 - `references/driving.md` - CDP driving: clicks, variable-latency waits, milestone marking
 - `scripts/record_template.py` - the harness (edit CONFIG + BEATS, plumbing is done); `--smoke` and `--verify` modes
+- `scripts/cinema.js` - the in-page motion layer (`window.__cine`), injected automatically
 
 ## Requirements
 

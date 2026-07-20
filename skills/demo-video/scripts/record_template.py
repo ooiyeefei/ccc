@@ -1,11 +1,16 @@
 #!/usr/bin/env python3
 """Hi-res demo recorder template - Xvfb framebuffer + ffmpeg x11grab + CDP driving.
 
-Why this shape: Playwright's recordVideo captures at CSS-viewport size with a
-~0.6 Mbps webm encoder, which macroblocks above 1080p. Here we record the REAL
-framebuffer (Xvfb at 2560x1600) while Chrome renders a 1280x800 CSS viewport at
-device-scale-factor 2 - retina-crisp - and encode with CRF (controlled quality).
-See ../references/recording.md for the full rationale before changing flags.
+Why this shape: the built-in screen-capture path in browser-automation stacks
+records at CSS-viewport size with a ~0.6 Mbps encoder, which macroblocks above
+1080p. Here we record the REAL framebuffer (Xvfb at 2560x1600) while Chrome
+renders a 1280x800 CSS viewport at device-scale-factor 2 - retina-crisp - and
+encode with CRF (controlled quality). See ../references/recording.md for the
+full rationale before changing flags.
+
+Motion: cinema.js is injected into every document, so beats can call a camera
+move or an annotation and await it. Camera move, not a cut - see
+../references/motion.md.
 
 EDIT the CONFIG and BEATS sections. The plumbing below them is done.
 
@@ -34,19 +39,34 @@ FPS = 25                              # 25 for app footage, 30 for slide decks
 CRF = 17                              # 16-18; lower = better
 DISPLAY = ":99"
 CHROME = "google-chrome"
+CINEMA = pathlib.Path(__file__).resolve().parent / "cinema.js"   # motion layer
 
 # BEATS: the recording IS this list, and it must match the APPROVED storyboard
 # (see ../references/storyboard.md - do not record before that gate passes).
-# Each beat: a label (milestone name), an optional JS action run at beat start,
-# an optional readiness condition (JS expression polled until truthy - use for
-# variable-latency backends), the hold in seconds (>= its narration segment), and
-# an optional `settle` (default 0.6s) - how long after the action to sample the
-# PROOF frame, so slow entry animations aren't caught half-drawn.
+#
+# Per beat:
+#   label   milestone name
+#   motion  awaited cinema.js call - the camera move or annotation that opens the
+#           beat. Runs first, so the narration cue lands when movement starts.
+#           e.g. "__cine.glide('#chart')" / "__cine.callout('#total','Sealed')"
+#   click   selector; drives the DRAWN cursor there, ripples, then dispatches a
+#           REAL CDP mouse event, so the app sees a genuine click
+#   type    {"selector": ..., "text": ...}; real CDP key events, char by char
+#   js      raw JS escape hatch, when none of the above fits
+#   ready   JS expression polled until truthy - for variable-latency backends
+#   hold    seconds on screen (>= its narration segment)
+#   settle  default 0.6s; how long after the action to sample the PROOF frame,
+#           so slow entry animations aren't caught half-drawn
+#
+# Motion guidance (which primitive, and why teleporting reads as a cut) lives in
+# ../references/motion.md.
 BEATS = [
-    {"label": "OPEN",       "js": None,                                        "hold": 6},
-    {"label": "RUN_TRIAGE", "js": "document.querySelector('#run-btn').click()", "hold": 8},
-    {"label": "CASE_OPEN",  "js": "document.querySelector('.case-row').click()",
+    {"label": "OPEN",       "motion": "__cine.glide('#queue')",                "hold": 6},
+    {"label": "RUN_TRIAGE", "click": "#run-btn",                               "hold": 8},
+    {"label": "CASE_OPEN",  "click": ".case-row",
      "ready": "!!document.querySelector('.worklog-done')", "ready_timeout": 20, "hold": 10},
+    {"label": "EXPLAIN",    "motion": "__cine.callout('.worklog-done','Every step on the record')",
+     "hold": 4},
     {"label": "CLOSE",      "js": None,                                        "hold": 4},
 ]
 # ── END CONFIG ───────────────────────────────────────────────────────
@@ -143,13 +163,9 @@ def ffprobe_duration(path):
 
 
 def out_of_tolerance(eps):
-    """Policy hook: what to do when the drift model looks broken.
-
-    Default = warn loudly and still emit t_video, because the frame-extraction
-    pass that follows is the real check and an agent can see a wrong frame.
-    Tighten to `raise SystemExit` if this harness runs unattended, where nobody
-    is looking at the PNGs and a silently-wrong timeline reaches the voiceover.
-    """
+    """Warn when the drift model looks broken. See fail_if_suspect() for the
+    consequence - the frames are still written first, because they are what you
+    need to diagnose it."""
     if EPS_MIN <= eps <= EPS_MAX:
         return False
     print(f"  !! spin-up estimate {eps:+.2f}s outside [{EPS_MIN}, {EPS_MAX}] - "
@@ -256,6 +272,24 @@ def contact_sheet(frames, side):
     return out if r.returncode == 0 and out.exists() else None
 
 
+def fail_if_suspect(side):
+    """A full take's timestamps feed a voiceover, so suspect ones must not exit 0.
+
+    No caller drives this harness unattended today - pitch-package routes to the
+    demo-video skill rather than invoking the script, and Gate 1 needs an approved
+    storyboard, which is a human round-trip. But exit codes are the only signal a
+    wrapper can read, and "nobody automates it yet" is not a property that holds.
+    Smoke takes are exempt: their timestamps never reach narration, and failing
+    one would block the inspection it was run for.
+    """
+    if side.get("timestamps_suspect") and not side.get("smoke"):
+        raise SystemExit(
+            "GATE 3 FAILED: the reconcile is not trustworthy for this take. The "
+            "frames and sidecar above are written - read them to diagnose - but "
+            "do not hand these timestamps to pitch-craft. Re-record, or locate "
+            "the beats visually per recording.md.")
+
+
 def finish(side):
     side = reconcile(side)
     frames = extract_frames(side)
@@ -274,9 +308,7 @@ def finish(side):
         print(f"  {sheet}   <- all milestones, one read")
     for p in frames:
         print(f"  {p}")
-    if side.get("timestamps_suspect"):
-        print("\n  !! timestamps_suspect=true - do NOT hand this sidecar to "
-              "pitch-craft until the frames above are confirmed by eye.")
+    fail_if_suspect(side)          # after the frames are written, never before
     return side
 
 
@@ -299,7 +331,9 @@ async def run(cdp_port):
         # Run THROUGH the first beat that actually drives something. A smoke take
         # that only renders beat 1 cannot catch a dead selector - and a dead
         # selector surviving into the full take is the failure Gate 2 exists for.
-        first_action = next((i for i, b in enumerate(BEATS) if b.get("js")), 0)
+        drives = ("js", "click", "type")
+        first_action = next((i for i, b in enumerate(BEATS)
+                             if any(b.get(k) for k in drives)), 0)
         beats = [{**b, "hold": min(b["hold"], 4),
                   "ready_timeout": min(b.get("ready_timeout", 30), 10)}
                  for b in BEATS[:first_action + 1]]
@@ -317,12 +351,68 @@ async def run(cdp_port):
                 if msg.get("id") == _id:
                     return msg
 
-        async def evaluate(expr):
+        async def evaluate(expr, await_promise=False):
             r = await send("Runtime.evaluate",
-                           {"expression": expr, "returnByValue": True})
-            return r.get("result", {}).get("result", {}).get("value")
+                           {"expression": expr, "returnByValue": True,
+                            "awaitPromise": await_promise})
+            res = r.get("result", {})
+            if "exceptionDetails" in res:
+                exc = res["exceptionDetails"]
+                msg = (exc.get("exception", {}).get("description")
+                       or exc.get("text") or "unknown error")
+                # cinema throws on a missing selector; surfacing it here beats
+                # a beat that silently no-ops and a proof frame with nothing on it
+                raise SystemExit(f"beat JS failed: {msg.splitlines()[0]}\n  in: {expr}")
+            return res.get("result", {}).get("value")
+
+        async def centre_of(selector):
+            """CSS-pixel centre of an element - the coordinate space CDP Input uses."""
+            pt = await evaluate(
+                "(()=>{const e=document.querySelector(" + json.dumps(selector) + ");"
+                "if(!e)return null;const r=e.getBoundingClientRect();"
+                "return {x:Math.round(r.left+r.width/2),y:Math.round(r.top+r.height/2)};})()")
+            if not pt:
+                raise SystemExit(f"no element to click: {selector}")
+            return pt["x"], pt["y"]
+
+        async def real_click(selector):
+            """Drawn cursor glides there, ripples, THEN a genuine event fires.
+
+            The visual half is cinema.js; the event half must stay driver-side so
+            the app receives a real click, not a synthetic .click() the page can
+            tell apart. Both target the same coordinate, so they stay in sync.
+            """
+            x, y = await centre_of(selector)
+            await evaluate(f"__cine.cursorTo({x},{y})", await_promise=True)
+            await evaluate(f"__cine.ripple({x},{y})", await_promise=True)
+            for kind in ("mouseMoved", "mousePressed", "mouseReleased"):
+                await send("Input.dispatchMouseEvent",
+                           {"type": kind, "x": x, "y": y, "button": "left",
+                            "clickCount": 1 if kind != "mouseMoved" else 0})
+
+        async def real_type(selector, text):
+            """Real key events, char by char - setting .value inserts in one frame."""
+            x, y = await centre_of(selector)
+            await evaluate(f"__cine.cursorTo({x},{y})", await_promise=True)
+            await send("Input.dispatchMouseEvent",
+                       {"type": "mousePressed", "x": x, "y": y,
+                        "button": "left", "clickCount": 1})
+            await send("Input.dispatchMouseEvent",
+                       {"type": "mouseReleased", "x": x, "y": y,
+                        "button": "left", "clickCount": 1})
+            for ch in text:
+                await send("Input.dispatchKeyEvent",
+                           {"type": "keyDown", "text": ch, "unmodifiedText": ch, "key": ch})
+                await send("Input.dispatchKeyEvent", {"type": "keyUp", "key": ch})
+                await asyncio.sleep(0.045)
 
         await send("Page.enable"); await send("Runtime.enable")
+
+        # Inject the motion layer for every document, so it survives the
+        # on-camera re-navigation, and into the current one for good measure.
+        cinema_src = CINEMA.read_text()
+        await send("Page.addScriptToEvaluateOnNewDocument", {"source": cinema_src})
+        await send("Runtime.evaluate", {"expression": cinema_src})
 
         # Settle load (fonts, layout) BEFORE ffmpeg starts.
         await send("Page.navigate", {"url": URL})
@@ -356,22 +446,45 @@ async def run(cdp_port):
                 print(f"  {milestones[-1]['t_wall']:6.2f}s  {label} (wall)", flush=True)
 
             for beat in beats:
+                # Mark FIRST. With a camera move the beat begins when movement
+                # begins, so that is where the narration segment starts.
+                mark(beat["label"])
+
+                motion_span = None
+                if beat.get("motion"):
+                    t_m = time.time()
+                    await evaluate(beat["motion"], await_promise=True)
+                    motion_span = (t_m, time.time())
+                if beat.get("click"):
+                    await real_click(beat["click"])
+                if beat.get("type"):
+                    await real_type(beat["type"]["selector"], beat["type"]["text"])
                 if beat.get("js"):
                     await send("Runtime.evaluate", {"expression": beat["js"]})
-                mark(beat["label"])
+
                 if beat.get("ready"):  # condition-poll for variable latency
                     deadline = time.time() + beat.get("ready_timeout", 30)
                     while time.time() < deadline:
                         if await evaluate(beat["ready"]):
                             break
                         await asyncio.sleep(0.5)
+
                 # The mark is the narration CUE point (beat start). The beat's PROOF
                 # only exists once the action's result has rendered - after the ready
                 # condition plus the entry animation. Record that separately, or Gate
                 # 3 checks a half-drawn frame and calls a correct timestamp broken.
                 settle = min(beat.get("settle", 0.6), beat["hold"])
                 await asyncio.sleep(settle)
-                milestones[-1]["t_settled"] = round(time.time() - t0, 2)
+                acted = any(beat.get(k) for k in ("click", "type", "js", "ready"))
+                if motion_span and not acted:
+                    # An annotation beat's payload IS the motion, and cinema's
+                    # callout / spotlight / terminal fade themselves out before the
+                    # awaited call returns. Sampling after it would prove nothing -
+                    # take the midpoint, while the annotation is on screen.
+                    t_proof = (motion_span[0] + motion_span[1]) / 2 - t0
+                else:
+                    t_proof = time.time() - t0
+                milestones[-1]["t_settled"] = round(t_proof, 2)
                 await asyncio.sleep(beat["hold"] - settle)
             mark("END")
             t_sigint = time.time()

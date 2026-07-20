@@ -1,6 +1,6 @@
 ---
 name: pitch-deck
-description: Build a pitch deck as one self-contained HTML file (keyboard and click navigation, staggered slide-entry animations, a persistent brand mark, cited numbers with real links), write its timed walkthrough narration, and optionally record the walkthrough as video parts that stitch around a demo film. Use whenever the user asks for a pitch deck, demo-day / hackathon / investor slides, a slide walkthrough video, deck narration, or wants an existing HTML deck polished, re-branded, or recorded. Not for - PowerPoint / PPTX output (use a pptx skill), the product demo film itself (demo-video), or deciding overall pitch strategy and audience framing (pitch-package).
+description: Build a pitch deck as one self-contained HTML file (keyboard and click navigation, staggered slide-entry animations, a persistent brand mark, cited numbers with real links), write its timed walkthrough narration, and optionally record the walkthrough as video parts that stitch around a demo film. Use whenever the user asks for a pitch deck, demo-day / hackathon / investor slides, a slide walkthrough video, deck narration, or wants an existing HTML deck polished, re-branded, or recorded. Not for - .pptx slide files (use a pptx skill), the product demo film itself (demo-video), or deciding overall pitch strategy and audience framing (pitch-package).
 ---
 
 # Pitch Deck - one HTML file, narrated, recordable

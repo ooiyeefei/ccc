@@ -4,8 +4,8 @@
 
 These are verified failure modes, not opinions:
 
-- **Playwright `recordVideo` / Chromium screencast records at the CSS viewport size.** Setting `deviceScaleFactor: 2` adds ZERO video pixels - it only supersamples anti-aliasing inside the same 1280x800 frame. Setting `recordVideo.size` larger just black-pads.
-- **Playwright's built-in webm encoder caps around 0.6 Mbps**, which starves anything above ~1080p into visible macroblocking ("pixelation").
+- **Screencast-based capture records at the CSS viewport size.** Setting a device scale factor adds ZERO video pixels - it only supersamples anti-aliasing inside the same 1280x800 frame. Asking for a larger recording size just black-pads.
+- **Built-in webm encoders in these stacks cap around 0.6 Mbps**, which starves anything above ~1080p into visible macroblocking ("pixelation").
 - **CSS zoom tricks** (`html{zoom:1.25}` at native 1080p) blur any `<canvas>` content - fatal when the demo's centerpiece is a canvas graph.
 
 The fix is to capture a REAL framebuffer at the resolution you want, with a bitrate you control.
@@ -53,7 +53,8 @@ It records through the first beat that actually drives something (rendering beat
 - [ ] **Right app, right screen** - the entry state the storyboard names, not a login or error page
 - [ ] **Framing** - full 2560x1600, no black padding bars, no letterboxing
 - [ ] **Crisp at 1:1** - body text sharp, no macroblocking (if soft, DSF/framebuffer mismatch - re-check the flags above)
-- [ ] **Clean frame** - no cursor arrow, no password bubble, no first-run dialog, no notification toast
+- [ ] **Clean frame** - no password bubble, no first-run dialog, no notification toast
+- [ ] **No stray OS pointer** - `-draw_mouse 0` should mean the only cursor in frame is the one `cinema.js` draws. A second, unstyled arrow means the flag is not taking effect
 - [ ] **Chrome hidden** - no tab strip, no address bar, no infobar
 - [ ] **Seeded data present** - the actual demo rows/records, not an empty state
 - [ ] **Colors right** - `--force-color-profile=srgb` is doing its job; no washed-out or oversaturated render

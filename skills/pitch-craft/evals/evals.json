@@ -18,10 +18,10 @@
     {
       "id": 1,
       "skill": "demo-video",
-      "prompt": "I need a crisp demo video of my web app (localhost:3000, finance dashboard with a canvas chart) for a hackathon submission. I tried Playwright's recordVideo with deviceScaleFactor: 2 but the result looks soft and blocky fullscreen. Ubuntu server. Explain what went wrong and give me a working recording script.",
+      "prompt": "I need a crisp demo video of my web app (localhost:3000, finance dashboard with a canvas chart) for a hackathon submission. I tried my browser automation library's built-in video recording with deviceScaleFactor: 2 but the result looks soft and blocky fullscreen. Ubuntu server. Explain what went wrong and give me a working recording script.",
       "expected_output": "Correct diagnosis (CSS-viewport capture + bitrate starvation), a framebuffer-capture script (Xvfb + ffmpeg x11grab, DSF 2, CRF encode, -draw_mouse 0), and frame-verification guidance.",
       "assertions": [
-        "Diagnoses why Playwright recordVideo + DSF2 is soft: CSS-viewport-sized capture and/or encoder bitrate starvation (not just 'raise the resolution')",
+        "Diagnoses why screencast recording + a device scale factor is soft: CSS-viewport-sized capture and/or encoder bitrate starvation (not just 'raise the resolution')",
         "Proposes real-framebuffer capture (Xvfb + ffmpeg x11grab or equivalent), not upscaling the existing file",
         "The script hides or deliberately handles the cursor (-draw_mouse 0)",
         "The script uses CRF-controlled encoding rather than default bitrate",

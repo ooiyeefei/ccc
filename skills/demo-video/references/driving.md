@@ -1,6 +1,6 @@
 # Driving - controlling the app on camera
 
-The recorder connects to Chrome over CDP (raw websocket; no Playwright dependency needed) and drives the app between milestone marks. Patterns that hold up:
+The recorder connects to Chrome over CDP (raw websocket, no automation framework needed) and drives the app between milestone marks. Patterns that hold up:
 
 ## Connect
 
@@ -9,7 +9,8 @@ The recorder connects to Chrome over CDP (raw websocket; no Playwright dependenc
 
 ## Act
 
-- **Click via JS, not OS events**: `Runtime.evaluate("document.querySelector('#next').click()")` is focus-proof - it works even if the window never had OS focus (it never does under Xvfb). Synthetic keyboard/mouse events need focus and silently no-op.
+- **Prefer real input, dispatched driver-side**: `Input.dispatchMouseEvent` / `Input.dispatchKeyEvent` over CDP reach the page without needing OS window focus (which never exists under Xvfb), so the app receives genuine events. The harness's `click` / `type` beat fields do this and keep the drawn cursor on the same coordinate - see `motion.md`.
+- **`Runtime.evaluate("...click()")` remains the escape hatch** for elements real input cannot reach. It is focus-proof, but the app can tell it apart from a user click, and the frame shows no movement.
 - Fill inputs by setting `.value` + dispatching `input`/`change` events, or use the app's own test hooks if it has them.
 - **Never trigger `alert()`/`confirm()`** - a native dialog blocks the CDP channel and the take is dead. If a flow has a confirm step, prefer a build/flag that skips it, or click the in-page (non-native) modal.
 
