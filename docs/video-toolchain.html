@@ -1,0 +1,248 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Video toolchain — which tool does which part</title>
+<style>
+  :root {
+    --paper:#F6F8FB; --card:#FFFFFF; --ink:#111722; --body:#3A4658; --muted:#6B7688;
+    --line:#E2E7EF; --line2:#EDF1F6;
+    --blue:#2563EB; --blueSoft:#EAF1FE;
+    --capture:#0F9D8C; --captureSoft:#E4F5F2;   /* teal = record the real product */
+    --render:#7C4DD6; --renderSoft:#F0EAFB;      /* violet = render with Remotion */
+    --glue:#C77A16; --glueSoft:#FBEFDD;          /* amber = ffmpeg glue */
+    --voice:#4B5B72; --voiceSoft:#EDF0F4;        /* slate = narration */
+    --sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    --mono:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+    color-scheme: light dark;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --paper:#0D1117; --card:#161C25; --ink:#EAEEF4; --body:#B7C0CE; --muted:#8A94A4;
+      --line:#242C38; --line2:#1D242E;
+      --blue:#5B8DEF; --blueSoft:#16233B;
+      --capture:#3BC2AE; --captureSoft:#123029;
+      --render:#A985EC; --renderSoft:#241a38;
+      --glue:#E0A64A; --glueSoft:#332512;
+      --voice:#9AA7B8; --voiceSoft:#1c232d;
+    }
+  }
+  :root[data-theme="dark"]{--paper:#0D1117;--card:#161C25;--ink:#EAEEF4;--body:#B7C0CE;--muted:#8A94A4;--line:#242C38;--line2:#1D242E;--blue:#5B8DEF;--blueSoft:#16233B;--capture:#3BC2AE;--captureSoft:#123029;--render:#A985EC;--renderSoft:#241a38;--glue:#E0A64A;--glueSoft:#332512;--voice:#9AA7B8;--voiceSoft:#1c232d;}
+  :root[data-theme="light"]{--paper:#F6F8FB;--card:#FFFFFF;--ink:#111722;--body:#3A4658;--muted:#6B7688;--line:#E2E7EF;--line2:#EDF1F6;--blue:#2563EB;--blueSoft:#EAF1FE;--capture:#0F9D8C;--captureSoft:#E4F5F2;--render:#7C4DD6;--renderSoft:#F0EAFB;--glue:#C77A16;--glueSoft:#FBEFDD;--voice:#4B5B72;--voiceSoft:#EDF0F4;}
+
+  *,*::before,*::after{box-sizing:border-box}
+  html{overflow-x:hidden}
+  body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--sans);line-height:1.6;padding:0 22px 90px}
+  .wrap{max-width:1060px;margin:0 auto}
+
+  header{padding:60px 0 30px;border-bottom:2px solid var(--ink)}
+  .eyebrow{font-family:var(--mono);font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--blue);margin:0 0 16px}
+  h1{font-size:clamp(30px,5vw,46px);line-height:1.08;letter-spacing:-.02em;margin:0 0 16px;font-weight:800;text-wrap:balance}
+  .lede{font-size:19px;color:var(--body);max-width:640px;margin:0}
+
+  h2{font-size:26px;letter-spacing:-.01em;margin:56px 0 8px;font-weight:750}
+  .sub{color:var(--muted);font-size:16px;margin:0 0 22px;max-width:680px}
+  p{max-width:680px;color:var(--body)}
+  code{font-family:var(--mono);font-size:.86em;background:var(--line2);border:1px solid var(--line);padding:1px 5px;border-radius:5px;color:var(--ink);word-break:break-word}
+  strong{color:var(--ink);font-weight:700}
+
+  /* the one-line thesis */
+  .thesis{display:grid;grid-template-columns:repeat(auto-fit,minmax(0,1fr));gap:14px;margin:28px 0 8px}
+  .thesis>*{min-width:0}
+  .tcard{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:18px 20px}
+  .tcard .k{font-family:var(--mono);font-size:12px;letter-spacing:.08em;text-transform:uppercase;margin:0 0 8px;font-weight:700}
+  .tcard p{font-size:15px;margin:0}
+  .k.cap{color:var(--capture)} .k.ren{color:var(--render)} .k.glu{color:var(--glue)}
+
+  /* pipeline diagram */
+  .lane{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:20px 22px;margin:16px 0}
+  .lane-head{display:flex;align-items:center;gap:12px;margin-bottom:16px}
+  .dot{width:12px;height:12px;border-radius:4px;flex-shrink:0}
+  .lane-title{font-weight:750;font-size:18px}
+  .lane-tag{margin-left:auto;font-family:var(--mono);font-size:12px;color:var(--muted);letter-spacing:.04em}
+  .flow{display:flex;flex-wrap:wrap;align-items:stretch;gap:10px}
+  .step{flex:1 1 140px;min-width:0;background:var(--paper);border:1px solid var(--line);border-radius:11px;padding:13px 14px;position:relative}
+  .step .tool{font-family:var(--mono);font-size:13px;font-weight:700;color:var(--ink);display:block;margin-bottom:4px}
+  .step .does{font-size:13px;color:var(--muted);line-height:1.45}
+  .arrow{align-self:center;color:var(--muted);font-size:20px;flex:0 0 auto}
+  .lane.cap{border-left:4px solid var(--capture)} .lane.cap .dot{background:var(--capture)} .lane.cap .step{border-color:var(--captureSoft);background:var(--captureSoft)}
+  .lane.ren{border-left:4px solid var(--render)} .lane.ren .dot{background:var(--render)} .lane.ren .step{border-color:var(--renderSoft);background:var(--renderSoft)}
+  .lane.glu{border-left:4px solid var(--glue)} .lane.glu .dot{background:var(--glue)} .lane.glu .step{border-color:var(--glueSoft);background:var(--glueSoft)}
+  .lane.voi{border-left:4px solid var(--voice)} .lane.voi .dot{background:var(--voice)} .lane.voi .step{border-color:var(--voiceSoft);background:var(--voiceSoft)}
+  .converge{text-align:center;color:var(--muted);font-family:var(--mono);font-size:13px;margin:6px 0;letter-spacing:.04em}
+
+  /* tool table */
+  .scroll{overflow-x:auto;border:1px solid var(--line);border-radius:14px;margin:20px 0}
+  table{border-collapse:collapse;width:100%;font-size:14px;min-width:640px}
+  th{text-align:left;font-family:var(--mono);font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);font-weight:700;padding:13px 16px;background:var(--line2);border-bottom:1px solid var(--line);white-space:nowrap}
+  td{padding:13px 16px;border-bottom:1px solid var(--line2);vertical-align:top;color:var(--body)}
+  tbody tr:last-child td{border-bottom:none}
+  td.tool{font-family:var(--mono);font-weight:700;color:var(--ink);white-space:nowrap}
+  .pill{display:inline-block;font-family:var(--mono);font-size:10px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;padding:2px 8px;border-radius:999px;white-space:nowrap}
+  .pill.cap{background:var(--captureSoft);color:var(--capture)} .pill.ren{background:var(--renderSoft);color:var(--render)} .pill.glu{background:var(--glueSoft);color:var(--glue)} .pill.voi{background:var(--voiceSoft);color:var(--voice)} .pill.deck{background:var(--blueSoft);color:var(--blue)}
+
+  /* video-type matrix */
+  .matrix td:first-child{font-weight:700;color:var(--ink)}
+  .mk{font-family:var(--mono);font-size:12px}
+  .most{color:var(--render);font-weight:700}
+  .whole{color:var(--capture);font-weight:700}
+  .one{color:var(--capture)}
+  .opt{color:var(--muted)}
+  .no{color:var(--muted);opacity:.5}
+
+  .note{border-left:3px solid var(--blue);background:var(--blueSoft);border-radius:0 12px 12px 0;padding:16px 20px;margin:22px 0}
+  .note p{margin:0;color:var(--ink)}
+  .note .lbl{font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--blue);font-weight:700;display:block;margin-bottom:6px}
+
+  footer{margin-top:56px;padding-top:22px;border-top:1px solid var(--line);font-family:var(--mono);font-size:12px;color:var(--muted)}
+  .themebtn{position:fixed;top:14px;right:14px;font-family:var(--mono);font-size:11px;text-transform:uppercase;letter-spacing:.08em;background:var(--card);border:1px solid var(--line);color:var(--muted);padding:6px 11px;border-radius:8px;cursor:pointer;z-index:50}
+</style>
+</head>
+<body>
+<button class="themebtn" id="themebtn" type="button">Theme</button>
+<div class="wrap">
+
+  <header>
+    <p class="eyebrow">CCC video skills · how the pieces fit</p>
+    <h1>Which tool does which part of a video</h1>
+    <p class="lede">One framework, three video types, and a small set of tools that plug in at
+      different points. This is the map: what records the real product, what renders the animated
+      scenes, and what glues them together.</p>
+  </header>
+
+  <h2>The one idea</h2>
+  <p class="sub">Every video is some mix of two kinds of footage, joined by a third tool. The video
+    <em>type</em> decides the proportions.</p>
+  <div class="thesis">
+    <div class="tcard"><p class="k cap">Record the real product</p><p>A crisp screen recording of
+      the actual app, driven like a person uses it. This is the <strong>proof</strong>. Xvfb +
+      browser automation + ffmpeg.</p></div>
+    <div class="tcard"><p class="k ren">Render the story</p><p>Animated scenes, mocked or idealised
+      UI, charts, titles — built in code. This is the <strong>wrapper</strong>. Remotion.</p></div>
+    <div class="tcard"><p class="k glu">Glue it together</p><p>Crossfade the clips into one film and
+      lay narration over it. <strong>ffmpeg</strong> stitches; <strong>pitch-craft</strong>
+      scripts.</p></div>
+  </div>
+
+  <h2>The pipeline</h2>
+  <p class="sub">Read top to bottom. The two footage lanes run independently, then converge at the
+    stitch. Marketing films are heavy on the violet lane; tutorials and pitch demos live almost
+    entirely in the teal one.</p>
+
+  <div class="lane cap">
+    <div class="lane-head"><span class="dot"></span><span class="lane-title">Lane 1 · Record the real product</span><span class="lane-tag">pitch demo · tutorial · the one proof beat</span></div>
+    <div class="flow">
+      <div class="step"><span class="tool">Xvfb</span><span class="does">A virtual screen at 2560×1600, so capture is physical-pixel crisp, not soft.</span></div>
+      <span class="arrow">→</span>
+      <div class="step"><span class="tool">Chrome + Playwright / CDP</span><span class="does">Drives the real app — genuine clicks and typing, one continuous take.</span></div>
+      <span class="arrow">→</span>
+      <div class="step"><span class="tool">cinema.js</span><span class="does">In-page overlays over live state: drawn cursor, callouts, spotlight, frameRegion zoom.</span></div>
+      <span class="arrow">→</span>
+      <div class="step"><span class="tool">ffmpeg x11grab</span><span class="does">Records the framebuffer at CRF 16 → a crisp <code>real.mp4</code>.</span></div>
+    </div>
+  </div>
+
+  <div class="lane ren">
+    <div class="lane-head"><span class="dot"></span><span class="lane-title">Lane 2 · Render the story</span><span class="lane-tag">marketing · explainer</span></div>
+    <div class="flow">
+      <div class="step"><span class="tool">Remotion</span><span class="does">React scenes animated off <code>useCurrentFrame()</code> — motion graphics, mocked UI, animated charts.</span></div>
+      <span class="arrow">+</span>
+      <div class="step"><span class="tool">@remotion/google-fonts</span><span class="does">The real brand font, loaded so titles match the product.</span></div>
+      <span class="arrow">+</span>
+      <div class="step"><span class="tool">brand assets</span><span class="does">Logo, wordmark, palette pulled verbatim from the product's own repo.</span></div>
+      <span class="arrow">→</span>
+      <div class="step"><span class="tool">remotion render</span><span class="does">Each scene → <code>scene-N.mp4</code>, vector-crisp.</span></div>
+    </div>
+  </div>
+
+  <div class="converge">both lanes produce mp4s ▾</div>
+
+  <div class="lane glu">
+    <div class="lane-head"><span class="dot"></span><span class="lane-title">Converge · Stitch</span><span class="lane-tag">every video</span></div>
+    <div class="flow">
+      <div class="step"><span class="tool">ffmpeg xfade</span><span class="does">Crossfade all clips — rendered scenes and the real beat — in play order into one film.</span></div>
+      <span class="arrow">→</span>
+      <div class="step"><span class="tool">final-film.mp4</span><span class="does">The delivered file. Its measured timings are the source of truth for narration.</span></div>
+    </div>
+  </div>
+
+  <div class="lane voi">
+    <div class="lane-head"><span class="dot"></span><span class="lane-title">Overlay · Narration (optional)</span><span class="lane-tag">any video; marketing often ships silent</span></div>
+    <div class="flow">
+      <div class="step"><span class="tool">pitch-craft</span><span class="does">A timed script (2.2–3.1 words/sec), written to the frame and synced to the delivered mp4.</span></div>
+      <span class="arrow">→</span>
+      <div class="step"><span class="tool">voiceover</span><span class="does">Recorded over the cut, or left off for autoplay-muted web.</span></div>
+    </div>
+  </div>
+
+  <h2>Every tool, one line</h2>
+  <div class="scroll">
+    <table>
+      <thead><tr><th>Tool</th><th>Lane</th><th>What it does</th><th>Where it lives</th></tr></thead>
+      <tbody>
+        <tr><td class="tool">Xvfb</td><td><span class="pill cap">record</span></td><td>Virtual display at physical resolution so the capture is sharp, not macroblocked.</td><td>demo-video harness</td></tr>
+        <tr><td class="tool">Playwright / CDP</td><td><span class="pill cap">record</span></td><td>Drives the real browser with genuine input events. (CCC's harness uses raw CDP; the Groot pipeline used Playwright — same job.)</td><td>demo-video harness</td></tr>
+        <tr><td class="tool">cinema.js</td><td><span class="pill cap">record</span></td><td>Draws motion and annotation over live product state: cursor, callout, spotlight, and <code>frameRegion</code> (zoom without cloning).</td><td>demo-video/scripts</td></tr>
+        <tr><td class="tool">ffmpeg x11grab</td><td><span class="pill cap">record</span></td><td>Grabs the framebuffer to mp4 at a controlled bitrate (CRF 16).</td><td>demo-video harness</td></tr>
+        <tr><td class="tool">Remotion</td><td><span class="pill ren">render</span></td><td>Renders React scenes to frames. Everything animates off <code>useCurrentFrame()</code>; framer-motion and CSS transitions render frozen.</td><td>motion-video skill</td></tr>
+        <tr><td class="tool">@remotion/google-fonts</td><td><span class="pill ren">render</span></td><td>Loads the real brand font into the render so titles are on-brand.</td><td>motion-video skill</td></tr>
+        <tr><td class="tool">ffmpeg xfade</td><td><span class="pill glu">stitch</span></td><td>Crossfades all clips into the final film. The clip list is the edit, in version control.</td><td>motion-video/scripts, pitch-package/stitching</td></tr>
+        <tr><td class="tool">pitch-craft</td><td><span class="pill voi">narrate</span></td><td>Writes and times the spoken script to the delivered mp4.</td><td>pitch-craft skill</td></tr>
+        <tr><td class="tool">pitch-deck</td><td><span class="pill deck">frame</span></td><td>The HTML deck that wraps a pitch demo (and can wrap a marketing film).</td><td>pitch-deck skill</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h2>Which tools for which video</h2>
+  <p class="sub">The type decides the mix. This is the whole point of choosing the purpose first.</p>
+  <div class="scroll">
+    <table class="matrix">
+      <thead><tr><th>&nbsp;</th><th>Pitch demo<br><span class="mk opt">prove it to a judge</span></th><th>Tutorial<br><span class="mk opt">teach a task</span></th><th>Marketing<br><span class="mk opt">make them want it</span></th></tr></thead>
+      <tbody>
+        <tr><td>Record the real product <span class="pill cap">Lane 1</span></td><td class="whole">the whole film</td><td class="whole">the whole film</td><td class="one">one proof beat</td></tr>
+        <tr><td>Remotion scenes <span class="pill ren">Lane 2</span></td><td class="no">—</td><td class="no">—</td><td class="most">most of the film</td></tr>
+        <tr><td>ffmpeg stitch <span class="pill glu">glue</span></td><td class="mk">yes</td><td class="mk">yes</td><td class="mk">yes</td></tr>
+        <tr><td>pitch-deck wrapper <span class="pill deck">frame</span></td><td class="mk">yes</td><td class="no">—</td><td class="opt">optional</td></tr>
+        <tr><td>pitch-craft narration <span class="pill voi">voice</span></td><td class="mk">yes</td><td class="mk">yes</td><td class="opt">optional</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h2>So where does Remotion come in?</h2>
+  <p>Only when the scene is <strong>rendered</strong> rather than filmed — motion graphics, an
+    idealised or mocked screen, an animated chart, a title card, a data reveal. That is the
+    marketing / explainer genre. In a pitch demo or a tutorial there is nothing for Remotion to do:
+    the whole job is the real product on screen, so it is all Lane 1.</p>
+
+  <div class="note">
+    <span class="lbl">The line that keeps it honest</span>
+    <p>Mocked and rendered scenes are legitimate in the <strong>wrapper</strong>; the one real
+      capture is the <strong>proof</strong>. Never pass a Remotion-rendered UI off as a live
+      recording. That is the same "show the real thing" ethic the demo-video contract enforces at
+      the frame level, applied one level up at the film level.</p>
+  </div>
+
+  <p>The Groot Solo marketing film is the worked example: seven scenes, six rendered in Remotion
+    (cold-open, statement, the chat, the e-invoice flow, the brief, the close) and <strong>one</strong>
+    real capture of the live P&amp;L page — all crossfaded with ffmpeg, on the real Geist font and
+    logo.</p>
+
+  <footer>
+    CCC video skills · record (Lane 1) → render (Lane 2) → stitch → narrate ·
+    demo-video · motion-video · pitch-deck · pitch-craft
+  </footer>
+
+</div>
+<script>
+  (function(){
+    var root=document.documentElement, b=document.getElementById('themebtn');
+    b.addEventListener('click',function(){
+      var dark=window.matchMedia('(prefers-color-scheme: dark)').matches;
+      var cur=root.getAttribute('data-theme')||(dark?'dark':'light');
+      root.setAttribute('data-theme', cur==='dark'?'light':'dark');
+    });
+  })();
+</script>
+</body>
+</html>
