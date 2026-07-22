@@ -56,6 +56,8 @@ The page self-audits its rendered layout (after load and on resize) and reports 
 
 Edit mode serves the file as-authored. When you generate or edit the page, match the design system of the project the artifact is about — see **`design-and-visuals.md`**. This is what makes a mock look like the real product instead of a generic page.
 
+The control bar has a **light/dark theme toggle** (☀/☾). It stamps the standard `data-theme` (+ `color-scheme`) on the page and remembers the user's choice, so the theme they pick **survives every live reload** instead of snapping back to the artifact's default when you edit and it hot-reloads. Artifacts that honor the `data-theme` convention (see `design-and-visuals.md`) respond fully; parts keyed only to the OS `prefers-color-scheme` still follow the system, which no page script can override.
+
 ## Re-Engaging an Ended Session
 
 If a session ended (or the user's message arrived while you weren't polling), the user can just type again in the browser — sending reopens the session and queues the message. The composer stays usable and honestly shows whether a listener caught it ("working") or it's queued for your next poll. So: when you come back, run `edit poll` again and you'll receive anything queued while you were away.
