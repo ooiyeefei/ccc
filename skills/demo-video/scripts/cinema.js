@@ -230,6 +230,11 @@
    * A clone, not the element itself: transforming the original grows it over its
    * siblings and reads as a broken layout.
    */
+  // Magnify a single element by CLONING it into a centred card. Correct for a
+  // self-contained node (one chart, one number, one card). WRONG for a
+  // responsive multi-column target: a `grid-cols-1 sm:grid-cols-3` row reflows
+  // to a single stacked column inside the clone. For those, use `frameRegion`,
+  // which scales the real node in place and keeps its true columns.
   async function spotlight(selector, { scale = 1.5, hold = 3000, rise = 900 } = {}) {
     const el = $(selector);
     const r = el.getBoundingClientRect();
@@ -281,6 +286,68 @@
     await sleep(rise + 100);
     dim.remove();
     card.remove();
+  }
+
+  /**
+   * Frame-and-zoom onto a live region WITHOUT cloning it, so responsive
+   * multi-column layouts keep their real columns (the case `spotlight` gets
+   * wrong). Scales the page so the target fills `fill` of the viewport width,
+   * centred, and dims the rest. Nothing is duplicated; every pixel is the real,
+   * still-live element.
+   *
+   * Use for a row of stat cards, a table, any target whose layout depends on
+   * its width. `fill` defaults to 0.9 (leave a margin); it never scales past a
+   * size that would clip the region.
+   */
+  async function frameRegion(selector, { fill = 0.9, hold = 3000, rise = 900 } = {}) {
+    const el = $(selector);
+    el.scrollIntoView({ block: 'center', behavior: 'instant' });
+    await sleep(60);
+    const r = el.getBoundingClientRect();
+    const S = Math.min(
+      (fill * innerWidth) / r.width,
+      (0.8 * innerHeight) / r.height,
+    );
+    const cx = r.left + r.width / 2;
+    const cy = r.top + r.height / 2;
+    const tx = innerWidth / 2 - S * cx;
+    const ty = innerHeight / 2 - S * cy;
+
+    const dim = document.createElement('div');
+    Object.assign(dim.style, {
+      position: 'fixed', inset: '0', background: 'rgba(12,20,18,.55)', opacity: '0',
+      zIndex: '2147483643', pointerEvents: 'none', transition: `opacity ${rise}ms ease`,
+    });
+    document.documentElement.append(dim);
+
+    // Lift the real element above the dim layer, then transform the page.
+    const prev = {
+      pos: document.body.style.transformOrigin,
+      tr: document.body.style.transform,
+      trans: document.body.style.transition,
+      z: el.style.zIndex, posn: el.style.position,
+    };
+    document.body.style.transformOrigin = '0 0';
+    document.body.style.transition = `transform ${rise}ms ${EASE}`;
+    // raise the target so the dim overlay sits behind it
+    if (getComputedStyle(el).position === 'static') el.style.position = 'relative';
+    el.style.zIndex = '2147483644';
+
+    await new Promise((res) => requestAnimationFrame(() => {
+      dim.style.opacity = '1';
+      document.body.style.transform = `translate(${tx.toFixed(1)}px, ${ty.toFixed(1)}px) scale(${S.toFixed(3)})`;
+      res();
+    }));
+    await sleep(rise + hold);
+
+    dim.style.opacity = '0';
+    document.body.style.transform = prev.tr || 'none';
+    await sleep(rise + 100);
+    document.body.style.transformOrigin = prev.pos;
+    document.body.style.transition = prev.trans;
+    el.style.zIndex = prev.z;
+    el.style.position = prev.posn;
+    dim.remove();
   }
 
   /**
@@ -405,7 +472,7 @@
   }
 
   window.__cine = {
-    glide, fade, cursorTo, cursorToEl, ripple, callout, spotlight, terminal, selectText,
+    glide, fade, cursorTo, cursorToEl, ripple, callout, spotlight, frameRegion, terminal, selectText,
     _pos: { x: -100, y: -100 },
     ready: true,
   };
