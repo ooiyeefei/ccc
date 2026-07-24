@@ -15,10 +15,19 @@ screen-recording that bores or a cartoon that convinces no one.
 Four rules. They are the ones an agent under time pressure abandons first, which is why they are
 not optional. Repeat the bolded phrase in your reasoning as you work; it is the behaviour.
 
-1. **Wrapper, not proof.** Rendered and mocked scenes are the WRAPPER; the ONE real capture (from
-   `demo-video`) is the PROOF. Never pass a rendered UI off as a live screen recording. When a
-   figure is illustrative, say so on screen. This is `demo-video`'s "annotate never substitute"
-   ethic moved up one level: mocks are legitimate in the wrapper, banned inside the proof beat.
+1. **Wrapper, not proof.** Rendered and mocked scenes are the WRAPPER; the real capture is the
+   PROOF. Never pass a rendered UI off as a live screen recording. When a figure is illustrative,
+   say so on screen. This is `demo-video`'s "annotate never substitute" ethic moved up one level:
+   mocks are legitimate in the wrapper, banned inside the proof beat.
+
+   **A screenshot with a camera move is NOT the proof beat.** This is the failure this rule exists
+   to catch, and it is seductive because PageCam over a still looks expensive. It is still a
+   photograph. A film built entirely of glides over stills feels dead on the first watch and the
+   client says so: nothing is ever being USED. The proof beat must contain MOTION THE PRODUCT MADE
+   - a cursor travelling, characters landing one at a time, a list re-filtering as the query lands,
+   a page actually loading. If no scene in the storyboard has that, the film has no proof layer,
+   whatever the screenshots look like. Verify it by asking of each beat: could this frame have come
+   from a PNG? If yes for every beat, go back to step 4.
 
 2. **Frame-clock, not wall-clock.** Every animation is driven by Remotion's `useCurrentFrame()`.
    `framer-motion`, CSS transitions, `requestAnimationFrame`, `setTimeout`, `Date.now()` all render
@@ -87,10 +96,31 @@ Rendered scenes only - the real-proof beat stays `demo-video`, which shotcraft c
 A beat that shows a figure should usually ROLL it (`DigitRoll`), not fade it in: a rolling number
 reads as the system computing, a fading number reads as a caption. This is the most common miss.
 
-### 4. Capture the ONE real beat
+### 4. Capture the real beats
 The proof: the real product doing the real thing, captured crisply with the **demo-video** skill's
 harness. Do not rebuild the product's own screen in Remotion when the real one can be filmed - that
 is the wrapper-not-proof line.
+
+"ONE beat" is the floor, not the target. A marketing film carries as many real beats as it has
+claims; a 60s hero comfortably holds three or four, and they are what make it feel alive. Budget
+them at the storyboard gate, not after the rendered scenes are built.
+
+What to capture, in order of how alive it reads: **typing** (characters landing one at a time in
+a real input), **filtering** (a list collapsing as the query lands - it proves the data is real
+and the app is responding), **navigating** (pages actually loading, nav highlighting), then plain
+scrolling. Record the cursor: a visible pointer that TRAVELS to its target sells the interaction,
+and a cursor that teleports is the giveaway that a "recording" was faked. Move the mouse in steps.
+
+Keep every take READ-ONLY on a real tenant - type but do not send, filter but do not save,
+navigate but do not submit. A take that would mutate needs the owner's explicit go-ahead, and on a
+production tenant the answer is usually a staging one instead.
+
+Two things that ruin otherwise good footage, both cheap to prevent:
+- **Browser chrome in frame.** `--kiosk` is unreliable under automation; crop the top band in
+  ffmpeg instead. Crop the TOP only, then PAD back to the target ratio - cropping the sides to
+  "fix" the aspect slices the app's own nav rail and reads as a broken capture.
+- **Trimming by guess.** Navigation is slower than it feels; the action often starts 5-8s in.
+  Extract frames from the raw take, find where the action actually begins, then trim.
 
 ### 5. Stitch
 Rendered scenes + the real beat, crossfaded with ffmpeg. `scripts/stitch.mjs` is the reusable
