@@ -7,6 +7,8 @@ description: Record a crisp, high-resolution product demo video by driving the r
 
 A demo is an argument: every beat on camera proves a claim, and the narration is written **to the frame** - describing what is actually on screen at that second.
 
+> **Boundary - this recording has no substitute.** The `video-shotcraft` motion library captures STILL screenshots and glides a fake camera over them; it CANNOT record interaction. Never let it stand in for a tutorial, walkthrough, or any real-product film. It decorates RENDERED scenes in `motion-video`; the live recording, the DOM motion, and the timestamp-synced script stay here, always. (Standing owner rule, 2026-07-23; see `motion-video/references/shotcraft-bridge.md`.)
+
 ## The recording contract
 
 This fires **automatically** on every demo film, whether or not the user asks for it. These are the rules an agent under time pressure skips first, which is exactly why they are not optional. Rules 1-4: `references/storyboard.md`. Rules 5-6: `references/recording.md`.

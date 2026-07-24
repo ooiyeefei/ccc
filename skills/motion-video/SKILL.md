@@ -71,6 +71,22 @@ keep content inside the safe box - do not author for 16:9 and crop to 9:16 later
 frame-clock discipline, fonts, and rendering are in `references/remotion.md`; the format matrix and
 safe zones are in `references/platform-formats.md`.
 
+**Start from the carried motion kit, not from scratch.** `assets/motion/` holds the shotcraft
+pieces every film reuses, already brand-parameterised and format-aware: `PageCam` (2.5D camera over
+a real screenshot), `DigitRoll` (a number landing), `FlashCut` (a hard tonal break), `Caption`,
+`VerticalTicker` (volume), and deterministic `helpers/`. Copy what the storyboard needs into the
+project's `src/motion/` and pass the brand tokens in. Read `assets/motion/README.md` first - it says
+when each one earns its place, and which two upstream defaults (hardcoded 1920x1080 framing, and the
+Ink Press amber) are deliberately parameterised because a naive re-copy breaks rules 1.5 and 3.
+
+Reach past the kit for anything it does not cover: the remaining ~100 shot cards, the preview
+gallery, and the SFX/BGM set stay REFERRED, shopped per beat from the installed `video-shotcraft`
+skill per `references/shotcraft-bridge.md`. Our guardrails and three ratios wrap all of it.
+Rendered scenes only - the real-proof beat stays `demo-video`, which shotcraft cannot record.
+
+A beat that shows a figure should usually ROLL it (`DigitRoll`), not fade it in: a rolling number
+reads as the system computing, a fading number reads as a caption. This is the most common miss.
+
 ### 4. Capture the ONE real beat
 The proof: the real product doing the real thing, captured crisply with the **demo-video** skill's
 harness. Do not rebuild the product's own screen in Remotion when the real one can be filmed - that
@@ -100,6 +116,12 @@ collapse in 9:16, and nothing critical may sit inside a platform safe zone.
 - `references/platform-formats.md` - target-platform picker, the minimal master-ratio set, per-placement
   UI safe zones, the export/codec rule, and the Remotion multi-format recipe. Read when the film ships
   to more than one placement (any ad or multi-channel post).
+- `assets/motion/` - the CARRIED motion kit: PageCam, DigitRoll, FlashCut, Caption, VerticalTicker,
+  and deterministic helpers, brand-parameterised and format-aware, with `LICENSE.upstream`. Copy into
+  the film's project. Read its README before building a scene.
+- `references/shotcraft-bridge.md` - how to leverage the rest of the external `video-shotcraft`
+  motion/sound library (what is carried vs referred, the RENDERED-vs-RECORDED boundary, the
+  card-to-beat map, and the guardrail overlay). Read when a scene needs motion the kit does not carry.
 - `scripts/render-formats.mjs` - render every chosen ratio from one Remotion project (`Film-<id>` compositions).
 - Shared engines this skill leans on, never duplicates: **demo-video** (the real proof beat),
   **pitch-craft** (narration), **pitch-package/references/stitching.md** (assembly).
