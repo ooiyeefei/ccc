@@ -134,7 +134,7 @@ Before writing HTML, match the content against these triggers and reach for the 
 
 - **`diagram`** — *relationships / flows / architecture / sequences.* Use a real Mermaid diagram, never hand-built `<div>` boxes (they drift out of alignment and break on small screens). Keep the Mermaid source as text and render into a mount; re-render on theme flip.
 - **`comparison`** — *comparing options / tools / approaches / tradeoffs.* Aligned option cards side by side; make the cost as visible as the benefit. Never present only the upside.
-- **`input`** — *a decision or answer is needed from the viewer, in the artifact.* Native form controls, local state, and exactly one explicit "queue answer" per question.
+- **`input`** — *a decision or answer is needed from the viewer, in the artifact.* Native form controls, local *selection* state, and exactly one explicit **send answer** per question that **delivers** the choice to the agent via the feedback channel (wakes the poll live in edit mode; a pullable comment when published) — not a local-only "queued" state that never arrives.
 - **`plan`** — *proposing a change / roadmap / approach.* Structure: goal → current → proposed → risks → open questions. Mock the UI, don't describe it in prose.
 - **`table`** — *dense structured data, many attributes across items.* A real `<table>` with aligned columns, no horizontal overflow (wrap/truncate long cells), and highlight the decision-relevant column.
 - **`slides`** — *sequential narrative meant to be stepped through.* One idea per slide, large type, keyboard nav, progressive disclosure.

@@ -2,9 +2,11 @@
 
 Edit mode turns an HTML file into a live, local review surface on `127.0.0.1`. The user annotates and comments in the browser; you receive their input by polling, edit the file, and it hot-reloads. Nothing is hosted or published. It's the pre-publish loop — firm a doc up with the user before sharing, or iterate between rounds of external feedback.
 
-**One surface.** The page shows the document with the annotation widget plus a small control bar. A page-level comment is a message to you; a threaded reply is your answer. Selecting text auto-opens the comment box, or the **▢** button in the control bar starts an area-box drag; ⌘⏎ / Ctrl+Enter submits. A **Live ⇄ Async** toggle in the control bar controls delivery: **Live** = each comment pings your poll in real time; **Async** = comments are held on the page until the user clicks "Send N to agent". Either way the comment is saved on the page — the mode only changes *when* you're pinged.
+**One surface.** The page shows the document with the annotation widget plus a small control bar. A page-level comment is a message to you; a threaded reply is your answer. Selecting text auto-opens the comment box, or the **▢** button in the control bar starts an area-box drag; ⌘⏎ / Ctrl+Enter submits. A **Live ⇄ Async** toggle in the control bar controls delivery: **Live** = each comment pings your poll in real time; **Async** = comments are held on the page until the user clicks "Send N to agent". Either way the comment is saved on the page — the mode only changes *when* you're pinged. In-artifact decision forms (the **input** playbook) deliver the user's choice through this same channel: a submitted decision arrives on your poll as a comment, so treat it as an actionable request, not just context.
 
 It is **author-facing** (the user and you), distinct from `push --feedback`, which is for **async external reviewers**. When the doc is ready, publish with `push --feedback`.
+
+**Publishing from the browser.** The control bar has a **🚀 Publish** button. When the user is done editing, they click it and pick **Public link** or **Password-protected**. It does *not* publish directly (the browser has no shell) — it sends *you* a publish request that arrives on your next `edit poll` as a message. Act on it: run the matching push (`htmldrop push <file>` for public, or `htmldrop push <file> --generate-password` for password-protected), then `edit reply` with the URL (and the generated password). Treat it as the user's explicit "ship it" signal.
 
 ## Prerequisites
 

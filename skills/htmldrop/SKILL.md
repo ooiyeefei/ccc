@@ -31,7 +31,7 @@ This fires **automatically**, whether the user runs simple share, feedback, or e
    - **teaching a concept / how something works** → the **explainer shape**: (a) lead with the one idea that explains everything; (b) a "feel-the-difference" micro-demo with the smallest honest code (a 450ms `setTimeout` *is* network lag; a toggle *is* a mode switch); (c) a looping before/after; (d) a cheat-sheet table last, including the honest trade-off.
    - **proposing a change / roadmap / approach** → goal → current → proposed → risks → open questions. Mock the UI, don't describe it.
    - **dense structured data / many attributes** → a real `<table>`, aligned columns, no horizontal overflow, highlight the decision-relevant column.
-   - **a decision/answer needed from the viewer** → an in-artifact form with native controls and one explicit "queue answer" per question.
+   - **a decision/answer needed from the viewer** → an in-artifact form with native controls and one explicit **send answer** per question that delivers the choice to the agent via the feedback channel (not a local-only "queued" state that never arrives).
    - **sequential narrative to step through** → slides: one idea each, large type, keyboard nav.
 
 **The full contract lives in `references/design-and-visuals.md`** — ready-to-paste pinned CDN snippets (with integrity hashes), a layout-safety CSS block, a theme-aware Mermaid re-render snippet, and the per-shape guidance. Read it before authoring; it is the single source of truth for both the guardrail above and the optional commands below.
