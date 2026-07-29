@@ -28,6 +28,7 @@ Custom plugins and skills for [Claude Code](https://github.com/anthropics/claude
 | [motion-video](./skills/motion-video) | Skill | Marketing / explainer videos built as rendered Remotion scenes (motion graphics, mocked UI, animated charts, brand-matched) stitched around one real product-capture beat | `/plugin install ccc-skills@ccc` |
 | [pitch-deck](./skills/pitch-deck) | Skill | Single-file HTML pitch decks with narration and recordable walkthroughs that stitch around a demo film | `/plugin install ccc-skills@ccc` |
 | [pitch-package](./skills/pitch-package) | Skill | End-to-end pitch orchestration (hackathon / VC / customer): slot budgeting, deck + demo + speech composition, rehearsal and fallbacks | `/plugin install ccc-skills@ccc` |
+| [scribe](./skills/scribe) | Skill | Meeting recordings → notes with a chain of custody: pinned-language transcription across swappable STT backends (ElevenLabs/Deepgram/OpenAI/local), recording-gap detection, and confidence carried through so garbled audio never becomes a confident fact | `/plugin install ccc-skills@ccc` |
 
 The four pitch skills form one suite - **preparing a whole pitch -> start with `pitch-package`** (it routes to the others); a single artifact -> call it directly (`pitch-craft` = words against a clock, `demo-video` = crisp product footage, `pitch-deck` = the deck + walkthrough). Full decision guide: [skills/README.md](./skills/README.md#the-pitch-suite---when-to-use-what).
 
@@ -47,7 +48,7 @@ The four pitch skills form one suite - **preparing a whole pitch -> start with `
 
 # Install the skills collection (excalidraw, streak, agentic-system-design,
 # self-improving-systems, htmldrop, landing-page-gtm, uat-testing,
-# cross-app-shared-auth, google-analytics-setup, meta-pixel-setup)
+# cross-app-shared-auth, google-analytics-setup, meta-pixel-setup, scribe)
 /plugin install ccc-skills@ccc
 ```
 
@@ -179,6 +180,40 @@ See [plugins/agentic-toolkit/README.md](./plugins/agentic-toolkit/README.md) for
 ---
 
 # Skills
+
+## Skill: Scribe
+
+Turn meeting recordings into notes where every number and name traces back to audio the model actually heard clearly.
+
+**After installing ccc-skills, just ask Claude Code:**
+```
+"Summarize the recordings in ~/meetings/2026-08-04/"
+"Transcribe this call and give me notes"
+"This auto-generated summary looks off - check it against the audio"
+```
+
+**Why it exists:** a summariser cannot hear. Hand it a garbled span and it launders
+the noise into a clean fact - "some paying customer" decoded as "it's up to 8,000
+glass" becomes "~8,000 users" in the summary, and nothing downstream can tell that
+from a real figure.
+
+**What it does differently:**
+- Pins the language before transcribing, so code-switched speech (Manglish,
+  Singlish, Hinglish) doesn't decode into fluent *wrong-language* text
+- Detects recording gaps - a recorder stopped mid-meeting drops content silently,
+  and the notes that follow read as complete
+- Flags numbers and proper nouns sitting on low-confidence audio, using a
+  percentile bar relative to each recording rather than a fixed cutoff
+- Carries that uncertainty into the notes instead of letting it get tidied away
+
+**Swappable backends, bring your own key:** ElevenLabs (default), Deepgram, any
+OpenAI-compatible gateway (Groq, LiteLLM, OpenRouter), or fully local via
+faster-whisper with nothing uploaded. No credentials are bundled.
+
+See [skills/scribe/README.md](./skills/scribe/README.md) for the quick start and a worked example.
+See [skills/scribe/SKILL.md](./skills/scribe/SKILL.md) for the workflow.
+
+---
 
 ## Skill: Excalidraw Generator
 
