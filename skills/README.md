@@ -18,6 +18,7 @@ Skills are markdown files that teach Claude Code how to perform specific tasks.
 | [demo-video](./demo-video/SKILL.md) | Record crisp hi-res product demo videos by driving the real app with a browser agent: a recording contract (real browser state, whole journey, every claim proven on screen) enforced by three gates, plus Xvfb framebuffer capture (no macroblocking). See [README](./demo-video/README.md) for details |
 | [pitch-deck](./pitch-deck/SKILL.md) | Build a pitch deck as one self-contained HTML file (hash nav, entry animations, brand mark, cited numbers), narrate it, and optionally record the walkthrough in parts that stitch around a demo. See [README](./pitch-deck/README.md) for details |
 | [pitch-package](./pitch-package/SKILL.md) | The end-to-end pitch orchestrator: interview the audience and slot, budget the time, compose deck + demo + live speech via the other pitch skills, with stitch plan, fallback ladder, and day-of checklist. See [README](./pitch-package/README.md) for details |
+| [scribe](./scribe/SKILL.md) | Meeting recordings to notes with an unbroken chain of custody from audio to claim: pinned-language transcription across swappable STT backends, recording-gap detection, and per-recording confidence thresholds so a garbled span never becomes a stated fact. See [README](./scribe/README.md) for details |
 
 ## The pitch suite - when to use what
 
