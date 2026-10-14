@@ -20,6 +20,7 @@ STOP: produce no artifacts in this phase. Ask (adapting to what's already known)
 7. **Voice and music**: a model voice (Kokoro `af_heart` at 1.0 is the default) or a human? A music bed, and whose rights? For a model voice, agree to audition one segment two ways after the brief is confirmed, then let them choose; never pick for them.
 8. **Branding and rights**: the company logo under the picture? A copyright and distribution line, in which words? A disclaimer card for a public copy? Whose logo, if a prospect's brand is in the product? Ask; a brand in every frame cannot be cut out later.
 9. **Where it plays**: a portal, a stage, YouTube, a feed? A film with a caption band needs its own 16:9 cut; captions burned in, as a sidecar file, or both.
+10. **Film guardrails**: if a demo film will be made or reused, what is it for and what must be burned in - any third-party logo or name in the frame, generic or personalised disclaimer card, a persistent "Demo purposes only" label, the rights line and company mark, and where it may live (private streaming link, our website's unlisted showcase, direct file, public platform)? Optional guardrails, mandatory questions: `demo-video/references/distribution.md`.
 
 Reflect the answers back as a one-paragraph brief and get a nod before Phase 2. Skipping this interview is how pitches end up with a beautiful deck for the wrong audience.
 

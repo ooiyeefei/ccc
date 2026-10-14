@@ -2,6 +2,8 @@
 
 A demo film is one argument, and rule 1 of the contract keeps every beat on the running product. The pieces in this file sit *between* beats or *under* the picture: they shape how a viewer moves through the argument, and they are what a viewer from outside the domain notices first. Each is optional, each is the owner's call, and each goes into the storyboard as its own row, so it is approved before capture.
 
+Settle purpose and distribution alongside these choices (`distribution.md`). Its rules for third-party branding and public copies still apply: optional opening, chapter and recap cards do not replace the required disclaimer cards or persistent label.
+
 Why it matters: a non-expert watched a finished film and said it "switches people without saying so". The picture was right and the claims were right, and the film still lost them, because nothing told them where they were going.
 
 ## Questions to settle at the storyboard gate
