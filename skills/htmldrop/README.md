@@ -59,6 +59,8 @@ The skill recognizes intent from plain language and runs the right `htmldrop` co
 | “Share spec.html but password-protect it” | asks for / generates a password, then `htmldrop push --password …` |
 | “Block crawlers from indexing it” | adds `--noindex` |
 | “List everything I’ve published” | `htmldrop list` |
+| “Make the proposal bilingual, English and Chinese” | adds the language toggle, translates, runs `check_languages.py` |
+| “Publish the revised quote but keep the old one viewable” | `versions.py snapshot …`, then re-push with the **same** password |
 
 ### Collaborative review (the feedback loop)
 
@@ -95,6 +97,8 @@ You can also use the direct command:
 - **Agent participation** — Claude can read feedback, post evidence-backed anchored comments, and reply
 - **AI converge** — synthesize all feedback into an improved document; supports **Anthropic, OpenAI, or Gemini** (auto-detected from your key, overridable)
 - **Converge Studio** — `htmldrop studio` opens a visual dashboard with segments, debate detection, and per-segment insights
+- **Language toggle** — one page in several languages (EN / 中文 / BM) with a switch; `scripts/check_languages.py` lists sentences missing a translation (`references/languages.md`)
+- **Version history** — htmldrop overwrites a page on each push, so `scripts/versions.py` keeps the history inside the page: a Google-Docs-style sidebar where readers open any earlier version, under the same link and password (`references/versioning.md`)
 
 ---
 

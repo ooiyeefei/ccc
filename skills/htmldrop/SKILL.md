@@ -1,6 +1,6 @@
 ---
 name: htmldrop
-description: Reach for this skill when an HTML artifact — report, deck, brief, mockup, dashboard, proposal, spec, or landing page, whether the user already has it or you just generated it — needs to reach other people or get tightened before it ships. Three situations: (1) they want a shareable link — public, or password-protected so only a client or specific people can open it; (2) they want reviewers to comment/annotate on it, then pull that feedback back to answer, fold, or synthesize into a revised version; (3) they want to co-edit it with you live and locally first — pointing at sections and commenting while you edit in real time, nothing deployed — to polish before sending. Cues: share, publish, get a link, password-protect, send to the client, collect or incorporate feedback, review it together, iterate in edit mode. Not for deploying apps/frameworks (Vercel, Next.js, npm), CSS/layout debugging, PDF annotation, A/B testing, or emailing screenshots.
+description: 'Reach for this skill when an HTML artifact — report, deck, brief, mockup, dashboard, proposal, spec, or landing page, whether the user already has it or you just generated it — needs to reach other people or get tightened before it ships. Three situations: (1) they want a shareable link — public, or password-protected so only a client or specific people can open it; (2) they want reviewers to comment/annotate on it, then pull that feedback back to answer, fold, or synthesize into a revised version; (3) they want to co-edit it with you live and locally first — pointing at sections and commenting while you edit in real time, nothing deployed — to polish before sending. Cues: share, publish, get a link, password-protect, send to the client, collect or incorporate feedback, review it together, iterate in edit mode. Not for deploying apps/frameworks (Vercel, Next.js, npm), CSS/layout debugging, PDF annotation, A/B testing, or emailing screenshots.'
 ---
 
 # htmldrop — Share HTML as Hosted Links
@@ -33,6 +33,7 @@ This fires **automatically**, whether the user runs simple share, feedback, or e
    - **dense structured data / many attributes** → a real `<table>`, aligned columns, no horizontal overflow, highlight the decision-relevant column.
    - **a decision/answer needed from the viewer** → an in-artifact form with native controls and one explicit **send answer** per question that delivers the choice to the agent via the feedback channel (not a local-only "queued" state that never arrives).
    - **sequential narrative to step through** → slides: one idea each, large type, keyboard nav.
+   - **readers who prefer another language** (an English proposal for an owner who reads Chinese) → one page with a language toggle, never a file per language. See **`references/languages.md`**.
 
 **The full contract lives in `references/design-and-visuals.md`** — ready-to-paste pinned CDN snippets (with integrity hashes), a layout-safety CSS block, a theme-aware Mermaid re-render snippet, and the per-shape guidance. Read it before authoring; it is the single source of truth for both the guardrail above and the optional commands below.
 
@@ -47,6 +48,7 @@ This fires **automatically**, whether the user runs simple share, feedback, or e
 - For **simple share**: run `htmldrop init` once (sets up Surge account + subdomain)
 - For **feedback/converge**: run `htmldrop auth setup` once (generates an author API key in `~/.htmldrop/config.json`)
 - For **edit mode**: nothing — it's fully local (no `init`, no Surge, no auth key). Lowest-friction entry point.
+- For **version history and the language check** (`scripts/`): Python 3, standard library only. Nothing to install.
 
 ## Critical Rules
 
@@ -54,6 +56,7 @@ This fires **automatically**, whether the user runs simple share, feedback, or e
 2. **Never store credentials** — Surge auth lives in `~/.netrc`; the feedback author key lives in `~/.htmldrop/config.json`
 3. **For password-protected files** — report the URL and password to the user, and remind them htmldrop stores the password nowhere (it's unrecoverable), so they should save it in a password manager now
 4. **Use absolute paths** when calling `htmldrop push`
+5. **Re-push a password-protected page with the same password** — the password locks the page *and* its comments, so a new one locks out every reviewer who has the old one. If it wasn't saved, ask the user; never generate a replacement on your own
 
 ---
 
@@ -249,6 +252,15 @@ Keep `edit poll` running like any long-poll — it stays silent until there's in
 
 ---
 
+## Languages and Version History (any mode)
+
+Both live inside the page, so they work on any link, with or without a password.
+
+- **Language toggle** — translations sit side by side (`<span lang="en">…</span><span lang="zh">…</span>`) and an EN / 中文 / BM button shows one at a time. Read **`references/languages.md`** before writing the page; `scripts/check_languages.py` finds sentences missing a translation.
+- **Version history** — htmldrop overwrites the page on every push. When a page will change after people have read it (a proposal, a quote, a spec under review), keep its history with `scripts/versions.py`: a sidebar where readers open any earlier version, read-only. Read **`references/versioning.md`** before the first push. It covers the one decision each push needs: a new version, or a fix in place.
+
+---
+
 ## Generate Then Share
 
 When the user asks to create an HTML artifact AND share/review it:
@@ -274,6 +286,8 @@ When the user asks to create an HTML artifact AND share/review it:
 | Change password | Re-push with new `--password` (overwrites) |
 | `edit poll` returns nothing | Correct — it blocks silently until the user acts. Leave it running; re-run after each reply |
 | Edit session won't start / stale | `htmldrop edit stop`, then `htmldrop edit start <file>` again |
+| Reviewers want an earlier version back | It's gone from the server; start a history now with `scripts/versions.py` (`references/versioning.md`) |
+| `versions.py` refuses: "already carries a version history" | The page was pulled without its `.versions/` folder; run `versions.py restore <page>` first |
 
 ## Additional Resources
 
@@ -281,3 +295,5 @@ When the user asks to create an HTML artifact AND share/review it:
 - **`references/design-and-visuals.md`** — Match the project's design system (all modes) + when to make an artifact more visual/dynamic, **plus the full design contract** (pinned CDN snippets, layout-safety CSS, theme-aware Mermaid) and the per-shape playbook router. Same content as `htmldrop design` / `htmldrop playbook`.
 - **`references/feedback-workflow.md`** — Deep dive on the feedback + converge agent loop, single-URL model, auth setup, and troubleshooting
 - **`references/privacy-levels.md`** — Detailed privacy/security comparison and user FAQ
+- **`references/languages.md`** — One page in several languages: the toggle snippet, the pitfalls, and the translation check
+- **`references/versioning.md`** — Version history inside the page: snapshot vs build, readers'-history rules, restore after a pull
