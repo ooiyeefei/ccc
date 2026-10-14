@@ -17,6 +17,7 @@ STOP: produce no artifacts in this phase. Ask (adapting to what's already known)
 4. **Demo mode**: live product on stage (higher wow, higher risk) or recorded film (deterministic)? Default to recorded unless the live path has been rehearsed with a fallback.
 5. **Speakers**: who talks, and are there real credentials to weave into the intro?
 6. **Constraints**: venue machine? offline? projector resolution? phone-as-teleprompter?
+7. **Film guardrails**: if a demo film will be made or reused, what is it for and what must be burned in - any third-party logo or name in the frame, generic or personalised disclaimer card, a persistent "Demo purposes only" label, the rights line and company mark, and where it may live (private streaming link, our website's unlisted showcase, direct file, public platform)? Optional guardrails, mandatory questions: `demo-video/references/distribution.md`.
 
 Reflect the answers back as a one-paragraph brief and get a nod before Phase 2. Skipping this interview is how pitches end up with a beautiful deck for the wrong audience.
 

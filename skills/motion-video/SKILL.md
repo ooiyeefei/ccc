@@ -51,6 +51,8 @@ runs with demo data (you need one real beat). Remotion is free for teams of 3 or
 paid licence - flag it before promising a Remotion build.
 
 ### 1. Storyboard - GATE, same as demo-video
+
+With the storyboard, ask the purpose and guardrail questions in `demo-video/references/distribution.md`: audience, any third-party logo or name in the frame, generic or personalised disclaimer card, persistent "Demo purposes only" label, rights line and company mark, and where the film may live. Optional guardrails, mandatory questions; the answers decide what is burned into every scene.
 One row per scene: `scene | shows | real or rendered | motion | narration | dur`. Mark every scene
 real or rendered, and name the ONE real proof beat. **Show it and stop** until the user approves.
 This is the cheapest point to change the film; after scenes are rendered every edit re-renders and

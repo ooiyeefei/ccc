@@ -35,6 +35,10 @@ This fires **automatically** on every demo film, whether or not the user asks fo
 
 Check the machine can do this before promising it: `ffmpeg` and `Xvfb` installed (`apt-get install -y xvfb` on Linux; this recipe is Linux-first - on macOS capture the retina display with `ffmpeg -f avfoundation` or the built-in screen recorder, same principles: physical pixels, controlled bitrate). Confirm the app runs with demo data and demo credentials, and that credentials stay OUT of the repo (scratchpad only).
 
+### 0.5 Purpose and guardrails - **GATE with the storyboard**
+
+Before the storyboard, ask what the film is for and what must be burned into it: the audience; any third-party logo or name in the frame (white-labelled tenants count); generic or personalised disclaimer card; a persistent "Demo purposes only" label; the rights line and company mark; and how it will be distributed (private streaming link, our website's unlisted showcase, direct file, public platform). The guardrails are optional and the user chooses them; the questions are not optional. A client logo in the frame with no card and no private distribution is the one outcome that is never acceptable. Questions, rules and approved wording: `references/distribution.md`. Record the answers in the brief next to the storyboard.
+
 ### 1. Storyboard - **GATE 1: approval before any capture**
 
 Write the visual storyboard before recording anything. One row per beat:
@@ -103,3 +107,4 @@ A new take shifts every milestone (live backends vary by seconds). Re-verify aga
 - `references/driving.md` - CDP driving patterns: clicks, variable-latency waits, milestone marking, staying dialog-safe.
 - `scripts/record_template.py` - the harness. Edit the CONFIG and BEATS sections; the plumbing is done. Supports `--smoke` and `--verify`.
 - `scripts/cinema.js` - the in-page motion layer, injected automatically. Read it before changing a primitive's defaults; they were arrived at by fixing real defects.
+- `references/distribution.md` - purpose, guardrails (cards, label, rights line, company mark) and distribution choices; asked with the storyboard, before capture.
