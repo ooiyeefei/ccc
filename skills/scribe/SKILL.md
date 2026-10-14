@@ -20,12 +20,12 @@ Done when you can state the language code, the speaker count, and at least five 
 ## 2. Transcribe
 
 ```
-python scripts/transcribe.py AUDIO... --out DIR --language <code> --diarize --keyterms "term,term,..."
+python scripts/transcribe.py AUDIO... --out DIR --language <code> --keyterms "term,term,..."
 ```
 
-`--provider` selects the backend; `auto` takes the first with a key present. Setup, capability and cost per provider: [`references/providers.md`](references/providers.md).
+`--provider local` is the default; `auto` is a compatibility alias for local. Existing API keys do not trigger an upload. Select `elevenlabs`, `deepgram` or `openai` explicitly when hosted transcription is appropriate. Setup, capability and cost per provider: [`references/providers.md`](references/providers.md).
 
-Prefer a backend that diarizes. Speaker labels you derive yourself by reasoning about who-said-what are inference, and inference is a break in the chain of custody.
+Start with local faster-whisper. It does not diarize, so speaker attribution stays uncertain unless corroborated. When speaker labels are required, choose an authorised hosted diarizing provider explicitly and add `--diarize`. A missing local dependency fails without switching to a hosted provider. Pre-cache weights for fully offline use.
 
 Done when every input file has a `.json` and `.txt` in DIR.
 

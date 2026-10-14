@@ -27,6 +27,10 @@ ffmpeg -f concat -safe 0 -i list.txt -c:v libx264 -crf 18 -preset slow \
 
 Voice is recorded separately over the stitched cut. The per-part milestone JSON sidecars carry exact slide times for re-alignment if any segment drifts.
 
+## The audio layer
+
+Voice is recorded separately over the stitched cut, but the parts must sound like one film: the same voice at the same speed in Part A, the demo and Part B; one music bed that dips under speech and swells in the gaps; one master at -16 LUFS; and the band with the logo and rights line, if the owner wants one, spanning all three parts. The voice pick, the numbers and the scripts are demo-video's `references/soundtrack.md`; the opening, chapter cards, transitions, the close and the band are `references/structure.md` there. A variant of the film (a second brand, a re-take of one scene) keeps the cut locked, so the soundtrack and captions are reused byte for byte.
+
 ## The fallback ladder
 
 Write it down before the day; each rung is rehearsed once:

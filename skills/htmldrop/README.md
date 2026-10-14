@@ -56,7 +56,7 @@ The skill recognizes intent from plain language and runs the right `htmldrop` co
 | You say | What the skill does |
 |---|---|
 | **E1.** “Share this report publicly: report.html” | `htmldrop push report.html` → returns the URL |
-| “Share spec.html but password-protect it” | asks for / generates a password, then `htmldrop push --password …` |
+| “Share spec.html but password-protect it” | uses an owner-managed password through hidden input, then returns only the URL |
 | “Block crawlers from indexing it” | adds `--noindex` |
 | “List everything I’ve published” | `htmldrop list` |
 
@@ -86,7 +86,7 @@ You can also use the direct command:
 ## Features
 
 - **Instant sharing** — one request to publish any HTML file, free on Surge.sh
-- **Password protection** — AES-256 client-side encryption; share URL + password. The password is stored **nowhere** (encrypts in memory, then discarded) — save it yourself, since a forgotten one can't be recovered (just re-push)
+- **Password protection** — AES-256 client-side encryption; return only the URL; the owner saves and shares the password separately. Password handling and other content paths are described in references/privacy-levels.md
 - **Works with generated HTML** — Claude Code can create a report/spec and share it in one step
 - **Collaborative feedback** — `--feedback` embeds an annotation widget; reviewers highlight text **or drag a box over an area** (▢) and comment at one stable link, with replies and page-level notes
 - **Private feedback** — combine `--feedback --password` so a password-protected doc still collects comments (widget appears after decryption)

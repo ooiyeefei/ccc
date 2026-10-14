@@ -16,3 +16,6 @@ firebase-debug.*.log
 # local scratch, never published
 .lavish/
 __pycache__/
+
+# Local verification fixtures and reports
+.scratch/

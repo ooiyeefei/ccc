@@ -1,6 +1,7 @@
 ---
 name: demo-video
-description: Record a crisp, high-resolution product demo video by driving the real app with a browser agent - the full pipeline from storyboard approval to staged app, smoke take, Xvfb framebuffer recording, MP4-derived timestamps, and a narration script synced to the frames. Use whenever the user wants a demo video, a product walkthrough recording, a screen capture of an app for a hackathon / launch / submission, or complains that a recording came out pixelated, blurry, blocky or soft, showed title cards instead of the product, jumped straight to the final feature, had narration landing on the wrong frame, or looks static / like a slideshow when the capture is genuine. Also the home of the recording harness that pitch-deck reuses for slide walkthroughs. Not for - live pitching or deck building (pitch-deck, pitch-package), one-off screenshots, or editing footage that already exists.
+description: >-
+  Record a crisp, high-resolution product demo video by driving the real app with a browser agent - from storyboard approval to staged app, smoke take, Xvfb framebuffer recording, MP4-derived timestamps, and a narration script synced to the frames. Use whenever the user wants a demo video, a product walkthrough recording, a screen capture for a hackathon, launch or submission, or complains that a recording came out pixelated, blurry, blocky or soft, showed title cards instead of the product, jumped straight to the final feature, had narration landing on the wrong frame, or looks static or like a slideshow. Also owns sound and structure: Kokoro voicing, a music bed ducked under speech, chapter cards and spoken transitions, the closing recap with the ask last, and the logo and rights band. Also the home of the recording harness that pitch-deck reuses for slide walkthroughs. Not for - live pitching or deck building (pitch-deck, pitch-package), one-off screenshots, or editing footage that already exists.
 ---
 
 # Demo Video - film the real product, crisply
@@ -17,7 +18,7 @@ This fires **automatically** on every demo film, whether or not the user asks fo
 
    Annotation drawn *over* live state is **standard practice**: callouts, the drawn cursor, spotlight, the terminal panel. A film that explains itself on mute is doing its job. The test is whether the overlay is load-bearing: **remove it, and does the frame still show the product doing the thing?** If yes it is annotation, use it freely. If no it is a poster - a title card, slide interstitial, mocked screen, static hero image - and it stays banned.
 
-   If a beat can't be staged, cut the beat or fix the app. Never substitute a picture of the claim for the claim. (Slides are legitimate in `pitch-deck`'s deck take, stitched *around* the demo film, never inside it.) Motion and annotation: `references/motion.md`.
+   If a beat can't be staged, cut the beat or fix the app. Never substitute a picture of the claim for the claim. (Slides are legitimate in `pitch-deck`'s deck take, stitched *around* the demo film, never inside it.) Motion and annotation: `references/motion.md`. A motion opening, chapter cards and a closing recap are the owner's call and sit *between* beats, never in place of one: `references/structure.md`.
 
 2. **Show the whole journey, not just the money shot.** The film covers entry -> setup -> the core loop -> the payoff. A viewer who has never seen the product must be able to follow how a real user gets from opening it to the result. Opening on the final feature reads as a mockup and answers none of "what is this, who uses it, how do you get there".
 
@@ -50,6 +51,8 @@ Read `references/storyboard.md` for the format, the journey-coverage checklist, 
 A blanket "just make it, I trust you" issued *before* the storyboard existed is not approval of it - the user has not seen the plan yet. Show the table and wait.
 
 The harness enforces this too: a full take requires `--storyboard <path>`, and stamps its hash into the sidecar.
+
+**Settle the audio and branding questions at the same gate** (`references/structure.md`): the voice, music, an opening and chapter cards, the close, the company logo and rights line, captions, platforms. Each one changes the cut or the frame, and a white-labelled logo in every frame cannot be trimmed out afterwards.
 
 This gate is not politeness - it is the cheapest point to change the film. After capture, every edit re-shoots footage *and* re-syncs narration against new timestamps.
 
@@ -93,7 +96,11 @@ Ship nothing whose frames you have not seen. If a proof frame shows the wrong sc
 
 Hand the **verified** milestone JSON and the storyboard to the **pitch-craft** skill. The narration describes what IS on screen at each timestamp, in the recorded register, chunked to the milestone windows. Every claim traces to a beat per contract rule 3.
 
-### 7. Re-records
+### 7. Soundtrack and structure
+
+For a model voice, use `scripts/voice_lines.py` (the owner's voice pick, one speed, voice-only respellings, a Whisper read-back of every line). For a human voice, record the approved lines and check the delivery. Then size the cut to the voice: each shot holds its line plus a breath. Any hold, card or time-warp changes the delivered timeline: re-derive and verify cue and proof timestamps from the final picture before placing audio or captions. Render the chapter cards, the opening and the closing the owner approved (`references/structure.md`), with narration pausing on silent cards and an approved transition voiced on its own card. Mix with `scripts/mix_soundtrack.py`: the voice stem on top and, if approved, a music bed that dips 8 dB under speech and swells in the pauses, mastered to -16 LUFS. Follow the approved caption and branding choices: burn captions only if requested, add the logo and rights line only in the approved words and placement, and supply the `.srt` if requested. Make the approved 16:9 cut if it ships to YouTube. Every number and the reason for it: `references/soundtrack.md`.
+
+### 8. Re-records
 
 A new take shifts every milestone (live backends vary by seconds). Re-verify against the new MP4, then re-align the narration per pitch-craft's `timing.md` re-sync procedure. Treat take + script as one versioned pair.
 
@@ -105,6 +112,10 @@ A new take shifts every milestone (live backends vary by seconds). Re-verify aga
 - `references/storyboard.md` - the storyboard format, journey coverage, the claim-to-frame audit, and how to run the approval gate. Read before writing the storyboard.
 - `references/recording.md` - the framebuffer recipe and why each flag exists; the smoke-take and timestamp-verification checklists; process gotchas. Read before recording or debugging quality.
 - `references/driving.md` - CDP driving patterns: clicks, variable-latency waits, milestone marking, staying dialog-safe.
+- `references/structure.md` - the questions to settle at the gate; the opening, chapter cards, transitions, the closing recap and the ask, the logo and rights band, disclaimer cards, the 16:9 cut, the thumbnail. Read with the storyboard.
+- `references/soundtrack.md` - the audio layer: picking and running the voice, respellings, the Whisper read-back, the music bed and its dip, levels and the master, re-voicing an owner's edit, locked cuts, captions. Read before voicing or mixing.
 - `scripts/record_template.py` - the harness. Edit the CONFIG and BEATS sections; the plumbing is done. Supports `--smoke` and `--verify`.
 - `scripts/cinema.js` - the in-page motion layer, injected automatically. Read it before changing a primitive's defaults; they were arrived at by fixing real defects.
+- `scripts/voice_lines.py` - voice every line with Kokoro, trim it, and read it back with Whisper. Run with the Kokoro venv.
+- `scripts/mix_soundtrack.py` - lay the lines, dip a music bed under them, master to -16 LUFS, mux onto the film.
 - `references/distribution.md` - purpose, guardrails (cards, label, rights line, company mark) and distribution choices; asked with the storyboard, before capture.

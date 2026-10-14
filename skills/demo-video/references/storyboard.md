@@ -74,10 +74,10 @@ Narration is written after the recording (pitch-craft, against verified timestam
 5. Flag anything you could not stage, and the option you recommend (add a beat / build the surface / cut the claim).
 6. **Stop. Wait for approval or amendments.** No staging, no smoke take, no capture.
 
-A blanket "just do it" / "I trust you" given *before* the storyboard existed is not approval of it - the user has not seen the plan. Show the table and wait. (Approval also expires if the beat list later changes; see SKILL.md step 7.)
+A blanket "just do it" / "I trust you" given *before* the storyboard existed is not approval of it - the user has not seen the plan. Show the table and wait. (Approval also expires if the beat list later changes; see SKILL.md step 8.)
 
 A three-beat demo gets a three-row storyboard. The gate is the round-trip, not the paperwork - do not inflate a small film into a document, and do not skip the round-trip because the film is small.
 
-If the user asks for a title card, a logo bookend, or a caption overlay, that is their call - record it as an approved exception in the storyboard with the beat number it applies to. The default remains: the demo film shows the running product.
+If the user asks for a title card, a logo bookend, or a caption overlay, that is their call - record it as an approved exception in the storyboard with the beat number it applies to. The default remains: the demo film shows the running product. The usual exceptions are a motion opening, chapter cards between chapters, a closing recap card and the logo-and-rights band under the picture; each is its own storyboard row, and the questions that decide them (voice, music, close, branding, captions, platforms) are in `structure.md`. Ask them at this gate, with the storyboard.
 
 Re-records are cheap in tooling and expensive in narration re-sync, so the gate pays for itself the first time it catches a missing journey phase.

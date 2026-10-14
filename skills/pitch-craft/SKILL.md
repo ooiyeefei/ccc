@@ -1,6 +1,6 @@
 ---
 name: pitch-craft
-description: Write or fix any spoken script that has to hit a clock - demo-video voiceovers, deck walkthrough narration, and live pitch speeches. Use whenever the user asks for narration, a voiceover, a timestamp script, a pitch script, a speech that fits N minutes, wants it to "sell like Steve Jobs", or needs an existing script re-synced after a re-record or re-timed to a new slot, or says a script sounds AI-written, robotic, generic, or wants it de-slopped. This is also the engine the demo-video, pitch-deck, and pitch-package skills call for their scripts. Not for - written submission forms or essays (no clock), building deck HTML (pitch-deck), or recording video (demo-video).
+description: Write or fix any spoken script that has to hit a clock - demo-video voiceovers, deck walkthrough narration, and live pitch speeches. Use whenever the user asks for narration, a voiceover, a timestamp script, a pitch script, a speech that fits N minutes, wants it to "sell like Steve Jobs", or needs an existing script re-synced after a re-record or re-timed to a new slot, or says a script sounds AI-written, robotic, generic, or wants it de-slopped, or says the film or the talk switches person or topic too abruptly and needs smoother transitions, or wants a stronger closing or call to action. This is also the engine the demo-video, pitch-deck, and pitch-package skills call for their scripts. Not for - written submission forms or essays (no clock), building deck HTML (pitch-deck), or recording video (demo-video).
 ---
 
 # Pitch Craft - Timed Spoken Scripts
@@ -25,7 +25,7 @@ Read `references/timing.md` and compute a word ceiling per segment (words = seco
 
 ### 3. Draft with the craft rules
 
-Read `references/storytelling.md` and apply it: **hook before names**, **analogy per abstraction**, **a throughline that bookends and is re-emphasised where earned** (paraphrased, not repeated verbatim), plain words, numbers that land twice. Recorded voiceover and live speech are different registers - never reuse one as the other (see the register section in storytelling.md).
+Read `references/storytelling.md` and apply it: **hook before names**, **analogy per abstraction**, **a throughline that bookends and is re-emphasised where earned** (paraphrased, not repeated verbatim), plain words, numbers that land twice, **a transition line wherever the beats change person, case or topic without saying so** and nowhere else, and a close that ends on the ask or the name. Recorded voiceover and live speech are different registers - never reuse one as the other (see the register section in storytelling.md).
 
 ### 4. Timing check
 
@@ -58,6 +58,13 @@ An analyst opens a queue of twelve hundred alerts. The rule engine closes
 eleven hundred sixty-five under policy, each with a sealed reason.
 ```
 
+A transition rides over an approved transition card, with music ducked under its speech. Its window must hold the measured line plus a breath; it changes the final timeline. Mark it as such:
+
+```
+3. 0:43 -> 0:48  [CARD_REVIEW]  (transition, over the card)
+Our application now waits for the branch manager.
+```
+
 Live (slide-anchored, with stage cues):
 
 ```
@@ -68,6 +75,10 @@ Most demos ask you to just believe them. We'd rather show you.
 ```
 
 The demo-break marker always states what the video covers, so a numbering jump never reads as a gap.
+
+## From words to a voice
+
+For a live speech, rehearse aloud against the clock; synthesis is optional. For a recorded deliverable with a model voice, voice and check the script. Hand it to demo-video's `references/soundtrack.md`: the owner picks the voice from one segment voiced two ways (Kokoro `af_heart` at speed 1.0 is the default), every line is voiced at one speed and the cut holds each shot to its line, acronyms and names get a voice-only respelling, and faster-whisper reads every line back against the script. `demo-video/scripts/voice_lines.py` does all of that in one pass. A music bed, if the owner wants one, dips 8 dB under the lines and swells in the pauses (`demo-video/scripts/mix_soundtrack.py`). Re-voice an edited line alone when it still fits its slot. If its duration changes the cut, re-derive the final timestamps and re-sync audio and captions.
 
 ## Re-syncing an existing script
 

@@ -52,7 +52,7 @@
         "Produces a storyboard BEFORE recording anything, with all five columns: screen, action, proof, narration draft, duration",
         "Explicitly stops and asks for approval of the storyboard; does not proceed to capture in the same turn despite 'I trust you'",
         "Storyboard covers the whole journey (entry / setup / core loop / payoff), not only the memory-recall feature",
-        "Does NOT propose title cards, intro slides, logo bookends, or caption overlays as part of the demo film",
+        "Asks about optional cards, company logo, rights wording and captions at the storyboard gate; does not render any exception before approval",
         "Identifies that 'remembers what it learned' needs visible on-screen evidence (memory panel, citation, or session history) and plans a beat that shows it - not a status label in which the app merely asserts it remembered",
         "If it previews later steps at all, the smoke take precedes the full capture (it must NOT actually smoke-test or record before approval)"
       ],
@@ -84,6 +84,20 @@
         "Numbers stay spelled out for the voice, not converted to digits",
         "Re-checks each rewritten segment against its window at 2.2-3.1 w/s rather than only shortening, and says so",
         "Flags that rewritten claims need the honesty pass again (the 'two duplicates' claim must be visible on screen)"
+      ],
+      "files": []
+    },
+    {
+      "id": 6,
+      "skill": "pitch-craft",
+      "prompt": "Here's the beat sheet for our 8-minute product walkthrough film of CaseFlow (a claims-handling tool for insurers). It follows one claim through four people: the call-centre agent logs it (0:00-1:50), the assessor reviews the photos and the policy (1:50-4:10), then we jump to the exceptions a supervisor handles (4:10-5:40), then the admin screen where the insurer edits its own rules (5:40-7:00), then the audit view (7:00-8:00). A colleague outside insurance watched the silent cut and said it 'keeps switching people without telling me'. Write the voiceover, recorded register. We want it to end with our pilot offer: two weeks, one claims team, their real claims.",
+      "expected_output": "A segmented recorded-register script with a transition line at each change of person or topic (the handoff to the assessor, the pivot to exceptions, the preview of the rules screen, the question that opens the audit chapter), no transition where the person does not change, and a close that lands the throughline and then ends on the pilot offer as the last line.",
+      "assertions": [
+        "A transition line exists at each of the four changes (assessor, supervisor exceptions, rules screen, audit), each naming the handoff or previewing what the viewer will see rather than stating a bare topic label",
+        "No signposting filler ('let's dive in', 'in this section', 'now we will') at beats where the person and topic do not change",
+        "The pivot to exceptions sets an expectation the viewer shares (e.g. 'not every claim goes this smoothly') rather than announcing 'exceptions'",
+        "The final line of the script is the pilot offer (two weeks, one claims team, their real claims), after the throughline, with nothing after it",
+        "Numbers are spelled out and every segment carries a timestamp window"
       ],
       "files": []
     }

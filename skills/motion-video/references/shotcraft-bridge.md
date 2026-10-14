@@ -106,6 +106,7 @@ top, always:
 - Beat-sync: if a BGM has a strong pulse, analyse it first and write the timeline in beats
   (`references/music-beat-sync.md` inside the shotcraft repo), then re-check cut error from
   the rendered audio.
+- Levels, the dip under speech, the master and the voice: `demo-video/references/soundtrack.md`.
 
 ## Post-production camera on RECORDED footage
 

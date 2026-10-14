@@ -56,4 +56,4 @@ ffmpeg -f concat -safe 0 -i list.txt -c copy stitched.mp4   # if uniform
 # else re-encode: -c:v libx264 -crf 18 -preset slow
 ```
 
-Voice is recorded separately over the stitched cut, following the combined script's timestamps (deck Part A windows, then the demo narration, then Part B windows). The milestone JSON sidecars from each part give the exact per-slide times if anything needs re-alignment.
+Voice is recorded separately over the stitched cut, following the combined script's timestamps (deck Part A windows, then the demo narration, then Part B windows). The milestone JSON sidecars from each part give the exact per-slide times if anything needs re-alignment. Voicing, the music bed and the master follow demo-video's `references/soundtrack.md`; a band with the logo and rights line, if the owner wants one, spans all three parts.

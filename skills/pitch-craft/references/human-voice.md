@@ -57,6 +57,7 @@ Generic de-slopping flags these. Do not let it strip them.
 | **Short sentences** | Speech needs them, and a clock rewards them. The tell is a *run* of fragments all landing like closers ("No setup. No config. No waiting."), not brevity itself |
 | **One name per thing** | Not padding, consistency. Call it "LedgerLens" every time rather than cycling to "the system" then "the platform". Prose style prefers the variety; a listener cannot scroll back to work out who you meant |
 | **Present tense, describing the screen** | The recorded register. It can look flat on the page and is correct in the ear |
+| **A transition at a real change** | "Our application now waits for the branch manager" is not signposting: the person on screen changed and the line says so. What is banned is "let's dive in" over no change. The test and the patterns are in `storytelling.md` |
 
 ## Tells that only exist in speech
 
@@ -66,7 +67,7 @@ Nothing in a prose checklist catches these. Read the segment aloud once; each of
 - **Punctuation you cannot hear.** A sentence that only makes sense with a parenthetical aside will not survive being read.
 - **Sibilance clusters and tongue-twisters.** "Systems that seamlessly synthesise" is a retake waiting to happen.
 - **Heard ambiguity.** Homophones and unexplained acronyms that are clear on screen and ambiguous aloud.
-- **Words a voice model mispronounces.** Product names, surnames, unusual capitalisation. Test them in one segment before recording the rest.
+- **Words a voice model mispronounces.** Product names, surnames, acronyms, unusual capitalisation. Test them in one segment before recording the rest, and fix them in a voice-only respelling, never in the script itself: dots for a letter-by-letter acronym ("P.E.P."), a hyphenated phonetic spelling for one said as a word ("C-toss"), a phoneme override for a name the model stresses wrongly. The voicing procedure and the Whisper read-back that catches these: demo-video's `references/soundtrack.md`.
 
 ## Credit
 

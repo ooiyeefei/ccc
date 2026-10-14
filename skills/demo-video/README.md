@@ -17,6 +17,8 @@ Three rules about what goes on camera, and three blocking gates that enforce the
 
 Plus the quality rules: **real frames not upscaled**, and **narrate to the frame** (via `pitch-craft`).
 
+The film's sound and shape are decided at the storyboard gate, not after: the voice (a model voice, Kokoro, picked by the owner from one segment voiced two ways), a music bed that dips under speech and swells in the pauses, chapter cards with spoken transitions only where the film changes person or topic, a closing recap with the call to action as the last line, and the logo and rights band under the picture.
+
 Also the home of the recording harness that `pitch-deck` reuses for slide walkthroughs.
 
 ## Use this, not that
@@ -34,7 +36,11 @@ Also the home of the recording harness that `pitch-deck` reuses for slide walkth
 - `references/driving.md` - CDP driving: clicks, variable-latency waits, milestone marking
 - `scripts/record_template.py` - the harness (edit CONFIG + BEATS, plumbing is done); `--smoke` and `--verify` modes
 - `scripts/cinema.js` - the in-page motion layer (`window.__cine`), injected automatically
+- `references/structure.md` - the gate questions; opening, chapter cards, transitions, the close, the rights band, disclaimer cards, the 16:9 cut
+- `references/soundtrack.md` - the voice, the music bed and its dip, levels and the master, captions
+- `scripts/voice_lines.py` - Kokoro voicing with respellings and a Whisper read-back
+- `scripts/mix_soundtrack.py` - narration plus a ducked music bed, mastered and muxed
 
 ## Requirements
 
-Linux with `Xvfb`, `ffmpeg`, Chrome/Chromium, and `pip install websockets`. macOS: capture the retina display with `ffmpeg -f avfoundation` instead; same principles.
+Linux with `Xvfb`, `ffmpeg`, Chrome/Chromium, and `pip install websockets`. For the soundtrack: a virtualenv with `kokoro==0.9.4`, `soundfile` and `numpy`, plus `faster-whisper` for the read-back check. macOS: capture the retina display with `ffmpeg -f avfoundation` instead; same principles.

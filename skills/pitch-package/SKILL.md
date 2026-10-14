@@ -1,6 +1,6 @@
 ---
 name: pitch-package
-description: The step-back skill for pitching as a person - given an audience (hackathon judges, VCs, investors, customers) and a time slot, it budgets the slot, decides what to build or reuse (deck, demo video, live speech), and orchestrates the pitch-deck, demo-video, and pitch-craft skills into one rehearsed package with a stitch plan, Q&A prep, and a day-of checklist. Use whenever the user says they need to pitch, present, or demo at a hackathon or demo day, to investors or a customer, mentions an N-minute slot, or asks to "prepare the whole pitch" end to end. Not for - a single artifact in isolation (call pitch-deck, demo-video, or pitch-craft directly) or written-only submission forms.
+description: The step-back skill for pitching as a person - given an audience (hackathon judges, VCs, investors, customers) and a time slot, it budgets the slot, decides what to build or reuse (deck, demo video, live speech), settles the voice, music, branding and rights questions before anything is built, and orchestrates the pitch-deck, demo-video, and pitch-craft skills into one rehearsed package with a stitch plan, Q&A prep, and a day-of checklist. Use whenever the user says they need to pitch, present, or demo at a hackathon or demo day, to investors or a customer, mentions an N-minute slot, or asks to "prepare the whole pitch" end to end. Not for - a single artifact in isolation (call pitch-deck, demo-video, or pitch-craft directly) or written-only submission forms.
 ---
 
 # Pitch Package - the whole performance
@@ -17,7 +17,10 @@ STOP: produce no artifacts in this phase. Ask (adapting to what's already known)
 4. **Demo mode**: live product on stage (higher wow, higher risk) or recorded film (deterministic)? Default to recorded unless the live path has been rehearsed with a fallback.
 5. **Speakers**: who talks, and are there real credentials to weave into the intro?
 6. **Constraints**: venue machine? offline? projector resolution? phone-as-teleprompter?
-7. **Film guardrails**: if a demo film will be made or reused, what is it for and what must be burned in - any third-party logo or name in the frame, generic or personalised disclaimer card, a persistent "Demo purposes only" label, the rights line and company mark, and where it may live (private streaming link, our website's unlisted showcase, direct file, public platform)? Optional guardrails, mandatory questions: `demo-video/references/distribution.md`.
+7. **Voice and music**: a model voice (Kokoro `af_heart` at 1.0 is the default) or a human? A music bed, and whose rights? For a model voice, agree to audition one segment two ways after the brief is confirmed, then let them choose; never pick for them.
+8. **Branding and rights**: the company logo under the picture? A copyright and distribution line, in which words? A disclaimer card for a public copy? Whose logo, if a prospect's brand is in the product? Ask; a brand in every frame cannot be cut out later.
+9. **Where it plays**: a portal, a stage, YouTube, a feed? A film with a caption band needs its own 16:9 cut; captions burned in, as a sidecar file, or both.
+10. **Film guardrails**: if a demo film will be made or reused, what is it for and what must be burned in - any third-party logo or name in the frame, generic or personalised disclaimer card, a persistent "Demo purposes only" label, the rights line and company mark, and where it may live (private streaming link, our website's unlisted showcase, direct file, public platform)? Optional guardrails, mandatory questions: `demo-video/references/distribution.md`.
 
 Reflect the answers back as a one-paragraph brief and get a nod before Phase 2. Skipping this interview is how pitches end up with a beautiful deck for the wrong audience.
 
@@ -42,12 +45,15 @@ Pick the audience lens from `references/audiences.md` - same assets, different l
 
 One throughline threads all three artifacts - if the deck's tagline, the video's close, and the speech's refrain differ, unify them before rehearsal.
 
+The joins are part of the throughline work. Wherever the film or the talk changes person, case or topic, a transition line says so before the screen does, and nowhere else (pitch-craft's `references/storytelling.md`). The close lands the throughline, then the ask for customers or investors, or the name for judges, as the last thing heard; for a film that is a recap card walked by the voice, with the pilot line last (demo-video's `references/structure.md`).
+
 ## Phase 4 - Rehearse and ship
 
 - **Stitch plan** per `references/stitching.md` (which variant: fully recorded film, live-with-recorded-demo, fully live) plus the fallback ladder.
 - **Rehearse against the clock**: read the script aloud with a stopwatch once; apply the named trims if over. Adjust the script, never the speaking pace.
 - **Q&A prep**: appendix slides + a one-page honest-defense brief (the questions you fear, answered with what's true - overclaims die here, before a judge finds them).
 - **Day-of checklist**: local copies of deck AND video on the presenting machine (no network dependency), test in an incognito window at venue resolution, backup speaker for each section, the teleprompter (phone-friendly script page) charged and loaded.
+- **Deliverables**: the film, its 16:9 cut if it carries a band, the `.srt`, the timed script, the thumbnail, and one line naming the voice, the speed, the music track and its licence (demo-video's `references/soundtrack.md`).
 
 ## References
 

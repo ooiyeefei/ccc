@@ -1,6 +1,7 @@
 ---
 name: htmldrop
-description: Reach for this skill when an HTML artifact — report, deck, brief, mockup, dashboard, proposal, spec, or landing page, whether the user already has it or you just generated it — needs to reach other people or get tightened before it ships. Three situations: (1) they want a shareable link — public, or password-protected so only a client or specific people can open it; (2) they want reviewers to comment/annotate on it, then pull that feedback back to answer, fold, or synthesize into a revised version; (3) they want to co-edit it with you live and locally first — pointing at sections and commenting while you edit in real time, nothing deployed — to polish before sending. Cues: share, publish, get a link, password-protect, send to the client, collect or incorporate feedback, review it together, iterate in edit mode. Not for deploying apps/frameworks (Vercel, Next.js, npm), CSS/layout debugging, PDF annotation, A/B testing, or emailing screenshots.
+description: >-
+  Reach for this skill when an HTML artifact — report, deck, brief, mockup, dashboard, proposal, spec, or landing page, whether the user already has it or you just generated it — needs to reach other people or get tightened before it ships. Three situations: (1) they want a shareable link — public, or password-protected so only a client or specific people can open it; (2) they want reviewers to comment/annotate on it, then pull that feedback back to answer, fold, or synthesize into a revised version; (3) they want to co-edit it with you live and locally first — pointing at sections and commenting while you edit in real time, nothing deployed — to polish before sending. Cues: share, publish, get a link, password-protect, send to the client, collect or incorporate feedback, review it together, iterate in edit mode. Not for deploying apps/frameworks (Vercel, Next.js, npm), CSS/layout debugging, PDF annotation, A/B testing, or emailing screenshots.
 ---
 
 # htmldrop — Share HTML as Hosted Links
@@ -52,7 +53,7 @@ This fires **automatically**, whether the user runs simple share, feedback, or e
 
 1. **Check prerequisites first** — the relevant setup must be done before any push
 2. **Never store credentials** — Surge auth lives in `~/.netrc`; the feedback author key lives in `~/.htmldrop/config.json`
-3. **For password-protected files** — report the URL and password to the user, and remind them htmldrop stores the password nowhere (it's unrecoverable), so they should save it in a password manager now
+3. **For password-protected files** — report only the URL. The owner prepares and saves the password in a password manager and shares it separately with recipients. Never print a password into chat, terminal logs or feedback replies
 4. **Use absolute paths** when calling `htmldrop push`
 
 ---
@@ -83,22 +84,12 @@ Present two options:
 - Yes → `htmldrop push --noindex /path/to/file.html`
 - No → `htmldrop push /path/to/file.html`
 
-**If password-protected** — ask for a password, offer to generate one, or pipe one from the user's password manager. htmldrop **never stores the password** (held in memory only to encrypt at push time, then discarded), so tell the user to save it in their password manager the moment it's created — a forgotten one can't be recovered (re-push with a new one). Three ways to supply it:
+**If password-protected** — have the owner prepare and save the password in their password manager. Supply it through an existing protected `$HTMLDROP_PASSWORD` environment or the CLI's hidden prompt; never ask for it in chat or place it in the command arguments. Do not use a generator mode that prints the password. If secure input is not ready, wait for the owner before publishing.
 
 ```bash
-# 1. Let htmldrop generate a memorable one (two words + a number), printed once:
-htmldrop push --password --generate-password /path/to/file.html
-
-# 2. Pipe from a password manager so it never touches shell history:
-htmldrop push --password "$(op read op://vault/item/password)" /path/to/file.html   # 1Password
-htmldrop push --password "$(bw get password <id>)" /path/to/file.html               # Bitwarden
-htmldrop push --password "$(pass show <name>)" /path/to/file.html                   # pass
-
-# 3. A known value:
-htmldrop push --password <pass> /path/to/file.html
+# Reads the owner-supplied environment value or a hidden prompt; no secret in argv:
+htmldrop push /path/to/file.html --password
 ```
-
-A bare `--password` (no value) reads from `$HTMLDROP_PASSWORD` or a hidden prompt.
 
 ### Step 4: Report Results
 
@@ -111,16 +102,14 @@ Published: https://subdomain.surge.sh/filename.html
 ```
 Published with password protection!
   URL: https://subdomain.surge.sh/filename.html
-  Password: coral-sunset-42
-htmldrop never stores this password — it can't be recovered.
-Save it in your password manager now, then share both with your recipients.
+Keep the password in your password manager and share it separately with recipients.
 ```
 
 ### Skip the Flow When Intent is Clear
 
 If the user explicitly states preference in their request, skip the question:
 - "Share report.html publicly" → push directly
-- "Share spec.html with password hello123" → push with provided password
+- "Share spec.html privately" → use the owner-managed password flow
 - "Publish this privately" → go to password flow
 
 ### Simple-Share Commands
@@ -128,7 +117,7 @@ If the user explicitly states preference in their request, skip the question:
 | Command | Purpose |
 |---------|---------|
 | `htmldrop init` | One-time setup (subdomain + Surge login) |
-| `htmldrop push <file>` | Publish a file (flags: `--password`, `--generate-password`, `--noindex`, `--open`) |
+| `htmldrop push <file>` | Publish a file (flags: `--password`, `--noindex`, `--open`) |
 | `htmldrop list` | Show all published files with URLs |
 | `htmldrop delete <file>` | Remove a file and redeploy |
 | `htmldrop open <file>` | Open published file in browser |

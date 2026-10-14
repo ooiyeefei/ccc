@@ -57,7 +57,9 @@ One row per scene: `scene | shows | real or rendered | motion | narration | dur`
 real or rendered, and name the ONE real proof beat. **Show it and stop** until the user approves.
 This is the cheapest point to change the film; after scenes are rendered every edit re-renders and
 re-times. (Storyboard format: `demo-video/references/storyboard.md`, adapted - the "proof" column
-becomes "real or rendered".)
+becomes "real or rendered".) Settle the voice, music, closing and rights questions at the same
+gate (`demo-video/references/structure.md`): a marketing film nearly always has a bed, and the
+music's rights are checked before a scene is built around its pulse.
 
 ### 1.5 Target formats - GATE with the storyboard
 A film rarely ships as one file: the same story goes to 16:9 YouTube, 9:16 TikTok/Reels/Shorts, and
@@ -132,13 +134,16 @@ planned scene lengths (same Gate-3 rule as demo-video). Assembly variants and th
 
 ### 6. Narrate - optional
 A marketing film often ships silent (motion + on-screen text, autoplay-muted). If it needs a
-voiceover, write it in the **pitch-craft** marketing register, timed to the encoded mp4.
+voiceover, write it in the **pitch-craft** marketing register, timed to the encoded mp4, then
+voice and mix it per `demo-video/references/soundtrack.md`: one voice at one speed, the bed
+dipped 8 dB under speech and swelling in the gaps, the master at -16 LUFS. A cut without narration gets a mastered bed only if the owner approved music at the gate; otherwise it ships without audio.
 
 ### 7. Verify
 Watch every scene as an image. Figures reconcile. Brand matches the real app. No scene overclaims
 or leaks. The real beat is unmistakably the real product. Render each selected format
 (`scripts/render-formats.mjs`) and watch it at its TRUE ratio - a layout that reads in 16:9 can
-collapse in 9:16, and nothing critical may sit inside a platform safe zone.
+collapse in 9:16, and nothing critical may sit inside a platform safe zone. Check each export's
+loudness as delivered, per channel; a mono measure followed by a stereo upmix lands 3 dB hot.
 
 ## References
 - `references/remotion.md` - the Remotion setup that works: isolated project, the frame-clock
