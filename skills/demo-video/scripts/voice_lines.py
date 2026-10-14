@@ -20,7 +20,7 @@ import json
 import pathlib
 import re
 import sys
-import warnings
+from audio_inputs import child, dependencies, finite, records
 
 # numpy and soundfile load where they are used, so --check-only runs in a venv that has only
 # faster-whisper (the Kokoro venv and the Whisper venv are often separate).
@@ -38,7 +38,11 @@ DEFAULT_RESPELL = []
 def load_respell(path):
     rules = list(DEFAULT_RESPELL)
     if path:
-        rules += [tuple(r) for r in json.loads(pathlib.Path(path).read_text())]
+        raw = json.loads(pathlib.Path(path).read_text())
+        if not isinstance(raw, list) or any(not isinstance(r, list) or len(r) != 2 or
+                                            not all(isinstance(s, str) for s in r) for r in raw):
+            raise ValueError("respell rules must be a JSON list of [regex, replacement] strings")
+        rules += [tuple(r) for r in raw]
     return [(re.compile(p), r) for p, r in rules]
 
 
@@ -52,7 +56,7 @@ def trim(audio):
     import numpy as np
     loud = np.nonzero(np.abs(audio) > 10 ** (TRIM_DB / 20))[0]
     if len(loud) == 0:
-        return audio
+        raise ValueError("synthesis returned silent audio")
     a0 = max(0, loud[0] - int(LEAD * SR))
     a1 = min(len(audio), loud[-1] + int(TAIL * SR))
     return audio[a0:a1]
@@ -66,7 +70,12 @@ def synth(pipe, text, voice, speed):
         if parts:
             parts.append(np.zeros(int(GAP * SR), np.float32))
         parts.append(trim(a.astype(np.float32)))
-    return np.concatenate(parts) if parts else np.zeros(0, np.float32)
+    if not parts:
+        raise ValueError("synthesis returned no audio")
+    result = np.concatenate(parts)
+    if not np.isfinite(result).all():
+        raise ValueError("synthesis returned nonfinite audio")
+    return result
 
 
 def norm(text):
@@ -79,13 +88,13 @@ def check(out, meta, model_name, threshold):
     model = WhisperModel(model_name, device="cpu", compute_type="int8")
     low = []
     for m in meta:
-        segs, _ = model.transcribe(str(out / f"{m['id']}.wav"), beam_size=5, language="en")
+        segs, _ = model.transcribe(str(child(out, f"{m['id']}.wav")), beam_size=5, language="en")
         heard = " ".join(s.text.strip() for s in segs)
         m["heard"] = heard
         m["match"] = round(difflib.SequenceMatcher(None, norm(m["text"]), norm(heard)).ratio(), 3)
         if m["match"] < threshold:
             low.append(m)
-    (out / "clips-checked.json").write_text(json.dumps(meta, indent=1))
+    child(out, "clips-checked.json").write_text(json.dumps(meta, indent=1))
     mean = sum(m["match"] for m in meta) / len(meta)
     print(f"\n{len(meta)} lines, mean match {mean:.3f}, {len(meta) - len(low)} at or above "
           f"{threshold}, {len(low)} below")
@@ -114,15 +123,43 @@ def main():
     if args.check_only and not args.check:
         ap.error("--check-only needs --check")
 
-    lines = json.loads(pathlib.Path(args.lines).read_text())
+    finite(args.speed, "speed", maximum=1.2, positive=True)
+    finite(args.threshold, "threshold", maximum=1)
+    if not re.fullmatch(r"[abefhijpz][fm]_[a-z0-9_]+", args.voice):
+        ap.error("invalid Kokoro voice id")
+    if args.check and args.voice[0] not in "ab":
+        ap.error("the English read-back check requires an English voice")
+    lines = records(args.lines, ("id", "text"))
+    for line in lines:
+        if not isinstance(line["text"], str) or not line["text"].strip():
+            ap.error("line text must be a nonempty string")
     rules = load_respell(args.respell)
-    only = set(args.only.split(",")) if args.only else None
-    out = pathlib.Path(args.out)
+    only = set(args.only.split(",")) if args.only is not None else None
+    if only is not None and not only <= {line["id"] for line in lines}:
+        ap.error("--only contains unknown ids")
+    out = pathlib.Path(args.out).resolve()
+    meta_path = child(out, "clips.json")
+    checked_path = child(out, "clips-checked.json")
+    meta = {m["id"]: m for m in records(meta_path, ("id", "text"))} if meta_path.exists() else {}
+    destinations = [child(out, f"{line['id']}.wav") for line in lines]
+    sources = [pathlib.Path(args.lines).resolve()]
+    if args.respell:
+        sources.append(pathlib.Path(args.respell).resolve())
+    outputs = [meta_path, checked_path, *destinations]
+    if any(source == output or (output.exists() and source.samefile(output))
+           for source in sources for output in outputs):
+        ap.error("output would overwrite the input")
+    for line, dest in zip(lines, destinations):
+        if args.check_only or (only and line["id"] not in only):
+            cached = meta.get(line["id"])
+            if not dest.is_file() or not cached or cached.get("text") != line["text"]:
+                ap.error("retained clips must exist and match the current text; re-voice changed lines")
+    dependencies(("faster_whisper",) if args.check_only else
+                 ("kokoro", "soundfile", "numpy") + (("faster_whisper",) if args.check else ()))
     out.mkdir(parents=True, exist_ok=True)
-    meta_path = out / "clips.json"
-    meta = {m["id"]: m for m in json.loads(meta_path.read_text())} if meta_path.exists() else {}
+    if checked_path.exists():
+        checked_path.unlink()  # a prior read-back cannot certify this build
 
-    warnings.filterwarnings("ignore")
     pipe = None
     for line in lines:
         if args.check_only or (only and line["id"] not in only):
@@ -132,7 +169,7 @@ def main():
             pipe = KPipeline(lang_code=args.voice[0], repo_id="hexgrad/Kokoro-82M")
         import soundfile as sf
         audio = synth(pipe, spoken(line["text"], rules), args.voice, args.speed)
-        sf.write(out / f"{line['id']}.wav", audio, SR)
+        sf.write(child(out, f"{line['id']}.wav"), audio, SR, subtype="FLOAT")
         dur = len(audio) / SR
         wps = round(len(line["text"].split()) / dur, 2) if dur else None
         meta[line["id"]] = {"id": line["id"], "text": line["text"], "duration": round(dur, 2),
@@ -140,11 +177,18 @@ def main():
         print(f"{line['id']:6s} {dur:6.2f}s  {wps} wps", flush=True)
 
     ordered = [meta[l["id"]] for l in lines if l["id"] in meta]
-    meta_path.write_text(json.dumps(ordered, indent=1))
+    if not args.check_only:
+        meta_path.write_text(json.dumps(ordered, indent=1))
     print(f"{len(ordered)} clips in {out}/, {sum(m['duration'] for m in ordered):.1f}s of speech")
     if args.check:
-        check(out, ordered, args.check, args.threshold)
+        if check(out, ordered, args.check, args.threshold):
+            raise ValueError("read-back below threshold; inspect the report and re-voice or review the misses")
 
 
 if __name__ == "__main__":
-    main()
+    try:
+        main()
+    except ValueError as exc:
+        sys.exit(str(exc))
+    except (OSError, KeyError, TypeError, ImportError, re.error):
+        sys.exit("Audio build failed: invalid input, unavailable dependency or failed read-back. Inspect the inputs and check report.")

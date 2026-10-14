@@ -6,7 +6,7 @@ Four phases, two governing rules:
 
 1. **Interview before you build** - audience, slot, inventory of what exists, demo mode (live vs recorded), speakers, venue constraints, the voice and music, branding and rights, where it plays. No artifacts until the brief is confirmed.
 2. **Budget the slot first** - the explicit budget line (spoken + demo + transitions) decides scope before any writing.
-3. **Compose** - audience lens (judges: proof + rubric fit; VC: market + what compounds + the ask; customer: their pain + pilot ask), then gap-fill via the other skills with one shared throughline, transition lines only where the story changes person or topic, and the ask as the last thing heard.
+3. **Compose** - audience lens (judges: proof + rubric fit; VC: market + what compounds + the ask; customer: their pain + pilot ask), then gap-fill via the other skills with one shared throughline, transition lines only where the story changes person or topic, and the ask for customers or investors, or the name for judges, as the last thing heard.
 4. **Rehearse and ship** - stitch plan, timed read-through with named trims, Q&A appendix + honest-defense brief, day-of checklist (local copies, venue test, fallback ladder).
 
 The framing that holds it together: **the demo is the proof, the deck is the setup.**

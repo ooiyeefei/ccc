@@ -58,10 +58,10 @@ An analyst opens a queue of twelve hundred alerts. The rule engine closes
 eleven hundred sixty-five under policy, each with a sealed reason.
 ```
 
-A transition rides over the chapter card, in the music's pause, and is marked as such:
+A transition rides over an approved transition card, with music ducked under its speech. Its window must hold the measured line plus a breath; it changes the final timeline. Mark it as such:
 
 ```
-3. 0:43 -> 0:46  [CARD_REVIEW]  (transition, over the card)
+3. 0:43 -> 0:48  [CARD_REVIEW]  (transition, over the card)
 Our application now waits for the branch manager.
 ```
 
@@ -78,7 +78,7 @@ The demo-break marker always states what the video covers, so a numbering jump n
 
 ## From words to a voice
 
-The script is done when it is voiced and checked, not when it is written. Hand it to demo-video's `references/soundtrack.md`: the owner picks the voice from one segment voiced two ways (Kokoro `af_heart` at speed 1.0 is the default), every line is voiced at one speed and the cut holds each shot to its line, acronyms and names get a voice-only respelling, and faster-whisper reads every line back against the script. `demo-video/scripts/voice_lines.py` does all of that in one pass. A music bed, if the owner wants one, dips 8 dB under the lines and swells in the pauses (`demo-video/scripts/mix_soundtrack.py`). A line changed after voicing is re-voiced alone; nothing else moves.
+For a live speech, rehearse aloud against the clock; synthesis is optional. For a recorded deliverable with a model voice, voice and check the script. Hand it to demo-video's `references/soundtrack.md`: the owner picks the voice from one segment voiced two ways (Kokoro `af_heart` at speed 1.0 is the default), every line is voiced at one speed and the cut holds each shot to its line, acronyms and names get a voice-only respelling, and faster-whisper reads every line back against the script. `demo-video/scripts/voice_lines.py` does all of that in one pass. A music bed, if the owner wants one, dips 8 dB under the lines and swells in the pauses (`demo-video/scripts/mix_soundtrack.py`). Re-voice an edited line alone when it still fits its slot. If its duration changes the cut, re-derive the final timestamps and re-sync audio and captions.
 
 ## Re-syncing an existing script
 

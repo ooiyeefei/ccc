@@ -134,8 +134,7 @@ planned scene lengths (same Gate-3 rule as demo-video). Assembly variants and th
 A marketing film often ships silent (motion + on-screen text, autoplay-muted). If it needs a
 voiceover, write it in the **pitch-craft** marketing register, timed to the encoded mp4, then
 voice and mix it per `demo-video/references/soundtrack.md`: one voice at one speed, the bed
-dipped 8 dB under speech and swelling in the gaps, the master at -16 LUFS. A silent cut still
-gets the mastered bed: autoplay is muted, the click-through is not.
+dipped 8 dB under speech and swelling in the gaps, the master at -16 LUFS. A cut without narration gets a mastered bed only if the owner approved music at the gate; otherwise it ships without audio.
 
 ### 7. Verify
 Watch every scene as an image. Figures reconcile. Brand matches the real app. No scene overclaims

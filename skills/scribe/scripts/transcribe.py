@@ -4,12 +4,12 @@ Provider-agnostic speech-to-text that normalizes every backend onto one schema.
 
     transcribe.py AUDIO [AUDIO...] --out DIR [options]
 
-Providers (--provider, default: auto = first one with a key, else local):
+Providers (--provider, default: local; auto is a compatibility alias for local):
     elevenlabs  Scribe            diarization + per-word logprob
     deepgram    Nova              diarization + per-word confidence
     openai      /v1/audio/...     no diarization; any OpenAI-compatible base URL
                                   (Groq, LiteLLM, OpenRouter, vLLM) via --base-url
-    local       faster-whisper    no diarization; runs offline, nothing uploaded
+    local       faster-whisper    no diarization; no audio upload; weights may download
 
 Per input file it writes:
     <out>/<stem>.json   normalized schema (see NORMALIZED_SCHEMA below)
@@ -280,7 +280,7 @@ def run_openai(path, args):
 
 
 def run_local(path, args):
-    """faster-whisper. Nothing leaves the machine.
+    """faster-whisper. Audio is processed locally; pre-cache weights for offline use.
 
     The two settings that matter for code-switched speech:
       language=...                  pin it, or per-window detection flaps and
@@ -319,15 +319,6 @@ def run_local(path, args):
 
 PROVIDERS = {"elevenlabs": run_elevenlabs, "deepgram": run_deepgram,
              "openai": run_openai, "local": run_local}
-KEY_FOR = {"elevenlabs": "ELEVENLABS_API_KEY", "deepgram": "DEEPGRAM_API_KEY",
-           "openai": "OPENAI_API_KEY"}
-
-
-def pick_provider():
-    for name, env in KEY_FOR.items():
-        if os.environ.get(env):
-            return name
-    return "local"
 
 
 # ---------------------------------------------------------------- rendering
@@ -355,8 +346,9 @@ def main():
                                  formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("audio", nargs="+")
     ap.add_argument("--out", required=True)
-    ap.add_argument("--provider", default="auto",
-                    choices=["auto"] + list(PROVIDERS))
+    ap.add_argument("--provider", default="local",
+                    choices=["auto"] + list(PROVIDERS),
+                    help="default local; auto also means local. Select hosted providers explicitly.")
     ap.add_argument("--model", help="provider-specific model id")
     ap.add_argument("--language", default=None,
                     help="ISO code. PIN THIS for code-switched speech.")
@@ -373,7 +365,9 @@ def main():
 
     args.keyterms = ([t.strip() for t in args.keyterms.split(",") if t.strip()]
                      if args.keyterms else None)
-    provider = pick_provider() if args.provider == "auto" else args.provider
+    provider = "local" if args.provider == "auto" else args.provider
+    if args.diarize and provider not in ("elevenlabs", "deepgram"):
+        ap.error("--diarize requires an explicitly selected elevenlabs or deepgram provider; local/openai do not label speakers")
     if provider != "local" and not args.language:
         print("! no --language pinned: auto-detection is the main cause of "
               "wrong-language gibberish on code-switched audio", file=sys.stderr)

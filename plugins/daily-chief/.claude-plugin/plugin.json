@@ -1,6 +1,6 @@
 {
   "name": "daily-chief",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Daily Chief Plan today workflow with browser device login, a local visual preview, and explicit remote apply.",
   "keywords": [
     "daily-chief",
@@ -8,5 +8,8 @@
     "device-authentication",
     "explicit-apply",
     "productivity"
-  ]
+  ],
+  "author": {
+    "name": "ooiyeefei"
+  }
 }

@@ -6,7 +6,7 @@ Edit mode turns an HTML file into a live, local review surface on `127.0.0.1`. T
 
 It is **author-facing** (the user and you), distinct from `push --feedback`, which is for **async external reviewers**. When the doc is ready, publish with `push --feedback`.
 
-**Publishing from the browser.** The control bar has a **🚀 Publish** button. When the user is done editing, they click it and pick **Public link** or **Password-protected**. It does *not* publish directly (the browser has no shell) — it sends *you* a publish request that arrives on your next `edit poll` as a message. Act on it: run the matching push (`htmldrop push <file>` for public, or `htmldrop push <file> --generate-password` for password-protected), then `edit reply` with the URL (and the generated password). Treat it as the user's explicit "ship it" signal.
+**Publishing from the browser.** The control bar has a **🚀 Publish** button. When the user is done editing, they click it and pick **Public link** or **Password-protected**. It does *not* publish directly (the browser has no shell) — it sends *you* a publish request that arrives on your next `edit poll` as a message. Act on it: run the matching push (`htmldrop push <file>` for public, or `htmldrop push <file> --password` with an owner-managed password supplied through a protected environment or hidden prompt), then `edit reply` with only the URL. Never generate a password into logs or include one in the reply; if secure input is not ready, wait before the private push. Treat it as the user's explicit "ship it" signal.
 
 ## Prerequisites
 

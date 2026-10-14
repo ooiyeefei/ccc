@@ -11,6 +11,8 @@ The deck is the backdrop; the speech carries the pitch. So the deck's job is: on
 
 ### 1. Outline: one slide, one idea
 
+Before building, ask whether the company logo and a copyright/distribution notice belong in the deck or recording, whose logo is authorised, and the exact notice wording. Record the choice with the outline.
+
 Derive the slide list from the pitch story (the pitch-craft skill's storytelling rules apply to structure too). A proven arc to adapt, not worship:
 
 Hook -> what-it-is 101 -> the cost of the status quo -> Reveal (name + throughline) -> test bed / credibility -> the concrete example -> how it works (one flow, end to end) -> "watch it work" (the demo slot) -> the differentiator ("it learns") -> one-more-thing -> roadmap -> architecture -> Close (numbers land again + name).
@@ -23,7 +25,7 @@ Follow `references/deck-patterns.md`: section-per-slide skeleton, hash-based dee
 
 ### 3. Narrate via pitch-craft
 
-Hand the slide list to the **pitch-craft** skill for the walkthrough script (per-slide timestamp windows, recorded register). A deck changes topic every few slides, and a viewer who is not told where the talk is going feels every jump: where a section changes, the narration says so before the slide does (pitch-craft's transitions), and the close lands the throughline and then the ask. If the deck will also be presented live, have pitch-craft write the LIVE variant separately (team intro after the hook, stage cues, trim points) - the two registers do not interchange.
+Hand the slide list to the **pitch-craft** skill for the walkthrough script (per-slide timestamp windows, recorded register). A deck changes topic every few slides, and a viewer who is not told where the talk is going feels every jump: where a section changes, the narration says so before the slide does (pitch-craft's transitions), and the close lands the throughline, then the ask for customers or investors, or the name for judges. If the deck will also be presented live, have pitch-craft write the LIVE variant separately (team intro after the hook, stage cues, trim points) - the two registers do not interchange.
 
 ### 4. Record the walkthrough (optional)
 
@@ -31,7 +33,7 @@ Follow `references/deck-recording.md`: per-slide HOLD durations derived from the
 
 ### 5. Publish and verify
 
-Serve locally, or publish (htmldrop / static host) if a link is needed. Then actually click through every slide checking: entry animations fire, no broken assets, citations open, the brand mark sits on every slide, and the demo embed (if any) loads. A deck you haven't paged through end-to-end is not done. If the deck is shared as a file or recorded, ask whether a rights line and the company logo go on the closing slide or in the recording's band (demo-video's `references/structure.md`).
+Serve locally, or publish (htmldrop / static host) if a link is needed. Then actually click through every slide checking: entry animations fire, no broken assets, citations open, the brand mark sits on every slide, and the demo embed (if any) loads. A deck you haven't paged through end-to-end is not done. For a shared file or recording, verify that the approved rights line and company logo appear in their agreed placement (demo-video's `references/structure.md`).
 
 ## References
 

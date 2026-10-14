@@ -52,7 +52,7 @@
         "Produces a storyboard BEFORE recording anything, with all five columns: screen, action, proof, narration draft, duration",
         "Explicitly stops and asks for approval of the storyboard; does not proceed to capture in the same turn despite 'I trust you'",
         "Storyboard covers the whole journey (entry / setup / core loop / payoff), not only the memory-recall feature",
-        "Does NOT propose title cards, intro slides, logo bookends, or caption overlays as part of the demo film",
+        "Asks about optional cards, company logo, rights wording and captions at the storyboard gate; does not render any exception before approval",
         "Identifies that 'remembers what it learned' needs visible on-screen evidence (memory panel, citation, or session history) and plans a beat that shows it - not a status label in which the app merely asserts it remembered",
         "If it previews later steps at all, the smoke take precedes the full capture (it must NOT actually smoke-test or record before approval)"
       ],

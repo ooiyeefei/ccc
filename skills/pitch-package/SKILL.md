@@ -17,7 +17,7 @@ STOP: produce no artifacts in this phase. Ask (adapting to what's already known)
 4. **Demo mode**: live product on stage (higher wow, higher risk) or recorded film (deterministic)? Default to recorded unless the live path has been rehearsed with a fallback.
 5. **Speakers**: who talks, and are there real credentials to weave into the intro?
 6. **Constraints**: venue machine? offline? projector resolution? phone-as-teleprompter?
-7. **Voice and music**: a model voice (Kokoro `af_heart` at 1.0 is the default) or a human? A music bed, and whose rights? Voice one segment two ways and let them choose; never pick for them.
+7. **Voice and music**: a model voice (Kokoro `af_heart` at 1.0 is the default) or a human? A music bed, and whose rights? For a model voice, agree to audition one segment two ways after the brief is confirmed, then let them choose; never pick for them.
 8. **Branding and rights**: the company logo under the picture? A copyright and distribution line, in which words? A disclaimer card for a public copy? Whose logo, if a prospect's brand is in the product? Ask; a brand in every frame cannot be cut out later.
 9. **Where it plays**: a portal, a stage, YouTube, a feed? A film with a caption band needs its own 16:9 cut; captions burned in, as a sidecar file, or both.
 
@@ -44,7 +44,7 @@ Pick the audience lens from `references/audiences.md` - same assets, different l
 
 One throughline threads all three artifacts - if the deck's tagline, the video's close, and the speech's refrain differ, unify them before rehearsal.
 
-The joins are part of the throughline work. Wherever the film or the talk changes person, case or topic, a transition line says so before the screen does, and nowhere else (pitch-craft's `references/storytelling.md`). The close lands the throughline and then the ask, as the last thing heard; for a film that is a recap card walked by the voice, with the pilot line last (demo-video's `references/structure.md`).
+The joins are part of the throughline work. Wherever the film or the talk changes person, case or topic, a transition line says so before the screen does, and nowhere else (pitch-craft's `references/storytelling.md`). The close lands the throughline, then the ask for customers or investors, or the name for judges, as the last thing heard; for a film that is a recap card walked by the voice, with the pilot line last (demo-video's `references/structure.md`).
 
 ## Phase 4 - Rehearse and ship
 

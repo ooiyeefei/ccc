@@ -14,7 +14,7 @@ Turn meeting recordings into notes where every claim traces back to audio the mo
 /plugin install ccc-skills@ccc
 ```
 
-Then set a key for whichever backend you want — or set none and run fully local:
+Local faster-whisper is the default, even when API keys are present. For an explicitly selected hosted backend, set its key:
 
 ```bash
 export ELEVENLABS_API_KEY=...     # diarization + per-word confidence
@@ -59,7 +59,7 @@ This is the highest-leverage part, so answer properly rather than saying "just g
 ```bash
 # 4 recordings from one meeting, Malaysian English, known participants
 python scripts/transcribe.py ~/meetings/*.m4a --out transcripts \
-    --language en --diarize \
+    --provider elevenlabs --language en --diarize \
     --keyterms "Groot,LHDN,ringgit,Cradle,EasyStore"
 
 python scripts/audit.py transcripts
@@ -137,15 +137,17 @@ Two failure classes cause most of it:
 | `openai` | `OPENAI_API_KEY` | no | segment `avg_logprob` | yes |
 | `local` | none | no | segment `avg_logprob` | **no** |
 
-`--provider auto` (the default) picks the first backend with a key present, and
-falls back to `local`.
+`--provider local` is the default. `--provider auto` is retained as an alias for local.
+No API key causes an automatic upload, and local failures never fall back to a vendor.
+Select a hosted provider explicitly when needed.
 
 `--provider openai` accepts `--base-url` (or `STT_BASE_URL`) so it works against
 any OpenAI-compatible gateway — Groq, LiteLLM, OpenRouter, a local vLLM. That is
 the swap point when credits move between vendors.
 
-Prefer a backend that diarizes. Without speaker labels, every attribution in the
-notes is inference, which is a break in the chain of custody.
+Start locally; if speaker labels are needed, select an authorised diarizing provider
+explicitly and use --diarize. Local and OpenAI backends reject that flag because they
+do not supply speaker labels. Uncorroborated attribution stays marked as inference.
 
 ## Running fully offline
 
@@ -153,8 +155,8 @@ notes is inference, which is a break in the chain of custody.
 pip install faster-whisper
 ```
 
-Then `--provider local`. Nothing leaves the machine — the right choice for calls
-covering equity, customers, or salaries. Roughly 3× realtime on ~16 CPU threads,
+Then use the default local provider. Audio is not uploaded. The first run can download
+model weights; cache approved weights beforehand for an offline run. Roughly 3× realtime on ~16 CPU threads,
 far faster on GPU.
 
 For long-tail languages, a specialised local fine-tune can beat a general hosted
@@ -174,7 +176,7 @@ Both scripts stand alone:
 
 ```bash
 python scripts/transcribe.py recording.m4a --out transcripts \
-    --language en --diarize --keyterms "Acme,LHDN,ringgit"
+    --language en --keyterms "ExampleCo,ringgit"
 
 python scripts/audit.py transcripts
 ```

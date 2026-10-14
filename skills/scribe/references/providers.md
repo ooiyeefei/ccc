@@ -10,14 +10,16 @@ everything downstream is identical whichever you pick.
 | `openai` | `OPENAI_API_KEY` | **no** | segment `avg_logprob` | yes |
 | `local` | — | **no** | segment `avg_logprob` | no |
 
-Choose on two axes, in this order:
+The default is local faster-whisper, even with API keys present. Legacy auto means
+local too; there is no automatic hosted fallback. Choose on two axes:
 
-1. **Diarization** — without it, speaker attribution is your inference, which
-   breaks the chain of custody. This alone usually decides it.
-2. **Where the audio may go** — a call covering equity, customers or salaries may
+1. **Where the audio may go** — a call covering equity, customers or salaries may
    not be uploadable to a vendor. `local` is the answer when it isn't. Note that
    a cloud note-taker already in the workflow (Granola, Otter) means the audio
    has left the machine regardless.
+2. **Diarization** — local inference does not label speakers. If labels are needed,
+   select an authorised elevenlabs or deepgram backend explicitly with --diarize.
+   Local/OpenAI reject that flag; uncorroborated attribution stays marked as inference.
 
 Raw accuracy is a weaker axis than either. For long-tail languages and heavy
 code-switching, a specialised local fine-tune can beat a general hosted model —
@@ -96,6 +98,9 @@ risky-span detection — step 3 will say so.
 No diarization on this path.
 
 ## local — faster-whisper
+
+Local audio is not uploaded. Model weights may download on first use; pre-cache
+approved weights for an offline run. Missing dependencies fail without hosted fallback.
 
 `pip install faster-whisper`. Default model `large-v3`, CPU int8. Roughly 3×
 realtime on ~16 CPU threads; far faster on GPU.

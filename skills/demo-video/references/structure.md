@@ -16,7 +16,7 @@ Ask these with the storyboard, before any capture. Each one changes the cut or t
 6. **Captions**: burned in, a sidecar file, or both? (`soundtrack.md`)
 7. **Platforms**: where does it play? A film with a band is 16:10 or taller and sits between black bars in a 16:9 player, so a YouTube cut is a separate deliverable.
 
-Record the answers in the storyboard header. Silence on any of them is a "no", and a late "yes" costs a rebuild.
+Record the answers in the storyboard header. An unanswered choice stays unresolved until the gate; offer a default and get it confirmed. A late change costs a rebuild.
 
 ## The opening
 
@@ -33,11 +33,13 @@ Times come from the narration's word times, so the picture lands on the words. T
 
 One still card before each chapter: a kicker (the chapter's role or stage), a short headline in the film's voice, and a row of progress dots showing where the viewer is in the journey. In the film's theme, on the brand colour, or on the page colour for a light theme.
 
-Timing that reads as a breath, not a cut: 2.6 s in all; the last frame of the shot before dissolves into the card over 0.4 s, the card holds, then dissolves into the first frame of the shot after over 0.4 s. Render both neighbours first, so each dissolve starts and ends on the exact frames either side. **No line is voiced over a card**: the narration pauses for it, as a speaker pauses between chapters, and the music swells into the gap (`soundtrack.md`).
+For a silent card, start with 2.6 s in all; the last frame of the shot before dissolves into the card over 0.4 s, the card holds, then dissolves into the first frame of the shot after over 0.4 s. Render both neighbours first, so each dissolve starts and ends on the exact frames either side. **No product narration is voiced over a silent card**: the narration pauses for it, as a speaker pauses between chapters, and the music swells into the gap (`soundtrack.md`).
 
 ## Transitions: say where we are going
 
-The rule: add a spoken transition line **only where the film changes person, case or topic without saying so**. Four lines in a hundred fixed the film above; a line at every cut is signposting, and pitch-craft's human-voice pass strikes it. Each transition sits over a chapter card in the music's pause, so the picture and every other line keep their timing.
+The rule: add a spoken transition line **only where the film changes person, case or topic without saying so**. Four lines in a hundred fixed the film above; a line at every cut is signposting, and pitch-craft's human-voice pass strikes it. Each transition sits over an approved transition card between product beats.
+
+A transition card is the exception to the silent-card rule: hold it for the measured line plus a breath, budget that time in the storyboard, and duck the music under the transition just as under other speech. Adding one changes the timeline; re-derive final timestamps and caption timings after assembly.
 
 The patterns that worked, in the order a film uses them:
 

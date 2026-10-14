@@ -10,6 +10,8 @@ Settle the audio questions at the storyboard gate (`structure.md` lists them). A
 
 A model voice is the default for a product film: it re-records a changed line in seconds, which is what re-sync after a re-take needs. A human voice (the owner, a voice artist) is right when the speaker IS part of the pitch, and then the owner's rough edit is the source and the model voice only replaces it (section "Re-voicing an existing edit").
 
+Kokoro and faster-whisper run inference locally, but first use can download model weights from Hugging Face and dependencies from package registries. Pre-cache approved assets before an offline run; local inference does not imply zero network access.
+
 Kokoro (the open 82M model, `hexgrad/Kokoro-82M`) has carried every film so far: it runs on a CPU, sounds natural at speed 1.0, and costs nothing per character. Pin `kokoro==0.9.4` in a project-local virtualenv; a venv in a session scratchpad is wiped on restart, and the film's next re-voice then starts from nothing.
 
 ### Picking the voice
@@ -46,7 +48,9 @@ Kokoro returns lead-in and tail silence. Trim at -42 dBFS, keeping 40 ms before 
 
 ### QA every build, scripted
 
-Transcribe each voiced line with faster-whisper (`small.en` for a few new lines, `medium` for a full pass) and score it against the text it should say (a difflib ratio on normalised words). Report the line count, the mean, the count at or above 0.85, and list the misses. Shipped films score a mean of 0.97 to 0.98; every miss so far was a number heard as digits ("60%" for "sixty percent"), which is the transcriber, not the voice. A miss on a product name or a figure is a real defect: respell and re-voice that line.
+Transcribe each voiced line with faster-whisper (`small.en` for a few new lines, `medium` for a full pass) and score it against the text it should say (a difflib ratio on normalised words). Report the line count, the mean, the count at or above 0.85, and list the misses. Shipped films score a mean of 0.97 to 0.98; every miss so far was a number heard as digits ("60%" for "sixty percent"), which is the transcriber, not the voice. A miss on a product name or a figure needs a listening review: respell and re-voice that line.
+
+A below-threshold read-back exits nonzero and writes the report. Do not dismiss a miss just because numbers often transcribe differently. Retained clips must match the current script; `--only` refuses stale or missing unselected lines.
 
 `scripts/voice_lines.py` does the voicing, the respelling, the trim and the Whisper check in one pass. Run it with the Kokoro venv.
 
@@ -64,6 +68,8 @@ The pattern viewers describe as "it feels produced":
 - Under speech, the bed dips **8 dB**. The dip window is the line padded 0.3 s each side, with 0.3 s linear attack and release ramps (a box filter over the speech mask), so the music breathes back in rather than snapping.
 - No chime, sting or whoosh in a product walkthrough. The card and the swell already mark the change, and a sting makes a real film sound like a slide deck. Reach for a soft sting only to mark a hard section change in a film that has no music bed at all, and only if the owner asks.
 
+The mixer measures and normalises unducked music to -26 LUFS by default (`--music-lufs`), then applies the 8 dB dip. A supplied track can be arbitrarily loud, so ducking alone cannot establish a voice-first balance. Listen to the final master; change that explicit bed target when the track needs it.
+
 Narration first, music second: the voice sits on top and the bed is set to it. Never set the music level by ear on a laptop speaker; measure.
 
 ### Levels
@@ -72,6 +78,8 @@ Narration first, music second: the voice sits on top and the bed is set to it. N
 |---|---|---|
 | Narration stem | about -23 LUFS before the master | Where the voice sits in the shipped films; a bed dipped 8 dB under it stays audible without competing |
 | Master | **-16 LUFS integrated, -1.5 dBTP, LRA 11** | The platform level (YouTube, Vimeo and LinkedIn normalise to about -14 to -16); a quieter film is turned up with its noise floor, a louder one is limited |
+
+The mixer writes floating-point pre-master audio so peaks are preserved before loudness normalisation. `narration.wav` is the normalised voice stem, `mix.wav` the pre-master mix, and `soundtrack.wav` and `soundtrack.m4a` the mastered deliveries.
 
 Master with two-pass `loudnorm` (measure, then apply the measured values with `linear=true`), then AAC 192k at 48 kHz stereo.
 

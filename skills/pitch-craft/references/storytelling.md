@@ -54,7 +54,7 @@ Three habits of a speaker who does this well:
 - **Preview by sight, not by label.** "Which rules the bank can change for itself" tells the viewer what to look for; "the credit policy" is a label to decode while the screen is already changing.
 - **Plain words over idiom.** "Desk to desk" was struck for "from start to finish". An idiom that lands with insiders is a gap for everyone else.
 
-In a recorded film a transition rides over a chapter card in the music's pause, so the picture and every other line keep their timing (demo-video's `references/structure.md`). On stage it is the sentence said while the slide changes. In both, its words come out of the next segment's budget, not from thin air.
+In a recorded film a transition rides over an approved transition card with music ducked under it; the card holds the measured line plus a breath, and final timestamps are re-derived after assembly (demo-video's `references/structure.md`). On stage it is the sentence said while the slide changes. In both, its words come out of the next segment's budget, not from thin air.
 
 ## Registers: recorded vs live are different scripts
 
