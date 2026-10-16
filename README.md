@@ -329,9 +329,10 @@ See [skills/self-improving-systems/SKILL.md](./skills/self-improving-systems/SKI
 
 Publish any HTML file as a shareable link instantly, with optional collaborative review. Wraps the [`htmldrop` CLI](https://www.npmjs.com/package/@yeefeiooi/htmldrop) — you just describe what you want in natural language.
 
-**Two modes:**
+**Three modes, with automatic publish history (CLI 1.16.0+):**
 1. **Simple share** — public or password-protected link via free Surge.sh hosting
 2. **Collaborative feedback + converge** — publish with an embedded annotation widget so reviewers highlight text and comment (no account needed), then pull the feedback and synthesize an improved version with AI
+3. **Edit mode** — iterate live with declared sibling assets and a layout inbox; use an expiring private HTTPS gateway for review from another device. Published history and redlines are included even with feedback off.
 
 **After installing ccc-skills, just ask Claude Code:**
 ```

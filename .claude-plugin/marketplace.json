@@ -6,7 +6,7 @@
   },
   "metadata": {
     "description": "Custom Claude Code plugins and skills",
-    "version": "1.8.1"
+    "version": "1.8.2"
   },
   "plugins": [
     {
@@ -69,7 +69,7 @@
         "./commands/streak-stats.md",
         "./commands/streak-insights.md"
       ],
-      "version": "1.8.1"
+      "version": "1.8.2"
     }
   ]
 }
