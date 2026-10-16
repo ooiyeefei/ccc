@@ -44,6 +44,10 @@ htmldrop push /path/to/doc.html --feedback --new-doc
 
 Use this sparingly — it abandons the old link and its comments.
 
+## History is independent of comments
+
+On CLI 1.16.0+, every publish keeps document history even without `--feedback`. This flag controls annotations only; `--new-doc` intentionally resets both history and feedback identity. See [publication history](publication-history.md).
+
 ## Prerequisites
 
 1. **Author API key** — run once:

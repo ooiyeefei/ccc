@@ -27,7 +27,7 @@ The direct consequence is that **a forgotten password can't be recovered** — t
 - **Use a protected environment or hidden prompt** instead of expanding a password-manager secret into command arguments. Prepare the environment through the owner's secure tooling without echoing the value.
 - **Bare `--password`** reads from `$HTMLDROP_PASSWORD` or a hidden prompt, keeping a typed or pasted value out of shell history.
 
-Lost the password? Re-push the file with a new one — the old encrypted version is overwritten.
+Lost the password? Re-push the local source with a new one to restore access to the current page. Earlier private history records retain their original encryption and cannot be recovered with the new password.
 
 ## Security Assessment
 
@@ -67,4 +67,4 @@ Injects `<meta name="robots" content="noindex, nofollow">` into the HTML. A site
 For the intended use case (sharing internal documents with specific people), yes. The content cannot be read without the password. An attacker can download the ciphertext once and attempt passwords offline, so there is no server-side rate limit protecting those attempts. Use a strong manager-generated password. This does not replace the repository's restrictions on sensitive material.
 
 **Can I change the password later?**
-Re-push the file with a new `--password` value. The old encrypted version is overwritten.
+Re-push the file using bare `--password` with secure input. The current page uses the new password; retained private history records still need their original passwords. See [publication history](publication-history.md).

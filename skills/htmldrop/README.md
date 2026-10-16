@@ -83,6 +83,21 @@ You can also use the direct command:
 
 ---
 
+## What changed in CLI 1.16.0
+
+Every publish now includes **History**, previous-version previews and readable-text redlines, whether `--feedback` is on or off. Ordinary re-pushes keep history; `--new-doc` deliberately starts fresh. Private revisions keep their original encryption and passwords. See [publication history](references/publication-history.md).
+
+Edit mode serves safe declared sibling CSS, images and downloads, reloads dependencies, and exposes a layout inbox with queue/ignore/recheck states. For another device, `edit share` creates an expiring reviewer gateway behind your private HTTPS proxy; author controls remain local. See [edit mode](references/edit-mode.md). Publishing still needs self-contained HTML and rejects local asset references.
+
+```bash
+htmldrop edit start /abs/report.html
+htmldrop edit layout /abs/report.html --json
+htmldrop push /abs/report.html             # history included
+htmldrop push /abs/report.html --feedback  # add reviewer comments
+```
+
+CLI **1.17.0+** adds editable Excalidraw diagrams, stable shape comments, reviewer proposals, owner revisions and a local stdio MCP server. See [diagrams and MCP](references/diagrams-and-mcp.md). Upgrade with `npm install -g @yeefeiooi/htmldrop@latest` and check `htmldrop --version`; confirm release availability before relying on the new commands.
+
 ## Features
 
 - **Instant sharing** — one request to publish any HTML file, free on Surge.sh
@@ -131,7 +146,7 @@ _Click the diagram for the interactive release note._
 
 ## Where comments live (data ownership)
 
-Surge hosts the HTML (stores nothing); a Cloudflare Worker + KV stores the **comments** (a static page can't accept writes). You choose whose Worker:
+Surge stores the published HTML, including embedded history; a Cloudflare Worker + KV stores the **comments** (a static page can't accept writes). You choose whose Worker:
 
 - **Free tier (shared Worker):** zero setup; comments sit in *our* Cloudflare, **auto-expire after 90 days**, clearable anytime (`htmldrop feedback clear`), code is open-source. Honest caveat: convenient, but **not** zero-knowledge.
 - **Own your data (self-host):** deploy the Worker to *your* free Cloudflare account (`cd worker && wrangler deploy`), then `export HTMLDROP_WORKER_URL=https://your-worker.workers.dev` — now we see nothing.
