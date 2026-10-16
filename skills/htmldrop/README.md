@@ -96,7 +96,7 @@ htmldrop push /abs/report.html             # history included
 htmldrop push /abs/report.html --feedback  # add reviewer comments
 ```
 
-Upgrade with `npm install -g @yeefeiooi/htmldrop@latest` and check `htmldrop --version` (1.16.0+). Excalidraw, shape comments, diagram revisions and MCP are planned together for milestone 2, not included here.
+CLI **1.17.0+** adds editable Excalidraw diagrams, stable shape comments, reviewer proposals, owner revisions and a local stdio MCP server. See [diagrams and MCP](references/diagrams-and-mcp.md). Upgrade with `npm install -g @yeefeiooi/htmldrop@latest` and check `htmldrop --version`; confirm release availability before relying on the new commands.
 
 ## Features
 

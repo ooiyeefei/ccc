@@ -99,4 +99,4 @@ If a session ended (or the user's message arrived while you weren't polling), th
 
 - **Live replies:** feedback updates and reconnects refresh comments automatically. Incoming updates preserve unsent drafts; text typed while a save is pending remains available after the original submission succeeds.
 - **Isolated profiles:** `HTMLDROP_CONFIG_DIR` changes HTML Drop state without changing `HOME`. Keep its private discovery credential local; the CLI sends it automatically for agent operations.
-- **Diagrams:** embedded Mermaid rendering works as authored. Excalidraw editing, shape comments, diagram revision tools and MCP are planned together for milestone 2; they are not part of 1.16.0.
+- **Diagrams (CLI 1.17.0+):** open **Diagrams** for the bundled Excalidraw canvas, shape comments, proposals and owner revisions. Save updates local HTML; publish separately. MCP uses the same service over local stdio. See [diagrams and MCP](diagrams-and-mcp.md).

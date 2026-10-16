@@ -1,7 +1,7 @@
 ---
 name: htmldrop
 description: >-
-  Share HTML reports, decks, specs, dashboards and mockups as public or password-protected links; collect anchored reviewer feedback and revise the page; or refine it live in edit mode before publishing. Edit mode supports declared sibling assets, a layout inbox and expiring private HTTPS review links. Every publish includes version history and readable-text redlines independently of optional feedback. Use for sharing, reviewing, incorporating comments or iterating on an HTML artifact with the user. Not for deploying application frameworks, PDF annotation or emailing screenshots.
+  Share HTML reports, decks, specs, dashboards and mockups as public or password-protected links; collect anchored reviewer feedback and revise the page; or refine it live in edit mode before publishing. Edit mode supports declared sibling assets, a layout inbox and expiring private HTTPS review links. Every publish includes version history and readable-text redlines independently of optional feedback. Edit and review native Excalidraw diagrams with shape comments or connect a local stdio MCP agent. Use for sharing, reviewing, incorporating comments or iterating on an HTML artifact with the user. Not for deploying application frameworks, PDF annotation or emailing screenshots.
 ---
 
 # htmldrop — Share HTML as Hosted Links
@@ -27,7 +27,7 @@ This fires **automatically**, whether the user runs simple share, feedback, or e
    When you deliver, state which source you used in one line ("styled with the project's Tailwind theme" / "no theme found — neutral default"). **Never ship a generic template when a real design system was discoverable.**
 
 2. **Pick the right shape (the MUST-router).** Match the content against these triggers and reach for the right structure before writing. One artifact often combines several:
-   - **relationships / flows / architecture / sequences** → a real **Mermaid diagram**, never hand-built `<div>` boxes. Re-render on light/dark flip (Mermaid never restyles an already-drawn SVG).
+   - **relationships / flows / architecture / sequences** → a real **Mermaid diagram** or an editable **Excalidraw diagram** in CLI 1.17.0+, never hand-built `<div>` boxes. Re-render Mermaid on light/dark flip. For native scenes, shape comments or MCP, read [diagrams-and-mcp.md](references/diagrams-and-mcp.md).
    - **comparing options / tools / approaches / tradeoffs** → aligned option cards; make the **cost as visible as the benefit** (don't hide the downside).
    - **teaching a concept / how something works** → the **explainer shape**: (a) lead with the one idea that explains everything; (b) a "feel-the-difference" micro-demo with the smallest honest code (a 450ms `setTimeout` *is* network lag; a toggle *is* a mode switch); (c) a looping before/after; (d) a cheat-sheet table last, including the honest trade-off.
    - **proposing a change / roadmap / approach** → goal → current → proposed → risks → open questions. Mock the UI, don't describe it.
@@ -45,10 +45,14 @@ This fires **automatically**, whether the user runs simple share, feedback, or e
 
 CLI **1.16.0+** includes a History viewer on every `push`, with earlier-version previews and readable-text redlines. No version/history flag is needed. `--feedback` only controls the annotation widget; it does not disable history. Preserve the existing file identity when updating it; `--new-doc` deliberately starts fresh history and a fresh feedback identity. Read [publication-history.md](references/publication-history.md) for private revisions, source hand-off and single-file publishing.
 
+## Editable diagrams and local MCP
+
+CLI **1.17.0+** adds a bundled Excalidraw canvas in edit mode, stable shape comments, reviewer proposals and owner-controlled accepted revisions. Local stdio MCP binds one already-registered HTML artifact and defaults to reviewer authority; owner writes require explicit `--role owner`. Read [diagrams-and-mcp.md](references/diagrams-and-mcp.md) for the workflow, fresh SVG requirement and private-history boundaries. Saving changes local HTML; publication remains a separate action.
+
 ## Prerequisites
 
 - Node.js >= 18
-- `npm install -g @yeefeiooi/htmldrop@latest` (1.16.0+ for the capabilities here; check `htmldrop --version`)
+- `npm install -g @yeefeiooi/htmldrop@latest` (1.16.0+ for history/assets; 1.17.0+ for diagrams/MCP; check `htmldrop --version` and release availability)
 - For **simple share**: run `htmldrop init` once (sets up Surge account + subdomain)
 - For **feedback/converge**: run `htmldrop auth setup` once (generates an author API key in `~/.htmldrop/config.json`)
 - For **local edit mode**: no `init`, Surge account or feedback author key. Remote review additionally needs a private HTTPS proxy and its access policy; `edit share` configures only the local gateway.
