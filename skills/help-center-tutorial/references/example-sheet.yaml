@@ -1,0 +1,59 @@
+# Example step sheet. Format and rules: references/step-sheet.md
+# Every label, selector, proof text, role and path below is illustrative. A real sheet takes them
+# from the running product, and marks what it could not read as TODO until it has.
+task: block-time
+platform: web
+title: Block time in your calendar
+domain: calendar
+goal: Stop bookings during a break, personal time or admin work.
+who: [owner, manager]
+before:
+  - text: You have at least one team member on your calendar.
+path: Calendar > Add > Blocked time
+surfaces: ["route:/calendar", "component:BlockedTimeDialog"]
+writes: true
+result: You should see the blocked time greyed out in the calendar.
+not_covered: Repeating blocked time and blocking several team members at once.
+steps:
+  - id: open
+    do: Click an empty slot in the calendar.
+    action: {click: "[data-testid=empty-slot]"}
+    proof: Add blocked time
+    shot: {mark: "[data-testid=add-blocked-time]"}
+    caption: Click an empty slot in the calendar.
+    alt: The calendar with an empty slot selected and the Add menu open.
+  - id: choose
+    do: Choose Add blocked time.
+    label: Add blocked time
+    action: {click: "[data-testid=add-blocked-time]"}
+    proof: Blocked time type
+    shot: {mark: "[data-testid=blocked-time-type]"}
+    caption: Choose Add blocked time.
+    alt: The Blocked time form with the type, start and end fields.
+    clip: {seconds: 5}
+  - id: pick-type
+    do: Pick Lunch break in Blocked time type.
+    label: Blocked time type
+    action: {click: "[data-testid=type-lunch-break]"}
+    proof: Duration
+    caption: Pick a type.
+    alt: The form with the type set to Lunch break and a duration shown.
+  - id: set-end
+    do: Set the End time to 13:00.
+    label: End time
+    action: {type: {selector: "[data-testid=blocked-time-end]", text: "13:00"}}
+    proof: 1 h
+    caption: Set the end time.
+    alt: The form with a Lunch break from twelve to one and a duration of one hour.
+  - id: save
+    do: Click Save.
+    label: Save
+    action: {click: "[data-testid=save-blocked-time]"}
+    proof: Blocked time added
+    caption: Click Save.
+    alt: The calendar showing the new blocked time greyed out.
+    writes: true
+troubleshooting:
+  - when: The slot cannot be blocked.
+    then: Another appointment already uses it. Move or cancel that appointment first.
+related: ["calendar/manage-blocked-time-types", "team/manage-time-off"]

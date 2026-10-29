@@ -18,6 +18,9 @@ Skills are markdown files that teach Claude Code how to perform specific tasks.
 | [demo-video](./demo-video/SKILL.md) | Record crisp hi-res product demo videos by driving the real app with a browser agent: a recording contract (real browser state, whole journey, every claim proven on screen) enforced by three gates, plus Xvfb framebuffer capture (no macroblocking). See [README](./demo-video/README.md) for details |
 | [pitch-deck](./pitch-deck/SKILL.md) | Build a pitch deck as one self-contained HTML file (hash nav, entry animations, brand mark, cited numbers), narrate it, and optionally record the walkthrough in parts that stitch around a demo. See [README](./pitch-deck/README.md) for details |
 | [pitch-package](./pitch-package/SKILL.md) | The end-to-end pitch orchestrator: interview the audience and slot, budget the time, compose deck + demo + live speech via the other pitch skills, with stitch plan, fallback ladder, and day-of checklist. See [README](./pitch-package/README.md) for details |
+| [film-line](./film-line/SKILL.md) | The front door and production line for product films: the one question that names the family, then staging, take bank, one rebuild and QA gates. See [README](./film-line/README.md) for details |
+| [marketing-video](./marketing-video/SKILL.md) | Marketing films for strangers: a pain, a value with one real proof moment, one ask; also the industry "month in the life" flagship. See [README](./marketing-video/README.md) for details |
+| [help-center-tutorial](./help-center-tutorial/SKILL.md) | Help-centre task articles with steps, screenshots and a clip generated from one step sheet, kept fresh by replay. See [README](./help-center-tutorial/README.md) for details |
 | [scribe](./scribe/SKILL.md) | Meeting recordings to notes with an unbroken chain of custody from audio to claim: pinned-language transcription across swappable STT backends, recording-gap detection, and per-recording confidence thresholds so a garbled span never becomes a stated fact. See [README](./scribe/README.md) for details |
 
 ## The pitch suite - when to use what
@@ -32,6 +35,19 @@ Four skills, one factoring: three workflows plus one shared engine. Start from w
 | The deck itself, and optionally its recorded walkthrough | [pitch-deck](./pitch-deck/SKILL.md) | Single-file HTML deck skeleton (hash nav, animations, brand mark, cited numbers), walkthrough recording in parts around a demo | pitch-craft for narration; demo-video's harness for recording |
 
 Rules of thumb: preparing for an audience and a time slot -> **pitch-package** first, always. Only one artifact missing -> call that skill directly. Anything that produces spoken words routes through **pitch-craft**; anything that produces video pixels routes through **demo-video**'s harness.
+
+## The video families - which one
+
+One question names the family: **what is the viewer doing the moment the film ends?**
+
+| The viewer is | Family | Start with |
+|---|---|---|
+| deciding on us now, in a booked slot (judges, investors, a committee) | pitch | [pitch-package](./pitch-package/SKILL.md) |
+| a stranger deciding whether the problem is theirs and the product is for them (also the long industry "month in the life" film) | marketing | [marketing-video](./marketing-video/SKILL.md) |
+| a user finishing one task, signed in or in a help centre | tutorial | [help-center-tutorial](./help-center-tutorial/SKILL.md) |
+| not sure, or staging and QA for any of them | any | [film-line](./film-line/SKILL.md) |
+
+All of them record with [demo-video](./demo-video/SKILL.md), render with [motion-video](./motion-video/SKILL.md) when mostly rendered, and voice through [pitch-craft](./pitch-craft/SKILL.md). Industry (a cattle farm, a shop, a clinic) is a parameter of a film, never a family.
 
 ## Installation
 

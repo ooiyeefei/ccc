@@ -10,6 +10,8 @@ A demo-video films the real product to **prove** it. A motion video **renders** 
 **one** real capture stitched in as proof. Get that inversion wrong and you have either a
 screen-recording that bores or a cartoon that convinces no one.
 
+What the film says (the stranger, the pain, the value, the proof moment, the ask) is decided upstream by `marketing-video`; this skill builds it.
+
 ## The contract
 
 Four rules. They are the ones an agent under time pressure abandons first, which is why they are

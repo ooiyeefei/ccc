@@ -1,11 +1,15 @@
 ---
 name: pitch-package
-description: The step-back skill for pitching as a person - given an audience (hackathon judges, VCs, investors, customers) and a time slot, it budgets the slot, decides what to build or reuse (deck, demo video, live speech), settles the voice, music, branding and rights questions before anything is built, and orchestrates the pitch-deck, demo-video, and pitch-craft skills into one rehearsed package with a stitch plan, Q&A prep, and a day-of checklist. Use whenever the user says they need to pitch, present, or demo at a hackathon or demo day, to investors or a customer, mentions an N-minute slot, or asks to "prepare the whole pitch" end to end. Not for - a single artifact in isolation (call pitch-deck, demo-video, or pitch-craft directly) or written-only submission forms.
+description: The step-back skill for a pitch - a live decision, by people who score or choose now, in a booked slot. Given the audience (hackathon judges, VCs, investors, a customer's buying committee) and the slot, it budgets the time, decides what to build or reuse (deck, demo film, live speech), settles voice, music, branding and rights, and orchestrates pitch-deck, demo-video and pitch-craft into one rehearsed package with a stitch plan, Q&A prep and a day-of checklist. Use whenever the user needs to pitch, present or demo at a hackathon, demo day, or to investors or a customer, mentions an N-minute slot, or asks to "prepare the whole pitch". Not for films for strangers on a website or YouTube (marketing-video), help-centre tutorials (help-center-tutorial), a single artifact (call pitch-deck, demo-video or pitch-craft), or written submission forms.
 ---
 
 # Pitch Package - the whole performance
 
 A pitch is one argument delivered through three instruments: the deck (setup), the demo (proof), and the speaker (trust). **The demo is the proof; the deck is the setup.** This skill's job is sequencing and budget, so the instruments never fight each other. Two rules govern everything: **interview before you build**, and **budget the slot first**.
+
+## Fence - confirm this is a pitch
+
+A pitch ends with a decision, made by people in a room or on a call, inside a slot. Two neighbours look alike and are not. A film for strangers on a website or YouTube that ends on "try it" is `marketing-video`. A film or article for a user finishing one task is `help-center-tutorial`. If the ask names either, or mentions a pitch only as a place the film might be reused, stop and hand off; the one question and the family table are in `film-line`, section 1. A customer pitch that contains a recorded film is still a pitch, and its film is built with `demo-video`.
 
 ## Phase 1 - Interview before you build
 

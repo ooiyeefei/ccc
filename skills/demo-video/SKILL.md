@@ -60,6 +60,8 @@ This gate is not politeness - it is the cheapest point to change the film. After
 
 Deterministic demo data, seeded to make the beats true. Log in OFF camera. Kill anything that can interrupt the frame: notifications, password-manager bubbles (pre-write Chrome preferences - see recording.md), first-run dialogs. Never trigger JS alerts mid-take; they freeze the driver.
 
+Not sure the film is a demo, or filming a series or help-centre tasks from one staged workspace? `film-line` names the family and runs the staging, take-bank and QA gates.
+
 ### 3. Smoke take - **GATE 2: inspect before the full capture**
 
 Run `record_template.py <name> --smoke`. It records through the first beat that actually *drives* something - rendering beat 1 alone cannot catch a dead selector, which is half of what this gate is for - then extracts frames and prints a contact sheet. **Read it as an image.**
