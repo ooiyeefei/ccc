@@ -89,3 +89,4 @@ When a recording is redone, milestones shift (live backends have latency varianc
 - `references/storytelling.md` - the craft: hook, team intro placement, analogies, throughline, registers, delivery cues, honesty guardrails. Read before drafting.
 - `references/timing.md` - words-per-second tables, the per-window pacing band, formats, estimation loop, trim points, re-sync procedure. Read before budgeting.
 - `references/human-voice.md` - the audible AI tells, what does not transfer from prose advice, the carve-outs this skill needs protected, and the tells that only exist in speech. Read before the timing check.
+- `film-line/references/narration.md` - plain narration for marketing films and tutorials: the extra style rules and the scan. Read after this skill's human-voice pass when the voice is for a stranger or a user, not a room.
