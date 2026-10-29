@@ -19,17 +19,17 @@ The only company-specific file in the film skills. It holds wording and constrai
 
 ## Honest wording
 
-- "Your books and your reports", never "your annual accounts" or "a full set" until year-end close, the equity statement and comparatives are all live.
+- Say "your books and your reports"; claim a "full set" or "annual accounts" only when the product ships every statement that claim implies.
 - "The ledger" here is the product's own accounting ledger, not the write ledger of `staging.md`. For strangers the voice says "your books"; "the ledger" stays on screen where the product shows it and in chapters for the accountant. Worked out from the ledger. Checked against the books. Suggests, you accept. A person presses every post, approval and payment, on camera.
 - Groot never pays anyone and never moves money. The transfer is made in the customer's bank.
-- Sales e-invoice submission to LHDN is early access: say so in one sentence or leave it out. No bank-feed claim.
+- A feature still in early access is said to be so in one sentence, or left out. No claim about a bank connection that does not exist.
 - Tax: facts and calculations only. No advice on reducing tax, and a disclaimer on every tax screen shown.
-- Income tax deduction (PCB) is typed in, not calculated. EPF, SOCSO and EIS are worked out, not filed or paid.
+- Say once, plainly, what the product works out and what the user types in; never imply it files or pays anything.
 - No traction figures, no customer counts, no price.
 - A herd, stock or asset value is never implied. Cattle bought are recorded as a cost.
 
 ## Distribution
 
 - Marketing films are public: the website embeds YouTube.
-- Tutorials are for signed-in users only. Hosting is not decided. Unlisted YouTube is not private, so it is not an option for tutorials.
+- Tutorials are for signed-in users only. Unlisted YouTube is not private, so it is not an option for tutorials.
 - A recording day, a deadline or an ETA is never stated by an agent unless the owner named it.
