@@ -23,14 +23,9 @@ Custom plugins and skills for [Claude Code](https://github.com/anthropics/claude
 | [cross-app-shared-auth](./skills/cross-app-shared-auth) | Skill | Onboard apps into a platform with one shared login and a central accounts database: per-app opt-in access, deny-by-default, dual sign-up paths | `/plugin install ccc-skills@ccc` |
 | [google-analytics-setup](./skills/google-analytics-setup) | Skill | Set up GA4 on a website and wire a real conversion (form/signup/purchase) end to end — property/stream structure, tag install, event, Key Event, and DebugView verification before ad spend | `/plugin install ccc-skills@ccc` |
 | [meta-pixel-setup](./skills/meta-pixel-setup) | Skill | Set up the Meta (Facebook/Instagram) Pixel and a conversion event end to end — steers past the Conversions-API push and the sensitive-category trap, with Pixel Helper verification before ad spend | `/plugin install ccc-skills@ccc` |
-| [pitch-craft](./skills/pitch-craft) | Skill | Timed spoken scripts: demo voiceovers, deck narration, live pitch speeches - word budgets, storytelling rules, trim points, re-sync | `/plugin install ccc-skills@ccc` |
-| [demo-video](./skills/demo-video) | Skill | Crisp hi-res product demo videos via browser-agent driving + Xvfb framebuffer capture, with a gated recording contract and MP4-verified milestone narration | `/plugin install ccc-skills@ccc` |
-| [motion-video](./skills/motion-video) | Skill | Marketing / explainer videos built as rendered Remotion scenes (motion graphics, mocked UI, animated charts, brand-matched) stitched around one real product-capture beat | `/plugin install ccc-skills@ccc` |
-| [pitch-deck](./skills/pitch-deck) | Skill | Single-file HTML pitch decks with narration and recordable walkthroughs that stitch around a demo film | `/plugin install ccc-skills@ccc` |
-| [pitch-package](./skills/pitch-package) | Skill | End-to-end pitch orchestration (hackathon / VC / customer): slot budgeting, deck + demo + speech composition, rehearsal and fallbacks | `/plugin install ccc-skills@ccc` |
 | [scribe](./skills/scribe) | Skill | Meeting recordings → notes with a chain of custody: pinned-language transcription across swappable STT backends (ElevenLabs/Deepgram/OpenAI/local), recording-gap detection, and confidence carried through so garbled audio never becomes a confident fact | `/plugin install ccc-skills@ccc` |
 
-The four pitch skills form one suite - **preparing a whole pitch -> start with `pitch-package`** (it routes to the others); a single artifact -> call it directly (`pitch-craft` = words against a clock, `demo-video` = crisp product footage, `pitch-deck` = the deck + walkthrough). Full decision guide: [skills/README.md](./skills/README.md#the-pitch-suite---when-to-use-what).
+The pitch and video skills (pitch-package, pitch-craft, pitch-deck, demo-video, motion-video) were retired from this collection on 12 November 2026.
 
 ---
 
